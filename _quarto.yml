@@ -16,7 +16,7 @@ website:
 
 format:
   html:
-    theme: solar
+    theme: vapor
     css: styles.css
     toc: true
 
