@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise 1.1: Geospatial Data Science with R"
+title: "Hands-on Exercise 1: Geospatial Data Science with R"
 author: "Lorielle Malveda"
 ---
 
@@ -200,7 +200,7 @@ It works!
 
 We are going to use the wide range of geoprocessing functions in the sf package.
 
-## 7.1 Buffering 
+## 7.1 Buffering
 
 "Scenario:
 
@@ -229,7 +229,7 @@ sum(buffer_cycling$AREA)
 
 **DONE!**
 
-## 7.2 Point-in-Polygon Count 
+## 7.2 Point-in-Polygon Count
 
 "Scenario: A pre-school service group wants to find out the numbers of pre-schools in each Planning Subzone."
 
@@ -257,7 +257,7 @@ top_n(mpsz3414, 1, `PreSch Count`)
 
 Calculate the density of pre-school by planning subzone.
 
- 1. Use `st_area()` to derive the area of each planning subzone.
+1.  Use `st_area()` to derive the area of each planning subzone.
 
 ```{r}
 mpsz3414$Area <- mpsz3414 %>%
@@ -273,7 +273,7 @@ mpsz3414 <- mpsz3414 %>%
 
 **DONE!**
 
-# 8. EXPLORATORY DATA ANALYSIS 
+# 8. EXPLORATORY DATA ANALYSIS
 
 A must-step in Data Analytics is EDA. In this section, ***ggplot2*** functions are going to be introduced to create statistical graphs.
 
