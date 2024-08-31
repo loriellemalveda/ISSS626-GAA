@@ -182,12 +182,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#transform-projection" id="toc-transform-projection" class="nav-link" data-scroll-target="#transform-projection">5. TRANSFORM PROJECTION</a>
   <ul class="collapse">
   <li><a href="#changing-the-epsg-code" id="toc-changing-the-epsg-code" class="nav-link" data-scroll-target="#changing-the-epsg-code">5.1 Changing the EPSG Code</a></li>
-  <li><a href="#changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21." id="toc-changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21." class="nav-link" data-scroll-target="#changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21.">5.2 Changing the projection system from the WGS84 Coordinate System to SVY21.</a></li>
+  <li><a href="#changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21" id="toc-changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21" class="nav-link" data-scroll-target="#changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21">5.2 Changing the projection system from the WGS84 Coordinate System to SVY21</a></li>
   </ul></li>
   <li><a href="#import-and-convert-aspatial-data" id="toc-import-and-convert-aspatial-data" class="nav-link" data-scroll-target="#import-and-convert-aspatial-data">6. IMPORT AND CONVERT ASPATIAL DATA</a></li>
-  <li><a href="#geoprocessing-with-sf-package-buffering-and-point-in-polygon-count" id="toc-geoprocessing-with-sf-package-buffering-and-point-in-polygon-count" class="nav-link" data-scroll-target="#geoprocessing-with-sf-package-buffering-and-point-in-polygon-count">7. GEOPROCESSING WITH SF PACKAGE: BUFFERING AND POINT-IN-POLYGON COUNT</a></li>
-  <li><a href="#buffering" id="toc-buffering" class="nav-link" data-scroll-target="#buffering">7.1 Buffering</a>
+  <li><a href="#geoprocessing-with-sf-package-buffering-and-point-in-polygon-count" id="toc-geoprocessing-with-sf-package-buffering-and-point-in-polygon-count" class="nav-link" data-scroll-target="#geoprocessing-with-sf-package-buffering-and-point-in-polygon-count">7. GEOPROCESSING WITH SF PACKAGE: BUFFERING AND POINT-IN-POLYGON COUNT</a>
   <ul class="collapse">
+  <li><a href="#buffering" id="toc-buffering" class="nav-link" data-scroll-target="#buffering">7.1 Buffering</a></li>
   <li><a href="#point-in-polygon-count" id="toc-point-in-polygon-count" class="nav-link" data-scroll-target="#point-in-polygon-count">7.2 Point-in-Polygon Count</a></li>
   </ul></li>
   <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis">8. EXPLORATORY DATA ANALYSIS</a>
@@ -562,8 +562,8 @@ PROJCRS["SVY21",
 </div>
 <p>Now we are certain that mpsz’s EPSG code is 3414, which is the correct one.</p>
 </section>
-<section id="changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21." class="level2">
-<h2 class="anchored" data-anchor-id="changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21.">5.2 Changing the projection system from the WGS84 Coordinate System to SVY21.</h2>
+<section id="changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21" class="level2">
+<h2 class="anchored" data-anchor-id="changing-the-projection-system-from-the-wgs84-coordinate-system-to-svy21">5.2 Changing the projection system from the WGS84 Coordinate System to SVY21</h2>
 <p>Next, we shall use <code>st_transform()</code> to convert the projection of the Preschool Dataset from the WGS84 coordinate system to the SVY21 coordinate system, i.e.&nbsp;EPSG 3414. We do this to make sure that everything is in the SVY21 coordinate system for compatibility and for better analysis.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>preschool3414 <span class="ot">&lt;-</span> <span class="fu">st_transform</span>(preschool, <span class="at">crs =</span> <span class="dv">3414</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -712,9 +712,8 @@ $ geometry                                     &lt;POINT [m]&gt; POINT (41972.5 
 <section id="geoprocessing-with-sf-package-buffering-and-point-in-polygon-count" class="level1">
 <h1>7. GEOPROCESSING WITH SF PACKAGE: BUFFERING AND POINT-IN-POLYGON COUNT</h1>
 <p>We are going to use the wide range of geoprocessing functions in the sf package.</p>
-</section>
-<section id="buffering" class="level1">
-<h1>7.1 Buffering</h1>
+<section id="buffering" class="level2">
+<h2 class="anchored" data-anchor-id="buffering">7.1 Buffering</h2>
 <p>“Scenario:</p>
 <p>The authority is planning to upgrade the exiting cycling path. To do so, they need to acquire 5 meters of reserved land on the both sides of the current cycling path. You are tasked to determine the extent of the land needed to be acquired and their total area.”</p>
 <p>Solution:</p>
@@ -739,6 +738,7 @@ $ geometry                                     &lt;POINT [m]&gt; POINT (41972.5 
 </div>
 </div>
 <p><strong>DONE!</strong></p>
+</section>
 <section id="point-in-polygon-count" class="level2">
 <h2 class="anchored" data-anchor-id="point-in-polygon-count">7.2 Point-in-Polygon Count</h2>
 <p>“Scenario: A pre-school service group wants to find out the numbers of pre-schools in each Planning Subzone.”</p>

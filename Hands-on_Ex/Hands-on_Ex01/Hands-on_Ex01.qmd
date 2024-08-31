@@ -151,7 +151,7 @@ st_crs(mpsz)
 
 Now we are certain that mpsz's EPSG code is 3414, which is the correct one.
 
-## 5.2 Changing the projection system from the WGS84 Coordinate System to SVY21.
+## 5.2 Changing the projection system from the WGS84 Coordinate System to SVY21
 
 Next, we shall use `st_transform()` to convert the projection of the Preschool Dataset from the WGS84 coordinate system to the SVY21 coordinate system, i.e. EPSG 3414. We do this to make sure that everything is in the SVY21 coordinate system for compatibility and for better analysis.
 
@@ -200,7 +200,7 @@ It works!
 
 We are going to use the wide range of geoprocessing functions in the sf package.
 
-# 7.1 Buffering 
+## 7.1 Buffering 
 
 "Scenario:
 
