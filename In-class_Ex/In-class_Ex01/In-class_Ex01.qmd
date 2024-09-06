@@ -1,0 +1,374 @@
+---
+title: "In-class Exercise 1: Geospatial Data Science with R"
+author: "Lorielle Malveda"
+---
+
+# 1. OVERVIEW
+
+First things first! This In-class Exercise is an introduction to importing and wrangling geospatial data using the necessary R packages.
+
+# 2. GETTING STARTED
+
+## 2.1 Loading the R packages
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr)
+```
+
+This code chunk uses `p_load()` of the ***pacman*** package (stands for Package Manager) to check if the packages are installed in the computer. The packages will then be launched into R.
+
+## 2.2 Working with Master Plan Planning Sub-zone Data
+
+For this exercise, we are going to use the following:
+
+-   Master Plan 2014 Subzone Boundary (Web) from data.gov.sg
+
+### Master Plan 2014 Subzone Boundary (Web)
+
+#### For the shp file:
+
+```{r}
+mpsz14_shp = st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/In-class_Ex/In-class_Ex01/data/MasterPlan2014SubzoneBoundaryWebSHP", layer = "MP14_SUBZONE_WEB_PL")
+```
+
+Code chunk to export the `mpsz14_shp` ***sf*** data frame into a ***kml*** file and to save the output in data sub-folder.
+
+The output file will be named *MP14_SUBZONE_WEB_PL*.
+
+```{r}
+st_write(mpsz14_shp, 
+         "data/MP14_SUBZONE_WEB_PL.kml",
+         delete_dsn = TRUE)
+```
+
+## 2.3 Working with Pre-school Location Data
+
+We are going to import another dataset: Pre-School Locations from data.gov.sg. One is a ***kml*** file and the other is a ***geojson*** file.
+
+```{r}
+preschool_kml <- st_read("data/PreSchoolsLocation.kml")
+```
+
+```{r}
+preschool_geojson <- st_read("data/PreSchoolsLocation.geojson") 
+```
+
+## 2.4 Working with Master Plan 2019 Subzone Boundary Data (No Sea)
+
+### Importing shapefile
+
+```{r}
+mpsz19_shp <- st_read(dsn = "data/MPSZ-2019",
+                layer = "MPSZ-2019")
+```
+
+### Importing kml
+
+```{r}
+mpsz19_kml <- st_read("data/MasterPlan2019SubzoneBoundaryNoSeaKML.kml")
+```
+
+# 3. HANDLING COORDINATE SYSTEMS
+
+## 3.1 Checking Coordinate System
+
+Let us check the projection systems of the ***sf*** objects.
+
+```{r}
+st_crs(mpsz19_shp)
+```
+
+```{r}
+st_crs(preschool_kml)
+```
+
+## 3.2 Transforming Coordinate System
+
+Now, let's use `st_transform()` to convert the projection of the dataset from the WGS84 coordinate system to the SVY21 coordinate system, i.e. EPSG 3414. We do this to make sure that everything is in the SVY21 coordinate system for compatibility and for better analysis.
+
+```{r}
+mpsz19_shp <- st_read(dsn = "data/MPSZ-2019",
+                layer = "MPSZ-2019") %>%
+st_transform(crs = 3414)
+```
+
+```{r}
+preschool <- st_read("data/PreSchoolsLocation.kml") %>%
+  st_transform(crs = 3414)
+```
+
+Check if it is transformed correctly!
+
+```{r}
+mpsz19_shp
+```
+
+**Great!** They are now in the right projection system.
+
+# 4. GEOSPATIAL DATA WRANGLING
+
+## 4.1 Point-in-Polygon Count
+
+Count the number of pre-schools in each planning sub-zone using the code chunk below:
+
+```{r}
+mpsz19_shp <- mpsz19_shp %>%
+  mutate(`PreSch Count` = lengths(
+    st_intersects(mpsz19_shp, preschool)))
+```
+
+```{r}
+mpsz19_shp
+```
+
+Running the code chunk shows that there are a total of ***332 multipolygon features and 7 fields*** in the data frame.
+
+## 4.2 Computing Density
+
+Let us now write a code to:
+
+1.  Derive the area of each planning sub-zone.
+2.  Drop the unit of measurement of the area (i.e. m\^2)
+3.  Calculate the density of pre-school at the planning sub-zone level.
+
+```{r}
+mpsz19_shp <- mpsz19_shp %>%
+  mutate(Area = units::drop_units(
+    st_area(.)),
+    `PreSch Density` = `PreSch Count` / Area * 1000000
+  )
+```
+
+## 4.3 Statistical Analysis
+
+Next, let us use the appropriate EDA and CDA methods to explore and confirm statistical relationships in our datasets, specifically between Pre-school Density and Pre-school Count.
+
+```{r}
+mpsz19_shp$`PreSch Density` <- as.numeric(as.character(mpsz19_shp$`PreSch Density`))
+mpsz19_shp$`PreSch Count` <- as.numeric(as.character(mpsz19_shp$`PreSch Count`)) 
+mpsz19_shp_1 <- as.data.frame(mpsz19_shp)
+```
+
+```{r}
+ggscatterstats(data = mpsz19_shp_1,
+               x = `PreSch Density`,
+               y = `PreSch Count`,
+               type = "parametric")
+```
+
+## 4.4 Working with Population Data
+
+Another dataset we will be working with, which is aspatial:
+
+```{r}
+popdata <- read_csv("data/respopagesextod2023/respopagesextod2023.csv")
+```
+
+### DATA WRANGLING
+
+The code chunk below creates a data.frame showing population by Planning Area and Planning Subzone.
+
+```{r}
+popdata2023 <- popdata %>% 
+  group_by(PA, SZ, AG) %>% 
+  summarise(`POP`=sum(`Pop`)) %>%  
+  ungroup() %>% 
+  pivot_wider(names_from=AG,
+              values_from = POP)
+
+colnames(popdata2023)
+```
+
+Next, we are going to filter the data.
+
+```{r}
+popdata2023 <- popdata2023 %>%
+  mutate(YOUNG=rowSums(.[3:6]) # Aged 0 - 24, 10 - 24
+         +rowSums(.[14])) %>% # Aged 5 - 9
+  mutate(`ECONOMY ACTIVE` = rowSums(.[7:13])+ # Aged 25 - 59
+  rowSums(.[15])) %>%  # Aged 60 -64
+  mutate(`AGED`=rowSums(.[16:21])) %>%
+  mutate(`TOTAL`=rowSums(.[3:21])) %>%
+  mutate(`DEPENDENCY`=(`YOUNG` + `AGED`)
+  / `ECONOMY ACTIVE`) %>% 
+  select(`PA`, `SZ`, `YOUNG`, 
+         `ECONOMY ACTIVE`, `AGED`,
+         `TOTAL`, `DEPENDENCY`)
+```
+
+These are the fields:
+
+**PA, SZ, YOUNG, ECONOMY ACTIVE, AGED, TOTAL, DEPENDENCY** where
+
+-   **YOUNG**: age group 0 to 4 until age group 20 to 24,
+
+-   **ECONOMY ACTIVE**: age group 25-29 until age group 60-64,
+
+-   **AGED**: age group 65 and above,
+
+-   **TOTAL**: all age group, and
+
+-   **DEPENDENCY**: the ratio between young and aged against economy active group.
+
+Let's now combine ***popdata23*** and ***mpsz19_shp***, i.e. our aspatial and geospatial data.
+
+```{r}
+popdata2023 <- popdata2023 %>%
+  mutate_at(.vars = vars(PA, SZ), 
+          .funs = list(toupper)) 
+```
+
+```{r}
+mpsz_pop2023 <- left_join(mpsz19_shp, popdata2023,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+```{r}
+pop2023_mpsz <- left_join(popdata2023, mpsz19_shp, 
+                          by = c("SZ" = "SUBZONE_N"))
+```
+
+# 5. VISUALIZING THE GEOSPATIAL DATA
+
+Let's use a choropleth map to visualize the dataset.
+
+## **PERCENTMAP**
+
+## Step 1: Data Preparation
+
+The code chunk below excludes records with NA.
+
+```{r}
+mpsz_pop2023 <- mpsz_pop2023 %>%
+  drop_na()
+```
+
+## Step 2: The Get Function
+
+This code chunk defines a function to get the input data and field to be used for creating the percentile map.
+
+```{r}
+get.var <- function(vname,df) {
+  v <- df[vname] %>%
+    st_set_geometry(NULL)
+  v <- unname(v[,1])
+    return(v)
+}
+```
+
+## Step 3: A Percentile Mapping Function
+
+This creates a function to compute and plot the percentile map.
+
+```{r}
+percentmap <- function(vname, df, legtitle=NA, mtitle="Percentile Map"){
+  percent <- c(0,.01,.1,.5,.9,.99,1)
+  var <- get.var(vname, df)
+  bperc <- quantile(var, percent)
+  tm_shape(mpsz_pop2023) +
+  tm_polygons() +
+  tm_shape(df) +
+     tm_fill(vname,
+             title=legtitle,
+             breaks=bperc,
+             palette="Blues",
+          labels=c("< 1%", "1% - 10%", "10% - 50%", "50% - 90%", "90% - 99%", "> 99%"))  +
+  tm_borders() +
+  tm_layout(main.title = mtitle, 
+            title.position = c("right","bottom"))
+}
+```
+
+## Step 4: Running the Functions
+
+```{r}
+percentmap("DEPENDENCY", mpsz_pop2023)
+```
+
+Yay! We have successfully plotted the percent map.
+
+## BOXMAPt
+
+Now let's plot boxmaps. We are basically doing the same steps as the percent map.
+
+## Step 1: Creating the Boxbreaks Function
+
+```{r}
+boxbreaks <- function(v,mult=1.5) {
+  qv <- unname(quantile(v))
+  iqr <- qv[4] - qv[2]
+  upfence <- qv[4] + mult * iqr
+  lofence <- qv[2] - mult * iqr
+  # initialize break points vector
+  bb <- vector(mode="numeric",length=7)
+  # logic for lower and upper fences
+  if (lofence < qv[1]) {  # no lower outliers
+    bb[1] <- lofence
+    bb[2] <- floor(qv[1])
+  } else {
+    bb[2] <- lofence
+    bb[1] <- qv[1]
+  }
+  if (upfence > qv[5]) { # no upper outliers
+    bb[7] <- upfence
+    bb[6] <- ceiling(qv[5])
+  } else {
+    bb[6] <- upfence
+    bb[7] <- qv[5]
+  }
+  bb[3:5] <- qv[2:4]
+  return(bb)
+}
+```
+
+## Step 2: Creating the *get.var* function
+
+```{r}
+get.var <- function(vname,df) {
+  v <- df[vname] %>% st_set_geometry(NULL)
+  v <- unname(v[,1])
+  return(v)
+}
+```
+
+## Step 3: Boxmap Function
+
+```{r}
+boxmap <- function(vnam, df, 
+                   legtitle=NA,
+                   mtitle="Box Map",
+                   mult=1.5){
+  var <- get.var(vnam,df)
+  bb <- boxbreaks(var)
+  tm_shape(df) +
+    tm_polygons() +
+  tm_shape(df) +
+     tm_fill(vnam,title=legtitle,
+             breaks=bb,
+             palette="Blues",
+          labels = c("lower outlier", 
+                     "< 25%", 
+                     "25% - 50%", 
+                     "50% - 75%",
+                     "> 75%", 
+                     "upper outlier"))  +
+  tm_borders() +
+  tm_layout(main.title = mtitle, 
+            title.position = c("left",
+                               "top"))
+}
+```
+
+## Step 4: Plotting the Box Map
+
+```{r}
+boxmap("DEPENDENCY", mpsz_pop2023)
+```
+
+Now for a more interactive version!
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tmap_mode("view")
+boxmap("DEPENDENCY", mpsz_pop2023)
+```

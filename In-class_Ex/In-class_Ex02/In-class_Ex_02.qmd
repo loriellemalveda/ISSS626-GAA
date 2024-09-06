@@ -1,0 +1,14 @@
+---
+title: "In-class Exercise 2"
+author: "Lorielle Malveda"
+---
+
+```{r}
+#| eval: false
+rdacc_sf <- read_csv("data/thai_road_accident_2019_2022.csv") %>%
+  filter(!is.na(longitude) & longitude != "",
+         !is.na(latitude) & latitude !="") %>%
+  st_as_sf(coords= c("longitude", "latitude"),
+           crs=4326) %>%
+  st_transform(crs=32647)
+```
