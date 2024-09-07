@@ -1,10 +1,211 @@
 ---
-title: "In-class Exercise 2"
+title: "In-class Exercise 2: Spatial Point Patterns Analysis: spatstat Methods"
 author: "Lorielle Malveda"
 ---
 
+In the first parts of this In-class Exercise, we are going to address some of the issues that my classmates and I have encountered while implementing the past exercises.
+
+# Issue 1: Installing *maptools*
+
+***maptools*** has retired and has already been removed from CRAN, which is one of the more popular R-package sources. However, it is still available in the **Posit Public Package Manager.**
+
+To avoid ***maptools*** being downloaded and installed repetitively every time we run our Quarto Document, we will add the `#| eval: false` statement at the start of the code chunk.
+
+install.packages("maptools", repos = "[https://packagemanager.posit.co/cran/2023-10-13")](https://packagemanager.posit.co/cran/2023-10-13%22))
+
 ```{r}
-#| eval: false
+pacman::p_load(sf, spNetwork, tmap, tidyverse)
+```
+
+# Issue 2: Creating Coastal Outline
+
+This section will tackle the 2 functions under the ***sf*** package: st_combine() and st_union(). These 2 functions are used to combine multiple simple features into 1 simple feature.
+
+-   `st_combine` returns a single, combined geometry, with no resolved boundaries.
+
+-   If y-coordinates are missing, we can use `st_union(x)`, which returns a single geometry with resolved boundaries , otherwise will return a geometry for all union pairs of `x[i]` and `y[j]`.
+
+## Example: Working with `st_union()`
+
+Let's derived the coastal outline, which is an sf tibble data.frame.
+
+```{r}
+mpsz_sf <- st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex03/data/data", 
+                layer = "MP14_SUBZONE_WEB_PL")
+childcare_sf <- st_read("C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex03/data/data/child-care-services-geojson.geojson") %>%
+  st_transform(crs = 3414)
+childcare <- as_Spatial(childcare_sf)
+sg_sf <- mpsz_sf %>%
+  st_union()
+plot(sg_sf)
+```
+
+Checking the other necessary R packages.
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr, spatstat, raster, readxl)
+```
+
+For the latter parts, we are going to discuss the ***spatstat*** package.
+
+# Introducing the ***spatstat*** package
+
+The ***spatstat*** package is an R package used to analyze Spatial Point Patterns that focuses mainly on 2D point patterns, including multitype or marked points, in any spatial region.
+
+## Creating *ppp* objects from sf data.frame
+
+We are going to introduce another approach to creating ***ppp*** objects, aside from the one we have discussed in the past Hands-on Exercise.
+
+```{r}
+childcare_ppp <- as.ppp(childcare_sf)
+plot(childcare_ppp)
+```
+
+```{r}
+summary(childcare_ppp)
+```
+
+Creating an ***owin*** object from sf data.frame
+
+Let us now use `as.owin()` of the ***spatstat*** package to create an ***owin*** object from a polygon sf tibble data.frame.
+
+```{r}
+sg_owin <- as.owin(sg_sf)
+plot(sg_owin)
+```
+
+```{r}
+summary(sg_owin)
+```
+
+## Combining a Point Events Object and an *owin* Object
+
+The code chunk below creates a ***ppp*** object by combining ***childcare_ppp*** and ***sg_owin***.
+
+```{r}
+childcareSG_ppp = childcare_ppp[sg_owin]
+```
+
+```{r}
+plot(childcareSG_ppp)
+```
+
+The output object combined both the point and polygon feature in 1 ***ppp*** object class.
+
+## Kernel Density Estimation of a Spatial Point Event
+
+The code chunk below re-scales the unit of measurement from meter –\> kilometer before performing KDE.
+
+```{r}
+childcareSG_ppp.km <- rescale.ppp(childcareSG_ppp, 
+                                  1000, 
+                                  "km")
+
+kde_childcareSG_adaptive <- adaptive.density(
+  childcareSG_ppp.km, 
+  method="kernel")
+plot(kde_childcareSG_adaptive)
+```
+
+There are 2 different ways to convert the KDE output into a grid object.
+
+1.  ***maptools*** method
+
+```{r}
+par(bg = '#E4D5C9')
+
+gridded_kde_childcareSG_ad <- maptools::as.SpatialGridDataFrame.im(
+  kde_childcareSG_adaptive)
+spplot(gridded_kde_childcareSG_ad)
+```
+
+2.  **spatstat.geom** method
+
+```{r}
+gridded_kde_childcareSG_ad <- as(
+  kde_childcareSG_adaptive,
+  "SpatialGridDataFrame")
+spplot(gridded_kde_childcareSG_ad)
+```
+
+## Visualizing KDE using ***tmap***
+
+The code chunk below is used to plot the output raster by using ***tmap*** functions.
+
+```{r}
+kde_childcareSG_ad_raster <- raster(kde_childcareSG_adaptive)
+```
+
+```{r}
+tm_shape(kde_childcareSG_ad_raster) + 
+  tm_raster(palette = "viridis") +
+  tm_layout(legend.position = c("right", "bottom"), 
+            frame = FALSE,
+            bg.color = "#E4D5C9")
+```
+
+## Extracting Study Area Using ***sf*** Objects
+
+We are going to extract and create a ***ppp*** object showing child care services within the Punggol Planning Area.
+
+```{r}
+pg_owin <- mpsz_sf %>%
+  filter(PLN_AREA_N == "PUNGGOL") %>%
+  as.owin()
+
+childcare_pg = childcare_ppp[pg_owin]
+
+plot(childcare_pg)  
+```
+
+Note that we used `filter()` of the ***dplyr*** package to extract the target planning areas, i.e. for this case it is the Punggol Planning Area.
+
+## **Monte Carlo Simulation**
+
+Note: To ensure reproducibility, it is important to include the code chunk below before using ***spatstat*** functions involving **Monte Carlo** simulations.
+
+```{r}
+set.seed(1234)
+```
+
+## Edge Correction Methods of ***spatstat***
+
+In ***spatstat***, **Edge Correction Methods** helps avoid biases that arise when estimating spatial statistics near the boundaries of a study region.
+
+This is important to ensure accurate estimates in spatial point pattern analysis, especially for summary statistics like the K-function, L-function, etc. even though doing this increases computing time.
+
+# Geospatial Analytics for Social Good: Thailand Road Accident Case Study
+
+## Background
+
+-   [Road traffic injuries](https://www.who.int/news-room/fact-sheets/detail/road-traffic-injuries), WHO.
+
+-   [Road traffic deaths and injuries in Thailand](https://cdn.who.int/media/docs/default-source/thailand/roadsafety/overview-en-final-25-7-19.pdf?sfvrsn=f9d7a862_2)
+
+## Study Area
+
+The study area is [Bangkok Metropolitan Region](https://en.wikipedia.org/wiki/Bangkok_Metropolitan_Region).
+
+![](images/BMR.png)
+
+Thailand's projected coordinate system is **WGS 84 / UTM zone 47N** and the EPSG code is 32647.
+
+## Data to be Used
+
+For the purpose of this exercise, three basic data sets are needed, they are:
+
+-   [Thailand Road Accident \[2019-2022\]](https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022) on Kaggle
+
+-   [Thailand Roads (OpenStreetMap Export)](https://data.humdata.org/dataset/hotosm_tha_roads) on HDX.
+
+-   [Thailand - Subnational Administrative Boundaries](https://data.humdata.org/dataset/cod-ab-tha?) on HDX.
+
+## Importing Traffic Accident Data
+
+Recall the previous exercises and import the data.
+
+```{r}
+
 rdacc_sf <- read_csv("data/thai_road_accident_2019_2022.csv") %>%
   filter(!is.na(longitude) & longitude != "",
          !is.na(latitude) & latitude !="") %>%
