@@ -1,6 +1,11 @@
 ---
 title: "Hands on Exercise 5: Network Constrained Spatial Point Patterns Analysis"
 author: "Lorielle Malveda"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
 ---
 
 # 1. OVERVIEW
@@ -57,7 +62,12 @@ network <- st_read(dsn="C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex05
 
 ```{r}
 childcare <- st_read(dsn="C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex05/data/geospatial",
-                     layer="Punggol_CC")
+                     layer="Punggol_CC") %>%
+st_zm(drop=TRUE, what='ZM')
+```
+
+```{r}
+childcare
 ```
 
 Before proceeding to analysis, let us check first if they are all in the same projection system. **Do not forget to do this! :)** Seems like they are in the right projection system based on the results.
@@ -80,7 +90,7 @@ Using ***tmap*** package:
 ```{r}
 tmap_mode('view')
 tm_shape(childcare) + 
-  tm_dots() + 
+  tm_dots(col='red') + 
   tm_shape(network) +
   tm_lines()
 ```
@@ -102,7 +112,7 @@ Before computing NKDE, the SpatialLines object need to be cut into ***lixels*** 
 ```{r}
 lixels <- lixelize_lines(network, 
                          700, 
-                         mindist = 375)
+                         mindist = 350)
 ```
 
 From the code chunk above:
@@ -239,6 +249,10 @@ kfun_childcare$plotk
 The blue line represents the empirical network K-function of the childcare centers in Punggol planning area, while the gray envelope graphs the results of the 50 simulations in the interval 2.5% - 97.5%.
 
 Since the blue line (between the distance of 250m-400m) is below the gray area, then we can infer that the childcare centers in Punggol planning area resemble a regular pattern at the distance of 250m-400m.
+
+```{r}
+kfun_childcare$plotg
+```
 
 # 6. References
 

@@ -1,6 +1,11 @@
 ---
 title: "In-class Exercise 2: Spatial Point Patterns Analysis: spatstat Methods"
 author: "Lorielle Malveda"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
 ---
 
 In the first parts of this In-class Exercise, we are going to address some of the issues that my classmates and I have encountered while implementing the past exercises.
@@ -213,3 +218,28 @@ rdacc_sf <- read_csv("data/thai_road_accident_2019_2022.csv") %>%
            crs=4326) %>%
   st_transform(crs=32647)
 ```
+
+
+
+#| eval: false
+mutate(Month_num = month(incident_datetime) %>%
+mutate(Month_fac = month(incident_datetime,
+                     label=TRUE,
+                     abbr=TRUE)) %>%
+mutate(dayofweek = day(incident_datetime))
+  
+  
+```
+
+can delete using the painter tool
+
+write_rds(acc,"data/rds/acc.rds")
+```
+
+this function takes care of objects internally
+
+
+acc <- read_rds("")
+```
+
+this is basically calling it back
