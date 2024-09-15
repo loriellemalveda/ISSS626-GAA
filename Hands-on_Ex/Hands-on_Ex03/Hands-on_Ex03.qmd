@@ -1,6 +1,11 @@
 ---
 title: "Hands-on Exercise 3: 1st Order Spatial Point Patterns Analysis Methods"
 author: "Lorielle Malveda"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
 ---
 
 # 1. OVERVIEW

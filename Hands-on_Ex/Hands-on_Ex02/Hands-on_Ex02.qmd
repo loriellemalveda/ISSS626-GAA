@@ -1,6 +1,11 @@
 ---
 title: "Hands-on Exercise 2: Thematic Mapping and GeoVisualisation with R"
 author: "Lorielle Malveda"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
 ---
 
 # 1. OVERVIEW
