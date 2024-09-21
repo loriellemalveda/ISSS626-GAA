@@ -1,0 +1,171 @@
+---
+title: "Take-Home Exercise 1: PART 1"
+author: "Lorielle Malveda"
+date: "September 9, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
+---
+
+# 1. OVERVIEW
+
+Thailand has some of the most dangerous roads in the world, with around 20,000 people dying in road accidents each year—about 56 deaths a day, according to the World Health Organization (WHO). This makes road safety a critical issue in the country. Geospatial analytics can help by mapping where accidents happen, what types of roads are most dangerous, and identifying risk factors. By using this data, authorities can focus on improving dangerous areas, making roads safer, and planning better traffic enforcement. In a country with such high accident rates, geospatial analysis is a powerful tool to help reduce fatalities and protect lives.
+
+This Take-Home Exercise attempts to:
+
+-   Visualize the **spatio-temporal dynamics** of road traffic accidents in BMR using appropriate statistical graphics and geovisualization methods.
+
+-   Conduct **detailed** **spatial analysis** of road traffic accidents using appropriate Network Spatial Point Patterns Analysis methods.
+
+-   To conduct **detailed spatio-temporal analysis** of road traffic accidents using appropriate Temporal Network Spatial Point Patterns Analysis methods.
+
+# 2. GETTING STARTED
+
+## 2.1 Installing the R Packages
+
+This code chunk uses `p_load()` of the ***pacman*** package (stands for Package Manager) to check if the following packages are installed in the computer. The packages will then be launched into R.
+
+```{r}
+pacman::p_load(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr, spatstat, raster, readxl, spNetwork, rgeos, future, future.apply, RColorBrewer, RcppArmadillo)
+```
+
+## 2.2 Importing the Datasets
+
+This Take-Home Exercise will utilize 3 datasets. They are:
+
+-   [Thailand Road Accident \[2019-2022\]](https://www.kaggle.com/datasets/thaweewatboy/thailand-road-accident-2019-2022) on Kaggle
+
+-   [Thailand Roads (OpenStreetMap Export)](https://data.humdata.org/dataset/hotosm_tha_roads) on HDX.
+
+-   [Thailand - Subnational Administrative Boundaries](https://data.humdata.org/dataset/cod-ab-tha?) on HDX.
+
+Let's use the ***sf*** package to import the datasets as ***sf*** data frames.
+
+### BOUNDARIES DATA
+
+Let's import the boundaries data using the code chunk below. This will filter out the boundaries in the different provinces under the Bangkok Metropolitan Region.
+
+```{r}
+boundaries <- st_read(dsn = "data/tha_adm_rtsd_itos_20210121_shp", layer = "tha_admbnda_adm1_rtsd_20220121") %>%
+  filter(!is.na(geometry)) %>%
+  filter(ADM1_EN %in% c('Bangkok', 'Samut Prakan', 'Pathum Thani', 'Nonthaburi', 'Nakhon Pathom', 'Samut Sakhon' ))
+```
+
+### ROAD ACCIDENT DATA
+
+This code chunk reads the CSV file of road accident data for Thailand. It filters out rows with missing or empty longitude and latitude values and then keeps only accidents that occurred in specific provinces around the Bangkok Metropolitan Region.
+
+It then converts the data into a spatial object (`sf`), assigning geographic coordinates (longitude and latitude) in the WGS 84 coordinate system (EPSG:4326) and transforms it to UTM zone 47N (EPSG:32647) for further spatial analysis.
+
+```{r}
+rdacc_sf <- read_csv("data/thai_road_accident_2019_2022.csv") %>%
+  filter(!is.na(longitude) & longitude != "",
+         !is.na(latitude) & latitude !="") %>%
+  filter(province_en %in% c('Bangkok', 'Samut Prakan', 'Pathum Thani', 'Nonthaburi', 'Nakhon Pathom', 'Samut Sakhon' )) %>%
+  st_as_sf(coords= c("longitude", "latitude"),
+           crs=4326) %>%
+  st_transform(crs=32647)
+```
+
+### ROAD NETWORK DATA
+
+Next dataset we will import is the road network data.
+
+I filtered the road data based on a list of highway classifications from the [WikiProject Thailand page](https://wiki.openstreetmap.org/wiki/WikiProject_Thailand#Highway_classification), which includes road types such as 'motorway,' 'trunk,' 'primary,' and others. I chose only the highways which provide access to various types of vehicles, including motorcars, motorcycles, goods vehicles, heavy goods vehicles (HGV), and public service vehicles (PSV).
+
+![](images/Screenshot%202024-09-20%20120938-01.png)
+
+![](images/Screenshot%202024-09-21%20223326.png)
+
+Loading this dataset shows that there are 1551498 records. That's a lot! Let us check which ones to remove in the next section.
+
+# 3. GEOSPATIAL DATA WRANGLING
+
+## 3.1 CHANGING COORDINATE SYSTEMS
+
+This code first sets the coordinate reference system (CRS) of the `throad` dataset to EPSG:4326 (WGS 84), which is a common geographic coordinate system. Then, both the `throad` and `boundaries` datasets are transformed to the UTM Zone 47N projection (EPSG:32647), which is a local projection for Thailand that is suitable for spatial analysis and accurate distance measurements. This ensures that both datasets are in the same CRS for further spatial operations.
+
+We have also done this at the start when we created `rdacc_sf`.
+
+![](images/Screenshot%202024-09-21%20224633.png)
+
+## 3.2 ROAD ACCIDENT DATA
+
+Let's check the number of road accidents in each province listed in the `province_en` column of the `rdacc_sf` dataset.
+
+```{r}
+rdacc_sf %>% count(province_en)
+```
+
+I am selecting Bangkok for analysis because it has a comparably higher number of road accidents (6,089) compared to other provinces, such as Samut Prakan (2,241) and Nakhon Pathom (891).
+
+```{r}
+rdacc_sf <- rdacc_sf %>%       
+  filter(province_en %in% c('Bangkok'))
+```
+
+## 3.2 BOUNDARIES DATA
+
+Since we have already filtered the accident data to only include Bangkok, this boundary dataset must also be filtered to Bangkok to ensure consistency in the analysis.
+
+```{r}
+boundaries <- st_read(dsn = "data/tha_adm_rtsd_itos_20210121_shp", layer = "tha_admbnda_adm1_rtsd_20220121") %>%   filter(!is.na(geometry)) %>%   filter(ADM1_EN %in% c('Bangkok'))
+```
+
+## 3.1 ROAD NETWORK DATA
+
+Based on the data, the category that stands out is **residential**, containing over 1 million records, while the others, typically classified as highways without many walkroads, have significantly fewer records.
+
+![](images/Screenshot%202024-09-21%20224159.png)
+
+To further analyze this, we will check which areas have more accidents by applying a buffer to these road types.
+
+Basically, the goal is to check whether accidents involve accidents TO PEOPLE vs accidents BETWEEN VEHICLES.
+
+![](images/Screenshot%202024-09-21%20224716.png)
+
+The code chunk below performs a spatial join, specifically an intersection between the road network (`throad` and `throad_residential`)and the boundaries (`boundaries`) dataset. This will return only the parts of the road network that are within the `boundaries` (which is filtered to only "Bangkok").
+
+Essentially, this step ensures that only the roads within Bangkok are retained, and any road segments outside the specified boundaries are excluded from the result stored in `diff` and `diff_residential.`
+
+![](images/Screenshot%202024-09-21%20224757.png)
+
+Checking the buffer for accidents in both expressway (non-residential) and residential areas reveals that **non-residential areas have around 6,075 accidents**, while **residential areas have around 2,397 accidents**. This indicates that there are significantly more accidents occurring near expressways compared to residential areas, suggesting that high-traffic roads, such as expressways, may be more prone to accidents despite the higher population density in residential zones.
+
+![](images/clipboard-3840073253.png)
+
+Let's use `diff` and not `diff_residential` in the calculation of NKDE and TKNDE, meaning we are not using residential data to check for hotspot areas for traffic accidents in Bangkok.
+
+```{r}
+throad_filtered <- st_read(dsn = "data/hotosm_tha_roads_lines_shp", layer = "hotosm_tha_roads_lines_shp") %>%
+  filter(!is.na(geometry)) %>%
+  filter(highway %in% c('motorway', 'motorway_link', 'trunk', 'trunk_link', 
+                        'primary', 'primary_link', 'secondary', 'secondary_link', 
+                        'tertiary', 'tertiary_link', 'unclassified', 'living_street', 
+                        'road'))
+```
+
+```{r}
+throad_filtered <- st_set_crs(throad_filtered, 4326)
+throad_filtered <- st_transform(throad_filtered, 32647)
+boundaries <- st_transform(boundaries, 32647)
+```
+
+```{r}
+diff <- st_intersection(throad_filtered, boundaries)
+```
+
+For the next two code chunks, they provide additional insights and essentially emphasize the greater need to focus on non-residential areas, rather than residential ones, as they highlight the higher frequency of accidents in these high-traffic regions. This suggests that focusing on expressways and similar roads may yield more actionable insights than studying residential areas.
+
+```{r}
+saveRDS(diff, "diff.rds")
+saveRDS(rdacc_sf, "rdacc_sf.rds")
+```
+
+```{r}
+diff <- readRDS("diff.rds")
+rdacc_sf <- readRDS("rdacc_sf.rds")
+```
