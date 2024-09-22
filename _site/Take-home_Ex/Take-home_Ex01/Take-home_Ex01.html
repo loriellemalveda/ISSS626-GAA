@@ -226,6 +226,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#road-network-data-1" id="toc-road-network-data-1" class="nav-link" data-scroll-target="#road-network-data-1">3.4 ROAD NETWORK DATA</a></li>
   <li><a href="#saving-and-writing-rds" id="toc-saving-and-writing-rds" class="nav-link" data-scroll-target="#saving-and-writing-rds">3.5 Saving and Writing RDS</a></li>
   </ul></li>
+  <li><a href="#visualizing-the-geospatial-data" id="toc-visualizing-the-geospatial-data" class="nav-link" data-scroll-target="#visualizing-the-geospatial-data">4. VISUALIZING THE GEOSPATIAL DATA</a>
+  <ul class="collapse">
+  <li><a href="#general" id="toc-general" class="nav-link" data-scroll-target="#general">GENERAL</a></li>
+  <li><a href="#by-agency" id="toc-by-agency" class="nav-link" data-scroll-target="#by-agency">BY AGENCY</a></li>
+  <li><a href="#by-vehicle" id="toc-by-vehicle" class="nav-link" data-scroll-target="#by-vehicle">BY VEHICLE</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -400,6 +406,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>diff <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"diff.rds"</span>)</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>rdacc_sf <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"rdacc_sf.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+</section>
+</section>
+<section id="visualizing-the-geospatial-data" class="level1">
+<h1>4. VISUALIZING THE GEOSPATIAL DATA</h1>
+<section id="general" class="level2">
+<h2 class="anchored" data-anchor-id="general">GENERAL</h2>
+<p>This is our final geospatial data before calculating NKDE and TNKDE. This code sets the tmap mode to interactive viewing and visualizes the road segments (<code>diff</code>) in purple and the accident points (<code>rdacc_sf</code>) in yellow.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">'view'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(diff) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">col=</span><span class="st">"lightblue"</span>, <span class="at">size=</span><span class="fl">0.02</span>)<span class="sc">+</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(rdacc_sf) <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col=</span><span class="st">"blue"</span>, <span class="at">size=</span><span class="fl">0.02</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/Screenshot 2024-09-22 142655.png" class="img-fluid"></p>
+</section>
+<section id="by-agency" class="level2">
+<h2 class="anchored" data-anchor-id="by-agency">BY AGENCY</h2>
+<p>Based on the map, when visualizing accidents by agency, it is clear that most are reported under the agency of the Department of Highways. In terms of policy creation and implementation, this suggests that the government can focus more on these roads and the agency’s involvement. Additionally, there is an apparent concentration of roads specific to this agency, which could be a point of investigation to understand why accidents are primarily occurring on these roads and how they can be addressed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(diff) <span class="sc">+</span>   </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span> </span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(rdacc_sf) <span class="sc">+</span>   </span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"agency"</span>, <span class="at">palette =</span> <span class="st">"Set1"</span>, <span class="at">size =</span> <span class="fl">0.02</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/Screenshot 2024-09-22 143113.png" class="img-fluid"></p>
+</section>
+<section id="by-vehicle" class="level2">
+<h2 class="anchored" data-anchor-id="by-vehicle">BY VEHICLE</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(diff) <span class="sc">+</span>   </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="at">col =</span> <span class="st">"lightblue"</span>) <span class="sc">+</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(rdacc_sf) <span class="sc">+</span>   </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"vehicle_type"</span>, <span class="at">palette =</span> <span class="st">"Set1"</span>, <span class="at">size =</span> <span class="fl">0.02</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/Screenshot 2024-09-22 143316.png" class="img-fluid"></p>
 
 
 </section>
