@@ -103,6 +103,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="../../styles.css">
 </head>
@@ -231,6 +260,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#general" id="toc-general" class="nav-link" data-scroll-target="#general">GENERAL</a></li>
   <li><a href="#by-agency" id="toc-by-agency" class="nav-link" data-scroll-target="#by-agency">BY AGENCY</a></li>
   <li><a href="#by-vehicle" id="toc-by-vehicle" class="nav-link" data-scroll-target="#by-vehicle">BY VEHICLE</a></li>
+  </ul></li>
+  <li><a href="#calculating-nkde" id="toc-calculating-nkde" class="nav-link" data-scroll-target="#calculating-nkde">5. CALCULATING NKDE</a>
+  <ul class="collapse">
+  <li><a href="#nkde-fixed-bandwidth" id="toc-nkde-fixed-bandwidth" class="nav-link" data-scroll-target="#nkde-fixed-bandwidth">NKDE FIXED BANDWIDTH</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -464,6 +497,46 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 <p>Similarly, the <strong>orange dots</strong>, representing motorcycles, are concentrated in the southern part of the map. These observations suggest that certain vehicle types may be more prone to accidents in specific areas, which warrants further investigation.</p>
+</section>
+</section>
+<section id="calculating-nkde" class="level1">
+<h1>5. CALCULATING NKDE</h1>
+<p>Let’s now calculate the NKDE to potentially identify hotspot areas that have high concentrations of traffic road accidents along the Bangkok City road network. We hope to specify network segments that may require attention or intervention.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lixels <span class="ot">&lt;-</span> <span class="fu">lixelize_lines</span>(sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>),<span class="dv">750</span>,<span class="at">mindist =</span> <span class="dv">375</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">lines_center</span>(lixels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this code, <strong>future::plan(future::multisession(workers=2))</strong> is used to enable parallel processing, allowing the NKDE calculation to run on two separate cores (workers). This speeds up the computation by distributing the workload across multiple processors, which is particularly useful when working with large datasets and complex calculations like NKDE.</p>
+<p>The method = “continuous” is selected because it offers the best of both worlds by providing a smooth and seamless density estimation along the road network while still capturing the detailed distribution of accidents. It ensures that there are no artificial breaks between road segments, making the analysis more accurate and realistic in representing how accidents occur across the network.</p>
+<section id="nkde-fixed-bandwidth" class="level2">
+<h2 class="anchored" data-anchor-id="nkde-fixed-bandwidth">NKDE FIXED BANDWIDTH</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span><span class="fu">multisession</span>(<span class="at">workers=</span><span class="dv">2</span>))</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>densities_mc <span class="ot">&lt;-</span> <span class="fu">nkde.mc</span>(sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">events =</span> rdacc_sf,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">w =</span> <span class="fu">rep</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(rdacc_sf)),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">samples =</span> samples,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">kernel_name =</span> <span class="st">"quartic"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bw =</span> <span class="dv">300</span>, <span class="at">div=</span> <span class="st">"bw"</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"continuous"</span>, </span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">digits =</span> <span class="dv">1</span>, <span class="at">tol =</span> <span class="dv">1</span>,</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">grid_shape =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_depth =</span> <span class="dv">8</span>,<span class="at">agg =</span> <span class="dv">10</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sparse =</span> <span class="cn">TRUE</span>,<span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(future<span class="sc">::</span><span class="fu">plan</span>(), <span class="st">"sequential"</span>)) future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>{r} samples$density &lt;- densities_mc</p>
+<p>{r} samples<span class="math inline">\(density &lt;- samples\)</span>density*1000</p>
+<p>{r} samples2 &lt;- samples[order(samples$density),]</p>
+<p>{r} colorRamp &lt;- brewer.pal(n = 7, name = “Spectral”) colorRamp &lt;- rev(colorRamp)</p>
+<p>{r} tmap_mode(‘view’)<br>
+tm_shape(diff) +<br>
+tm_lines(“black”)+ tm_shape(samples2) +<br>
+tm_dots(“density”, style = “kmeans”, palette = colorRamp, n = 7, size = 0.04)</p>
+<p>The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.</p>
 
 
 </section>

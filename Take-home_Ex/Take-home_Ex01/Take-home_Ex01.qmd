@@ -235,3 +235,53 @@ We can observe that certain colors stand out on the map, indicating potential pa
 ![Image of a Tuk Tuk](images/Tuktuk_at_Tha_Phae_Road.jpg)
 
 Similarly, the **orange dots**, representing motorcycles, are concentrated in the southern part of the map. These observations suggest that certain vehicle types may be more prone to accidents in specific areas, which warrants further investigation.
+
+# 5. CALCULATING NKDE
+
+Let's now calculate the NKDE to potentially identify hotspot areas that have high concentrations of traffic road accidents along the Bangkok City road network. We hope to specify network segments that may require attention or intervention.
+
+```{r}
+lixels <- lixelize_lines(sf::st_cast(diff, "LINESTRING"),750,mindist = 375)
+```
+
+```{r}
+samples <- lines_center(lixels)
+```
+
+In this code, **future::plan(future::multisession(workers=2))** is used to enable parallel processing, allowing the NKDE calculation to run on two separate cores (workers). This speeds up the computation by distributing the workload across multiple processors, which is particularly useful when working with large datasets and complex calculations like NKDE.
+
+The method = "continuous" is selected because it offers the best of both worlds by providing a smooth and seamless density estimation along the road network while still capturing the detailed distribution of accidents. It ensures that there are no artificial breaks between road segments, making the analysis more accurate and realistic in representing how accidents occur across the network.
+
+## NKDE FIXED BANDWIDTH
+
+```{r}
+future::plan(future::multisession(workers=2))
+densities_mc <- nkde.mc(sf::st_cast(diff, "LINESTRING"),
+                        events = rdacc_sf,
+                        w = rep(1,nrow(rdacc_sf)),
+                        samples = samples,
+                        kernel_name = "quartic",
+                        bw = 300, div= "bw",
+                        method = "continuous", 
+                        digits = 1, tol = 1,
+                        grid_shape = c(2,2),
+                        max_depth = 8,agg = 10,
+                        sparse = TRUE,verbose = FALSE)
+
+if (!inherits(future::plan(), "sequential")) future::plan(future::sequential)
+```
+
+{r} samples\$density \<- densities_mc
+
+{r} samples$density <- samples$density\*1000
+
+{r} samples2 \<- samples\[order(samples\$density),\]
+
+{r} colorRamp \<- brewer.pal(n = 7, name = "Spectral") colorRamp \<- rev(colorRamp)
+
+{r} tmap_mode('view')\
+tm_shape(diff) +\
+tm_lines("black")+ tm_shape(samples2) +\
+tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
+
+The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.
