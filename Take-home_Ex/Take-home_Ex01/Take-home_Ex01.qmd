@@ -532,3 +532,28 @@ The code first defines a sequence of sample times from 0 to the maximum differen
 ```{r}
 sample_time <- seq(0, max(rdacc_sf$difftime), by = 10)
 ```
+
+```{r}
+tnkde_densities <- tnkde( lines = sf::st_cast(diff, "LINESTRING"), 
+                          events = rdacc_sf, 
+                          time_field = "difftime", 
+                          w = rep(1, nrow(rdacc_sf)), 
+                          samples_loc = samples, 
+                          samples_time = sample_time, 
+                          kernel_name = "quartic", 
+                          bw_net = 4000, bw_time = 70, 
+                          adaptive = TRUE, 
+                          trim_bw_net = 900, 
+                          trim_bw_time = 80, 
+                          method = "discontinuous", 
+                          div = "bw", max_depth = 10, 
+                          digits = 2, tol = 0.01, 
+                          agg = 15, grid_shape = c(2, 2), verbose = FALSE )
+```
+
+The code chunks below will be used to visualize the spatio-temporal values compressed into a gif animation.
+
+```{r}
+all_densities <- c(tnkde_densities$k) 
+color_breaks <- classIntervals(all_densities, n = 10, style = "quantile")
+```
