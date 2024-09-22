@@ -241,12 +241,12 @@ Similarly, the **orange dots**, representing motorcycles, are concentrated in th
 Let's now calculate the NKDE to potentially identify hotspot areas that have high concentrations of traffic road accidents along the Bangkok City road network. We hope to specify network segments that may require attention or intervention.
 
 ```{r}
-#| eval: false
+
 lixels <- lixelize_lines(sf::st_cast(diff, "LINESTRING"),750,mindist = 375)
 ```
 
 ```{r}
-#| eval: false
+
 samples <- lines_center(lixels)
 ```
 
@@ -480,4 +480,60 @@ ggplot(rdacc_sf) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-When visualizing the data using **tmap**, there are no noticeable spatial changes in accidents based on the day of the week. This suggests that the distribution of accidents remains consistent across the network, and the primary difference between days is likely the **amount of accidents**, rather than where they occur. This indicates that certain days like Friday and Saturday may simply see more traffic or activity, leading to more accidents, but without altering the overall spatial accident patterns.
+# 7. SPATIO-TEMPORAL
+
+Now let's head on to spatio-temporal analysis.
+
+```{r}
+cv_scores <- bw_tnkde_cv_likelihood_calc(   
+  bws_net = seq(250, 1500, by = 100),    
+  bws_time = seq(20, 200, by = 10),    
+  lines = sf::st_cast(diff, "LINESTRING"),   
+  events = rdacc_sf,   
+  time_field = "difftime",   
+  w = rep(1, nrow(rdacc_sf)),   
+  kernel_name = "quartic",   
+  method = "discontinuous",   
+  diggle_correction = FALSE,   
+  study_area = NULL,   
+  max_depth = 10,   
+  digits = 2,   
+  tol = 0.1,   
+  agg = 10,   
+  sparse = TRUE,   
+  grid_shape = c(1, 1),   
+  sub_sample = 1,   verbose = FALSE,   check = TRUE )
+```
+
+```{r}
+knitr::kable(cv_scores)
+```
+
+```{r}
+
+sample_time <- seq(0, max(rdacc_sf$difftime), by = 10)
+
+tnkde_densities <- tnkde(
+  lines = sf::st_cast(diff, "LINESTRING"),
+  events = rdacc_sf,
+  time_field = "difftime",
+  w = rep(1, nrow(rdacc_sf)), 
+  samples_loc = samples,
+  samples_time = sample_time, 
+  kernel_name = "quartic",
+  bw_net = 1450, 
+  bw_time = 200,
+  adaptive = TRUE,
+  trim_bw_net = 900, 
+  trim_bw_time = 80,
+  method = "discontinuous",
+  div = "bw", 
+  max_depth = 10,
+  digits = 2, 
+  tol = 0.01,
+  agg = 15, 
+  grid_shape = c(2, 2),
+  verbose = FALSE
+)
+
+```
