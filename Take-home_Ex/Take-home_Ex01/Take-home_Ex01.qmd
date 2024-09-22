@@ -192,8 +192,40 @@ This is our final geospatial data before calculating NKDE and TNKDE. This code s
 
 ```{r}
 tmap_mode('view') 
+```
+
+```{r}
+#| eval: false
 tm_shape(diff) +
-  tm_lines(col = "lightblue", lwd=2) + 
-  tm_shape(rdacc_sf) +
+  tm_lines(col="lightblue", size=0.02)+
+tm_shape(rdacc_sf) +
   tm_dots(col="blue", size=0.02)
 ```
+
+![](images/Screenshot%202024-09-22%20142655.png)
+
+## BY AGENCY
+
+Based on the map, when visualizing accidents by agency, it is clear that most are reported under the agency of the Department of Highways. In terms of policy creation and implementation, this suggests that the government can focus more on these roads and the agency’s involvement. Additionally, there is an apparent concentration of roads specific to this agency, which could be a point of investigation to understand why accidents are primarily occurring on these roads and how they can be addressed.
+
+```{r}
+#| eval: false
+tm_shape(diff) +   
+  tm_lines(col = "lightblue") + 
+  tm_shape(rdacc_sf) +   
+  tm_dots(col = "agency", palette = "Set1", size = 0.02)
+```
+
+![](images/Screenshot 2024-09-22 143113.png)
+
+## BY VEHICLE
+
+```{r}
+#| eval: false
+tm_shape(diff) +   
+  tm_lines(col = "lightblue") + 
+  tm_shape(rdacc_sf) +   
+  tm_dots(col = "vehicle_type", palette = "Set1", size = 0.02)
+```
+
+![](images/Screenshot 2024-09-22 143316.png)
