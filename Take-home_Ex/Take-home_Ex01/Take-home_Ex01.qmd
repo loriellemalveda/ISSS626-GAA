@@ -241,10 +241,12 @@ Similarly, the **orange dots**, representing motorcycles, are concentrated in th
 Let's now calculate the NKDE to potentially identify hotspot areas that have high concentrations of traffic road accidents along the Bangkok City road network. We hope to specify network segments that may require attention or intervention.
 
 ```{r}
+
 lixels <- lixelize_lines(sf::st_cast(diff, "LINESTRING"),750,mindist = 375)
 ```
 
 ```{r}
+
 samples <- lines_center(lixels)
 ```
 
@@ -271,17 +273,22 @@ densities_mc <- nkde.mc(sf::st_cast(diff, "LINESTRING"),
 if (!inherits(future::plan(), "sequential")) future::plan(future::sequential)
 ```
 
-{r} samples\$density \<- densities_mc
+```{r}
+samples$density <- densities_mc
+```
 
-{r} samples$density <- samples$density\*1000
+```{r}
+samples$density <- samples$density*1000
+```
 
-{r} samples2 \<- samples\[order(samples\$density),\]
+```{r}
+samples2 <- samples[order(samples$density),]
+```
 
-{r} colorRamp \<- brewer.pal(n = 7, name = "Spectral") colorRamp \<- rev(colorRamp)
+```{r}
+colorRamp <- brewer.pal(n = 7, name = "Spectral") 
+colorRamp <- rev(colorRamp)
+```
 
-{r} tmap_mode('view')\
-tm_shape(diff) +\
-tm_lines("black")+ tm_shape(samples2) +\
-tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
 
 The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.
