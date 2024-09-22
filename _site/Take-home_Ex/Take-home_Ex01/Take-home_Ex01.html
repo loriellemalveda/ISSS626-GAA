@@ -71,10 +71,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -885,6 +885,284 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>all_densities <span class="ot">&lt;-</span> <span class="fu">c</span>(tnkde_densities<span class="sc">$</span>k) </span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>color_breaks <span class="ot">&lt;-</span> <span class="fu">classIntervals</span>(all_densities, <span class="at">n =</span> <span class="dv">10</span>, <span class="at">style =</span> <span class="st">"quantile"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>start_date <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(start)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>all_maps <span class="ot">&lt;-</span> <span class="fu">lapply</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(tnkde_densities<span class="sc">$</span>k), <span class="cf">function</span>(i) {</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  date <span class="ot">&lt;-</span> start_date <span class="sc">+</span> sample_time[i]  </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  samples<span class="sc">$</span>density <span class="ot">&lt;-</span> tnkde_densities<span class="sc">$</span>k[, i]</span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a> map1 <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(samples) <span class="sc">+</span>  </span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_dots</span>(<span class="at">col =</span> <span class="st">"density"</span>, <span class="at">size =</span> <span class="fl">0.01</span>,</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">breaks =</span> color_breaks<span class="sc">$</span>brks, <span class="at">palette =</span> <span class="fu">viridis</span>(<span class="dv">10</span>)) <span class="sc">+</span></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tm_layout</span>(<span class="at">legend.show =</span> <span class="cn">FALSE</span>, <span class="at">main.title =</span> <span class="fu">as.character</span>(date),</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>              <span class="at">main.title.size =</span> <span class="fl">0.5</span>)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(map1)</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_animation</span>(all_maps, <span class="at">filename =</span> <span class="st">"images/animated_map.gif"</span>, </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">width =</span> <span class="dv">1000</span>, <span class="at">height =</span> <span class="dv">1000</span>, <span class="at">dpi =</span> <span class="dv">300</span>, <span class="at">delay =</span> <span class="dv">50</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Creating frames
+=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>=</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Creating animation
+Animation saved to C:\loriellemalveda\ISSS626-GAA\Take-home_Ex\Take-home_Ex01\images\animated_map.gif </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">include_graphics</span>(<span class="st">"images/animated_map.gif"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="images/animated_map.gif" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this animation, we observe the dynamic nature of hotspot locations over time. As the frames progress, you can clearly see how the hotspots shift, evolve, and sometimes even disappear.</p>
+<p>This analysis has illustrated the complex interplay between space and time in the distribution of traffic accidents in Bangkok. The use of spatio-temporal kernel density estimation revealed that not only do the intensities of hotspots vary, but their locations also shift over time, reflecting underlying temporal trends that were not apparent in purely spatial analyses.</p>
+<p>These are crucial for developing targeted strategies and interventions that are responsive to the temporal shifts in patterns, to ensure that resources are allocated efficiently and effectively.</p>
 
 
 </section>

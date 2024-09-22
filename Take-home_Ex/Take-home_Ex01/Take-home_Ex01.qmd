@@ -557,3 +557,34 @@ The code chunks below will be used to visualize the spatio-temporal values compr
 all_densities <- c(tnkde_densities$k) 
 color_breaks <- classIntervals(all_densities, n = 10, style = "quantile")
 ```
+
+```{r}
+start_date <- as.Date(start)
+all_maps <- lapply(1:ncol(tnkde_densities$k), function(i) {
+  date <- start_date + sample_time[i]  
+  samples$density <- tnkde_densities$k[, i]
+
+ map1 <- tm_shape(samples) +  
+    tm_dots(col = "density", size = 0.01,
+            breaks = color_breaks$brks, palette = viridis(10)) +
+    tm_layout(legend.show = FALSE, main.title = as.character(date),
+              main.title.size = 0.5)
+  
+  return(map1)
+})
+```
+
+```{r}
+tmap_animation(all_maps, filename = "images/animated_map.gif", 
+               width = 1000, height = 1000, dpi = 300, delay = 50)
+```
+
+```{r}
+knitr::include_graphics("images/animated_map.gif")
+```
+
+In this animation, we observe the dynamic nature of hotspot locations over time. As the frames progress, you can clearly see how the hotspots shift, evolve, and sometimes even disappear.
+
+This analysis has illustrated the complex interplay between space and time in the distribution of traffic accidents in Bangkok. The use of spatio-temporal kernel density estimation revealed that not only do the intensities of hotspots vary, but their locations also shift over time, reflecting underlying temporal trends that were not apparent in purely spatial analyses.
+
+These are crucial for developing targeted strategies and interventions that are responsive to the temporal shifts in patterns, to ensure that resources are allocated efficiently and effectively.
