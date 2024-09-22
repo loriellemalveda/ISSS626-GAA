@@ -183,3 +183,17 @@ saveRDS(rdacc_sf, "rdacc_sf.rds")
 diff <- readRDS("diff.rds")
 rdacc_sf <- readRDS("rdacc_sf.rds")
 ```
+
+# 4. VISUALIZING THE GEOSPATIAL DATA
+
+## GENERAL
+
+This is our final geospatial data before calculating NKDE and TNKDE. This code sets the tmap mode to interactive viewing and visualizes the road segments (`diff`) in purple and the accident points (`rdacc_sf`) in yellow.
+
+```{r}
+tmap_mode('view') 
+tm_shape(diff) +
+  tm_lines(col = "lightblue", lwd=2) + 
+  tm_shape(rdacc_sf) +
+  tm_dots(col="blue", size=0.02)
+```
