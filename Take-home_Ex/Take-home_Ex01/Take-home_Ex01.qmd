@@ -6,7 +6,6 @@ date-modified: "last-modified"
 execute: 
   eval: true
   echo: true
-  freeze: true
   warning: false
 ---
 
@@ -49,6 +48,7 @@ Let's use the ***sf*** package to import the datasets as ***sf*** data frames.
 Let's import the boundaries data using the code chunk below. This will filter out the boundaries in the different provinces under the Bangkok Metropolitan Region.
 
 ```{r}
+#| eval: false
 boundaries <- st_read(dsn = "data/tha_adm_rtsd_itos_20210121_shp", layer = "tha_admbnda_adm1_rtsd_20220121") %>%
   filter(!is.na(geometry)) %>%
   filter(ADM1_EN %in% c('Bangkok', 'Samut Prakan', 'Pathum Thani', 'Nonthaburi', 'Nakhon Pathom', 'Samut Sakhon' ))
@@ -61,6 +61,7 @@ This code chunk reads the CSV file of road accident data for Thailand. It filter
 It then converts the data into a spatial object (`sf`), assigning geographic coordinates (longitude and latitude) in the WGS 84 coordinate system (EPSG:4326) and transforms it to UTM zone 47N (EPSG:32647) for further spatial analysis.
 
 ```{r}
+#| eval: false
 rdacc_sf <- read_csv("data/thai_road_accident_2019_2022.csv") %>%
   filter(!is.na(longitude) & longitude != "",
          !is.na(latitude) & latitude !="") %>%
@@ -82,6 +83,8 @@ I filtered the road data based on a list of highway classifications from the [Wi
 
 Loading this dataset shows that there are 1551498 records. That's a lot! Let us check which ones to remove in the next section.
 
+Note! To conserve space during rendering and when committing changes, I have included only images of some of the code implementations.
+
 # 3. GEOSPATIAL DATA WRANGLING
 
 ## 3.1 CHANGING COORDINATE SYSTEMS
@@ -97,25 +100,28 @@ We have also done this at the start when we created `rdacc_sf`.
 Let's check the number of road accidents in each province listed in the `province_en` column of the `rdacc_sf` dataset.
 
 ```{r}
+#| eval: false
 rdacc_sf %>% count(province_en)
 ```
 
 I am selecting Bangkok for analysis because it has a comparably higher number of road accidents (6,089) compared to other provinces, such as Samut Prakan (2,241) and Nakhon Pathom (891).
 
 ```{r}
+#| eval: false
 rdacc_sf <- rdacc_sf %>%       
   filter(province_en %in% c('Bangkok'))
 ```
 
-## 3.2 BOUNDARIES DATA
+## 3.3 BOUNDARIES DATA
 
 Since we have already filtered the accident data to only include Bangkok, this boundary dataset must also be filtered to Bangkok to ensure consistency in the analysis.
 
 ```{r}
+#| eval: false
 boundaries <- st_read(dsn = "data/tha_adm_rtsd_itos_20210121_shp", layer = "tha_admbnda_adm1_rtsd_20220121") %>%   filter(!is.na(geometry)) %>%   filter(ADM1_EN %in% c('Bangkok'))
 ```
 
-## 3.1 ROAD NETWORK DATA
+## 3.4 ROAD NETWORK DATA
 
 Based on the data, the category that stands out is **residential**, containing over 1 million records, while the others, typically classified as highways without many walkroads, have significantly fewer records.
 
@@ -140,6 +146,7 @@ Checking the buffer for accidents in both expressway (non-residential) and resid
 Let's use `diff` and not `diff_residential` in the calculation of NKDE and TKNDE, meaning we are not using residential data to check for hotspot areas for traffic accidents in Bangkok.
 
 ```{r}
+#| eval: false
 throad_filtered <- st_read(dsn = "data/hotosm_tha_roads_lines_shp", layer = "hotosm_tha_roads_lines_shp") %>%
   filter(!is.na(geometry)) %>%
   filter(highway %in% c('motorway', 'motorway_link', 'trunk', 'trunk_link', 
@@ -149,18 +156,25 @@ throad_filtered <- st_read(dsn = "data/hotosm_tha_roads_lines_shp", layer = "hot
 ```
 
 ```{r}
+#| eval: false
 throad_filtered <- st_set_crs(throad_filtered, 4326)
 throad_filtered <- st_transform(throad_filtered, 32647)
 boundaries <- st_transform(boundaries, 32647)
 ```
 
 ```{r}
+#| eval: false
 diff <- st_intersection(throad_filtered, boundaries)
 ```
 
 For the next two code chunks, they provide additional insights and essentially emphasize the greater need to focus on non-residential areas, rather than residential ones, as they highlight the higher frequency of accidents in these high-traffic regions. This suggests that focusing on expressways and similar roads may yield more actionable insights than studying residential areas.
 
+## 3.5 Saving and Writing RDS
+
+I used `readRDS` and `writeRDS` functions to efficiently manage and preserve the exact state of R objects, ensuring that all attributes such as data types and row names are maintained accurately across sessions.
+
 ```{r}
+#| eval: false
 saveRDS(diff, "diff.rds")
 saveRDS(rdacc_sf, "rdacc_sf.rds")
 ```
