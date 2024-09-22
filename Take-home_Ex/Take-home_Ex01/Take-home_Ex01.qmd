@@ -229,3 +229,9 @@ tm_shape(diff) +
 ```
 
 ![](images/Screenshot 2024-09-22 143316.png)
+
+We can observe that certain colors stand out on the map, indicating potential patterns in vehicle-related accidents. The **pink dots**, representing private/passenger cars, are scattered across different areas, while the **yellow dots**, representing motorized tricycles (commonly known as **tuk tuks**, which are famous among tourists for being fast vehicles), are concentrated in the central region. This may be due to the presence of tourist spots and high-traffic areas. Given their speed, tuk tuks may have a higher chance of being involved in accidents.
+
+![Image of a Tuk Tuk](images/Tuktuk_at_Tha_Phae_Road.jpg)
+
+Similarly, the **orange dots**, representing motorcycles, are concentrated in the southern part of the map. These observations suggest that certain vehicle types may be more prone to accidents in specific areas, which warrants further investigation.

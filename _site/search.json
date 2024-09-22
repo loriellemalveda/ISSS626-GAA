@@ -74,6 +74,6 @@
     "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#by-vehicle",
     "title": "Take-Home Exercise 1: PART 1",
     "section": "BY VEHICLE",
-    "text": "BY VEHICLE\n\ntm_shape(diff) +   \n  tm_lines(col = \"lightblue\") + \n  tm_shape(rdacc_sf) +   \n  tm_dots(col = \"vehicle_type\", palette = \"Set1\", size = 0.02)"
+    "text": "BY VEHICLE\n\ntm_shape(diff) +   \n  tm_lines(col = \"lightblue\") + \n  tm_shape(rdacc_sf) +   \n  tm_dots(col = \"vehicle_type\", palette = \"Set1\", size = 0.02)\n\n\nWe can observe that certain colors stand out on the map, indicating potential patterns in vehicle-related accidents. The pink dots, representing private/passenger cars, are scattered across different areas, while the yellow dots, representing motorized tricycles (commonly known as tuk tuks, which are famous among tourists for being fast vehicles), are concentrated in the central region. This may be due to the presence of tourist spots and high-traffic areas. Given their speed, tuk tuks may have a higher chance of being involved in accidents.\n\n\n\nImage of a Tuk Tuk\n\n\nSimilarly, the orange dots, representing motorcycles, are concentrated in the southern part of the map. These observations suggest that certain vehicle types may be more prone to accidents in specific areas, which warrants further investigation."
   }
 ]
