@@ -235,6 +235,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#calculating-nkde" id="toc-calculating-nkde" class="nav-link" data-scroll-target="#calculating-nkde">5. CALCULATING NKDE</a>
   <ul class="collapse">
   <li><a href="#nkde-fixed-bandwidth" id="toc-nkde-fixed-bandwidth" class="nav-link" data-scroll-target="#nkde-fixed-bandwidth">NKDE FIXED BANDWIDTH</a></li>
+  <li><a href="#adaptive-bandwidth" id="toc-adaptive-bandwidth" class="nav-link" data-scroll-target="#adaptive-bandwidth">ADAPTIVE BANDWIDTH</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -479,69 +480,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>samples <span class="ot">&lt;-</span> <span class="fu">lines_center</span>(lixels)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In this code, <strong>future::plan(future::multisession(workers=2))</strong> is used to enable parallel processing, allowing the NKDE calculation to run on two separate cores (workers). This speeds up the computation by distributing the workload across multiple processors, which is particularly useful when working with large datasets and complex calculations like NKDE.</p>
-<p>The method = “continuous” is selected because it offers the best of both worlds by providing a smooth and seamless density estimation along the road network while still capturing the detailed distribution of accidents. It ensures that there are no artificial breaks between road segments, making the analysis more accurate and realistic in representing how accidents occur across the network.</p>
 <section id="nkde-fixed-bandwidth" class="level2">
 <h2 class="anchored" data-anchor-id="nkde-fixed-bandwidth">NKDE FIXED BANDWIDTH</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span><span class="fu">multisession</span>(<span class="at">workers=</span><span class="dv">2</span>))</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>densities_mc <span class="ot">&lt;-</span> <span class="fu">nkde.mc</span>(sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>),</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">events =</span> rdacc_sf,</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">w =</span> <span class="fu">rep</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(rdacc_sf)),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">samples =</span> samples,</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">kernel_name =</span> <span class="st">"quartic"</span>,</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bw =</span> <span class="dv">3500</span>, <span class="at">div=</span> <span class="st">"bw"</span>,</span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"continuous"</span>, </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">digits =</span> <span class="dv">1</span>, <span class="at">tol =</span> <span class="dv">1</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">grid_shape =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_depth =</span> <span class="dv">8</span>,<span class="at">agg =</span> <span class="dv">10</span>,</span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sparse =</span> <span class="cn">TRUE</span>,<span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(future<span class="sc">::</span><span class="fu">plan</span>(), <span class="st">"sequential"</span>)) future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>samples<span class="sc">$</span>density <span class="ot">&lt;-</span> densities_mc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>samples<span class="sc">$</span>density <span class="ot">&lt;-</span> samples<span class="sc">$</span>density<span class="sc">*</span><span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>samples2 <span class="ot">&lt;-</span> samples[<span class="fu">order</span>(samples<span class="sc">$</span>density),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>colorRamp <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">7</span>, <span class="at">name =</span> <span class="st">"Spectral"</span>) </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>colorRamp <span class="ot">&lt;-</span> <span class="fu">rev</span>(colorRamp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">'view'</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(diff) <span class="sc">+</span>    </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="st">"black"</span>)<span class="sc">+</span> </span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(samples2) <span class="sc">+</span>   </span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"density"</span>, <span class="at">style =</span> <span class="st">"kmeans"</span>, <span class="at">palette =</span> colorRamp, <span class="at">n =</span> <span class="dv">7</span>, <span class="at">size =</span> <span class="fl">0.04</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="images/Screenshot 2024-09-22 194349.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
-</figure>
-</div>
-<p>The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>bws_selection_cv <span class="ot">&lt;-</span> <span class="fu">bw_cv_likelihood_calc</span>(</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bws =</span> <span class="fu">seq</span>(<span class="dv">1000</span>,<span class="dv">4000</span>,<span class="dv">100</span>),</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lines =</span> sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>), <span class="at">events =</span> rdacc_sf,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">rep</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(rdacc_sf)),</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel_name =</span> <span class="st">"quartic"</span>, <span class="at">method =</span> <span class="st">"discontinuous"</span>,</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">diggle_correction =</span> <span class="cn">FALSE</span>, <span class="at">study_area =</span> <span class="cn">NULL</span>,</span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_depth =</span> <span class="dv">8</span>,</span>
-<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits=</span><span class="dv">2</span>, <span class="at">tol=</span><span class="fl">0.1</span>, <span class="at">agg=</span><span class="dv">5</span>,</span>
-<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sparse=</span><span class="cn">TRUE</span>, <span class="at">grid_shape=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),</span>
-<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose=</span><span class="cn">FALSE</span>, <span class="at">check=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>bws_selection_cv <span class="ot">&lt;-</span> <span class="fu">bw_cv_likelihood_calc</span>(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">bws =</span> <span class="fu">seq</span>(<span class="dv">1000</span>,<span class="dv">4000</span>,<span class="dv">100</span>),</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">lines =</span> sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>), <span class="at">events =</span> rdacc_sf,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">w =</span> <span class="fu">rep</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(rdacc_sf)),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">kernel_name =</span> <span class="st">"quartic"</span>, <span class="at">method =</span> <span class="st">"discontinuous"</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">diggle_correction =</span> <span class="cn">FALSE</span>, <span class="at">study_area =</span> <span class="cn">NULL</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">max_depth =</span> <span class="dv">8</span>,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">digits=</span><span class="dv">2</span>, <span class="at">tol=</span><span class="fl">0.1</span>, <span class="at">agg=</span><span class="dv">5</span>,</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">sparse=</span><span class="cn">TRUE</span>, <span class="at">grid_shape=</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">1</span>),</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">verbose=</span><span class="cn">FALSE</span>, <span class="at">check=</span><span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(bws_selection_cv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(bws_selection_cv)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -679,6 +636,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
+<p>In this code, <strong>future::plan(future::multisession(workers=2))</strong> is used to enable parallel processing, allowing the NKDE calculation to run on two separate cores (workers). This speeds up the computation by distributing the workload across multiple processors, which is particularly useful when working with large datasets and complex calculations like NKDE.</p>
+<p>The method = “continuous” is selected because it offers the best of both worlds by providing a smooth and seamless density estimation along the road network while still capturing the detailed distribution of accidents. It ensures that there are no artificial breaks between road segments, making the analysis more accurate and realistic in representing how accidents occur across the network.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span><span class="fu">multisession</span>(<span class="at">workers=</span><span class="dv">2</span>))</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>densities_mc <span class="ot">&lt;-</span> <span class="fu">nkde.mc</span>(sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>),</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">events =</span> rdacc_sf,</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                        <span class="at">w =</span> <span class="fu">rep</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(rdacc_sf)),</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                        <span class="at">samples =</span> samples,</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">kernel_name =</span> <span class="st">"quartic"</span>,</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">bw =</span> <span class="dv">3500</span>, <span class="at">div=</span> <span class="st">"bw"</span>,</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>                        <span class="at">method =</span> <span class="st">"continuous"</span>, </span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>                        <span class="at">digits =</span> <span class="dv">1</span>, <span class="at">tol =</span> <span class="dv">1</span>,</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                        <span class="at">grid_shape =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>),</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                        <span class="at">max_depth =</span> <span class="dv">8</span>,<span class="at">agg =</span> <span class="dv">10</span>,</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>                        <span class="at">sparse =</span> <span class="cn">TRUE</span>,<span class="at">verbose =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">inherits</span>(future<span class="sc">::</span><span class="fu">plan</span>(), <span class="st">"sequential"</span>)) future<span class="sc">::</span><span class="fu">plan</span>(future<span class="sc">::</span>sequential)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>samples<span class="sc">$</span>density <span class="ot">&lt;-</span> densities_mc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>samples<span class="sc">$</span>density <span class="ot">&lt;-</span> samples<span class="sc">$</span>density<span class="sc">*</span><span class="dv">1000</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>samples2 <span class="ot">&lt;-</span> samples[<span class="fu">order</span>(samples<span class="sc">$</span>density),]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>colorRamp <span class="ot">&lt;-</span> <span class="fu">brewer.pal</span>(<span class="at">n =</span> <span class="dv">7</span>, <span class="at">name =</span> <span class="st">"Spectral"</span>) </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>colorRamp <span class="ot">&lt;-</span> <span class="fu">rev</span>(colorRamp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">'view'</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(diff) <span class="sc">+</span>    </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="st">"black"</span>)<span class="sc">+</span> </span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(samples2) <span class="sc">+</span>   </span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"density"</span>, <span class="at">style =</span> <span class="st">"kmeans"</span>, <span class="at">palette =</span> colorRamp, <span class="at">n =</span> <span class="dv">7</span>, <span class="at">size =</span> <span class="fl">0.04</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/Screenshot 2024-09-22 194349.png" class="img-fluid quarto-figure quarto-figure-center figure-img"></p>
+</figure>
+</div>
+<p>The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.</p>
+</section>
+<section id="adaptive-bandwidth" class="level2">
+<h2 class="anchored" data-anchor-id="adaptive-bandwidth">ADAPTIVE BANDWIDTH</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>adapt_densities <span class="ot">&lt;-</span> <span class="fu">nkde.mc</span>( <span class="at">lines =</span> sf<span class="sc">::</span><span class="fu">st_cast</span>(diff, <span class="st">"LINESTRING"</span>), </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>                            <span class="at">events =</span> rdacc_sf, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>                            <span class="at">w =</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">nrow</span>(rdacc_sf)), </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>                            <span class="at">samples =</span> samples, </span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>                            <span class="at">kernel_name =</span> <span class="st">"quartic"</span>, </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>                            <span class="at">bw =</span> <span class="dv">3500</span>, <span class="at">div =</span> <span class="st">"bw"</span>, </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>                            <span class="at">adaptive =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>                            <span class="at">trim_bw =</span> <span class="dv">1000</span>, </span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>                            <span class="at">method =</span> <span class="st">"discontinuous"</span>, </span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">digits =</span> <span class="dv">1</span>, <span class="at">tol =</span> <span class="dv">5</span>, </span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>                            <span class="at">grid_shape =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">2</span>), </span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>                            <span class="at">max_depth =</span> <span class="dv">16</span>, <span class="at">agg =</span> <span class="dv">5</span>, </span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>                            <span class="at">sparse =</span> <span class="cn">TRUE</span>, <span class="at">verbose =</span> <span class="cn">FALSE</span> )</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="fu">length</span>(adapt_densities<span class="sc">$</span>k) <span class="sc">==</span> <span class="fu">nrow</span>(samples)) {</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  samples<span class="sc">$</span>density <span class="ot">&lt;-</span> adapt_densities<span class="sc">$</span>k } <span class="cf">else</span> { <span class="fu">stop</span>(<span class="st">"Mismatch between density results and number of samples. Please check the input data."</span>) }</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(diff) <span class="sc">+</span> </span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_lines</span>(<span class="st">"black"</span>)<span class="sc">+</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_shape</span>(samples) <span class="sc">+</span> </span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_dots</span>(<span class="st">"density"</span>, <span class="at">style =</span> <span class="st">"kmeans"</span>, <span class="at">palette =</span> colorRamp, <span class="at">n =</span> <span class="dv">7</span>, <span class="at">size =</span> <span class="fl">0.04</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><img src="images/Screenshot 2024-09-22 204345.png" class="img-fluid"></p>
+<p>In the adaptive bandwidth density plot, no red areas are observed, indicating that the density of accidents is more evenly distributed. The adaptive bandwidth adjusts to local conditions, smoothing the density in areas with fewer accidents and concentrating on high-density areas, which may explain the absence of extreme hotspots. This approach provides a more balanced view of accident distribution across the network, but it may also mask the intensity of certain critical areas, such as intersections, which were more visible in the fixed bandwidth plot.</p>
 
 
 </section>

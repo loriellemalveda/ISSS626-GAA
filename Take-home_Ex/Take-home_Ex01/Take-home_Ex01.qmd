@@ -248,63 +248,7 @@ lixels <- lixelize_lines(sf::st_cast(diff, "LINESTRING"),750,mindist = 375)
 samples <- lines_center(lixels)
 ```
 
-In this code, **future::plan(future::multisession(workers=2))** is used to enable parallel processing, allowing the NKDE calculation to run on two separate cores (workers). This speeds up the computation by distributing the workload across multiple processors, which is particularly useful when working with large datasets and complex calculations like NKDE.
-
-The method = "continuous" is selected because it offers the best of both worlds by providing a smooth and seamless density estimation along the road network while still capturing the detailed distribution of accidents. It ensures that there are no artificial breaks between road segments, making the analysis more accurate and realistic in representing how accidents occur across the network.
-
 ## NKDE FIXED BANDWIDTH
-
-```{r}
-
-future::plan(future::multisession(workers=2))
-densities_mc <- nkde.mc(sf::st_cast(diff, "LINESTRING"),
-                        events = rdacc_sf,
-                        w = rep(1,nrow(rdacc_sf)),
-                        samples = samples,
-                        kernel_name = "quartic",
-                        bw = 3500, div= "bw",
-                        method = "continuous", 
-                        digits = 1, tol = 1,
-                        grid_shape = c(2,2),
-                        max_depth = 8,agg = 10,
-                        sparse = TRUE,verbose = FALSE)
-
-if (!inherits(future::plan(), "sequential")) future::plan(future::sequential)
-```
-
-```{r}
-
-samples$density <- densities_mc
-```
-
-```{r}
-
-samples$density <- samples$density*1000
-```
-
-```{r}
-
-samples2 <- samples[order(samples$density),]
-```
-
-```{r}
-
-colorRamp <- brewer.pal(n = 7, name = "Spectral") 
-colorRamp <- rev(colorRamp)
-```
-
-```{r}
-#| eval: false
-tmap_mode('view')
-tm_shape(diff) +    
-  tm_lines("black")+ 
-  tm_shape(samples2) +   
-  tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
-```
-
-![](images/Screenshot%202024-09-22%20194349.png){fig-align="center"}
-
-The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.
 
 ```{r}
 bws_selection_cv <- bw_cv_likelihood_calc(
@@ -322,3 +266,93 @@ bws_selection_cv <- bw_cv_likelihood_calc(
 ```{r}
 knitr::kable(bws_selection_cv)
 ```
+
+In this code, **future::plan(future::multisession(workers=2))** is used to enable parallel processing, allowing the NKDE calculation to run on two separate cores (workers). This speeds up the computation by distributing the workload across multiple processors, which is particularly useful when working with large datasets and complex calculations like NKDE.
+
+The method = "continuous" is selected because it offers the best of both worlds by providing a smooth and seamless density estimation along the road network while still capturing the detailed distribution of accidents. It ensures that there are no artificial breaks between road segments, making the analysis more accurate and realistic in representing how accidents occur across the network.
+
+```{r}
+#| eval: false
+future::plan(future::multisession(workers=2))
+densities_mc <- nkde.mc(sf::st_cast(diff, "LINESTRING"),
+                        events = rdacc_sf,
+                        w = rep(1,nrow(rdacc_sf)),
+                        samples = samples,
+                        kernel_name = "quartic",
+                        bw = 3500, div= "bw",
+                        method = "continuous", 
+                        digits = 1, tol = 1,
+                        grid_shape = c(2,2),
+                        max_depth = 8,agg = 10,
+                        sparse = TRUE,verbose = FALSE)
+
+if (!inherits(future::plan(), "sequential")) future::plan(future::sequential)
+```
+
+```{r}
+#| eval: false
+samples$density <- densities_mc
+```
+
+```{r}
+#| eval: false
+samples$density <- samples$density*1000
+```
+
+```{r}
+#| eval: false
+samples2 <- samples[order(samples$density),]
+```
+
+```{r}
+#| eval: false
+colorRamp <- brewer.pal(n = 7, name = "Spectral") 
+colorRamp <- rev(colorRamp)
+```
+
+```{r}
+#| eval: false
+tmap_mode('view')
+tm_shape(diff) +    
+  tm_lines("black")+ 
+  tm_shape(samples2) +   
+  tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
+```
+
+![](images/Screenshot%202024-09-22%20194349.png){fig-align="center"}
+
+The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.
+
+## ADAPTIVE BANDWIDTH
+
+```{r}
+#| eval: false
+adapt_densities <- nkde.mc( lines = sf::st_cast(diff, "LINESTRING"), 
+                            events = rdacc_sf, 
+                            w = rep(1, nrow(rdacc_sf)), 
+                            samples = samples, 
+                            kernel_name = "quartic", 
+                            bw = 3500, div = "bw", 
+                            adaptive = TRUE, 
+                            trim_bw = 1000, 
+                            method = "discontinuous", 
+                            digits = 1, tol = 5, 
+                            grid_shape = c(2, 2), 
+                            max_depth = 16, agg = 5, 
+                            sparse = TRUE, verbose = FALSE )
+
+if (length(adapt_densities$k) == nrow(samples)) {
+  samples$density <- adapt_densities$k } else { stop("Mismatch between density results and number of samples. Please check the input data.") }
+```
+
+```{r}
+#| eval: false 
+tm_shape(diff) + 
+  tm_lines("black")+ 
+  tm_shape(samples) + 
+  tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
+```
+
+![](images/Screenshot 2024-09-22 204345.png)
+
+In the adaptive bandwidth density plot, no red areas are observed, indicating that the density of accidents is more evenly distributed. The adaptive bandwidth adjusts to local conditions, smoothing the density in areas with fewer accidents and concentrating on high-density areas, which may explain the absence of extreme hotspots. This approach provides a more balanced view of accident distribution across the network, but it may also mask the intensity of certain critical areas, such as intersections, which were more visible in the fixed bandwidth plot.
