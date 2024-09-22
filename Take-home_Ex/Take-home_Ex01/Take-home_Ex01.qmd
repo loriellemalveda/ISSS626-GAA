@@ -241,12 +241,12 @@ Similarly, the **orange dots**, representing motorcycles, are concentrated in th
 Let's now calculate the NKDE to potentially identify hotspot areas that have high concentrations of traffic road accidents along the Bangkok City road network. We hope to specify network segments that may require attention or intervention.
 
 ```{r}
-
+#| eval: false
 lixels <- lixelize_lines(sf::st_cast(diff, "LINESTRING"),750,mindist = 375)
 ```
 
 ```{r}
-
+#| eval: false
 samples <- lines_center(lixels)
 ```
 
@@ -257,6 +257,7 @@ The method = "continuous" is selected because it offers the best of both worlds 
 ## NKDE FIXED BANDWIDTH
 
 ```{r}
+#| eval: false
 future::plan(future::multisession(workers=2))
 densities_mc <- nkde.mc(sf::st_cast(diff, "LINESTRING"),
                         events = rdacc_sf,
@@ -274,21 +275,77 @@ if (!inherits(future::plan(), "sequential")) future::plan(future::sequential)
 ```
 
 ```{r}
+#| eval: false
 samples$density <- densities_mc
 ```
 
 ```{r}
+#| eval: false
 samples$density <- samples$density*1000
 ```
 
 ```{r}
+#| eval: false
 samples2 <- samples[order(samples$density),]
 ```
 
 ```{r}
+#| eval: false
 colorRamp <- brewer.pal(n = 7, name = "Spectral") 
 colorRamp <- rev(colorRamp)
 ```
 
+```{r}
+#| eval: false
+tm_shape(diff) +    
+  tm_lines("black")+ 
+  tm_shape(samples2) +   
+  tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
+```
+
+![](images/Screenshot 2024-09-22 153345.png){fig-align="center"}
 
 The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.
+
+## ADAPTIVE BANDWIDTH
+
+```{r}
+#| eval: false
+adapt_densities <- nkde.mc(
+  lines = sf::st_cast(diff, "LINESTRING"),
+  events = rdacc_sf,
+  w = rep(1, nrow(rdacc_sf)),
+  samples = samples,
+  kernel_name = "quartic",
+  bw = 500,
+  div = "bw",
+  adaptive = TRUE,
+  trim_bw = 1000,
+  method = "discontinuous",
+  digits = 1,
+  tol = 5,
+  grid_shape = c(2, 2),
+  max_depth = 16,
+  agg = 5,
+  sparse = TRUE,
+  verbose = FALSE
+)
+
+if (length(adapt_densities$k) == nrow(samples)) {
+  samples$density <- adapt_densities$k
+} else {
+  stop("Mismatch between density results and number of samples. Please check the input data.")
+}
+```
+
+```{r}
+#| eval: false
+tm_shape(diff) +
+  tm_lines("black")+ 
+  tm_shape(samples) +
+  tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
+```
+
+![](images/Screenshot 2024-09-22 155910.png){fig-align="center"}
+
+In the adaptive bandwidth density plot, no red areas are observed, indicating that the density of accidents is more evenly distributed. The adaptive bandwidth adjusts to local conditions, smoothing the density in areas with fewer accidents and concentrating on high-density areas, which may explain the absence of extreme hotspots. This approach provides a more balanced view of accident distribution across the network, but it may also mask the intensity of certain critical areas, such as intersections, which were more visible in the fixed bandwidth plot.
