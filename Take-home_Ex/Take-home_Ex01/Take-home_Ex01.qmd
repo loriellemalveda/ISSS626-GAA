@@ -1,5 +1,5 @@
 ---
-title: "Take-Home Exercise 1: PART 1"
+title: "Take-Home Exercise 1"
 author: "Lorielle Malveda"
 date: "September 9, 2024"
 date-modified: "last-modified"
@@ -28,7 +28,7 @@ This Take-Home Exercise attempts to:
 This code chunk uses `p_load()` of the ***pacman*** package (stands for Package Manager) to check if the following packages are installed in the computer. The packages will then be launched into R.
 
 ```{r}
-pacman::p_load(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr, spatstat, raster, readxl, spNetwork, rgeos, future, future.apply, RColorBrewer, RcppArmadillo)
+pacman::p_load(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr, spatstat, raster, readxl, spNetwork, rgeos, future, future.apply, RColorBrewer, RcppArmadillo, classInt, viridis, gifski, magma)
 ```
 
 ## 2.2 Importing the Datasets
@@ -371,16 +371,19 @@ rdacc_sf$difftime <- as.numeric(rdacc_sf$difftime)
 ```
 
 ```{r}
+#| eval: false 
 class(rdacc_sf$incident_datetime)
 ```
 
 ```{r}
+#| eval: false 
 min(rdacc_sf$incident_datetime)
 ```
 
 ## PER MONTH
 
 ```{r}
+#| eval: false 
 months <- as.character(1:12) 
 months <- ifelse(nchar(months)==1, paste0("0", months), months) 
 months_starts_labs <- paste("2019/",months,"/01", sep = "") 
@@ -393,12 +396,14 @@ months_starts_labs <- gsub("2019/", "", months_starts_labs, fixed = TRUE)
 ```
 
 ```{r}
+#| eval: false 
 rdacc_sf$high_fatalities <- ifelse(rdacc_sf$number_of_fatalities >= 1, "High", "Low")
 ```
 
 The plot below shows accidents per month.
 
 ```{r}
+#| eval: false 
 ggplot(rdacc_sf) +
   geom_histogram(aes(x = difftime), bins = 30, color = "white", alpha = 0.5) + scale_x_continuous( breaks = months_starts_num, labels = months_starts_labs,
                   limits = c(min(months_starts_num), max(months_starts_num)),
@@ -410,6 +415,7 @@ Based on the histogram, January appears to have the highest number of accidents,
 The high number of accidents in January may be linked to New Year celebrations, while the peaks in April could be associated with Songkran, Thailand's water festival, which is known for increased travel and festivities. The lower number of accidents in December might reflect reduced activity as the year comes to a close.
 
 ```{r}
+#| eval: false 
 ggplot(rdacc_sf) +    
   geom_histogram(aes(x = difftime, fill = high_fatalities), bins = 30, 
                  color = "white", alpha = 0.5) +    
@@ -425,6 +431,7 @@ ggplot(rdacc_sf) +
 Although the number of fatalities is relatively small compared to non-fatal accidents, each loss of life is significant. The map below highlights the areas where fatalities have occurred, emphasizing the importance of addressing these critical locations to improve road safety and save lives.
 
 ```{r}
+#| eval: false 
 fatalities_data <- rdacc_sf %>%   
   filter(number_of_fatalities > 0)  
 tmap_mode("view") 
@@ -434,6 +441,7 @@ tm_shape(fatalities_data) +
 ```
 
 ```{r}
+#| eval: false 
 # Prepare weights and temporal samples
 w <- rep(1, nrow(rdacc_sf))
 samples_temporal <- seq(0, max(rdacc_sf$difftime), 0.5)
@@ -474,6 +482,7 @@ The series of plots above depict temporal kernel density estimates of road accid
 ## WEEKDAY
 
 ```{r}
+#| eval: false 
 rdacc_sf$day_of_week <- weekdays(as.Date(rdacc_sf$incident_datetime))
 rdacc_sf$day_of_week <- factor(rdacc_sf$day_of_week, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
 ```
@@ -481,7 +490,45 @@ rdacc_sf$day_of_week <- factor(rdacc_sf$day_of_week, levels = c("Monday", "Tuesd
 In terms of accidents per day of the week, the data shows that Fridays and Saturdays have the highest number of incidents. This could be due to increased traffic and social activities during the weekend, contributing to higher accident rates on these days. Understanding these trends can help target road safety measures more effectively during high-risk periods.
 
 ```{r}
+#| eval: false 
 ggplot(rdacc_sf) +
   geom_bar(aes(x = day_of_week), color = "white", fill = "steelblue", alpha = 0.7) +labs(x = "Day of the Week", y = "Number of Accidents") +
   theme_minimal() +theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+# 7. SPATIO-TEMPORAL ANALYSIS
+
+Now let's head on to spatio-temporal analysis.
+
+According to the "leave-one-out cross-validation" method, the optimal bandwidth settings are determined to be 4000 meters and 70 days. This is based on the `cv_scores` result below.
+
+```{r}
+#| eval: false 
+cv_scores <- bw_tnkde_cv_likelihood_calc(
+  bws_net = seq(2500, 4000, by = 100),
+  bws_time = seq(10, 70, by = 10),
+  lines = sf::st_cast(diff, "LINESTRING"),
+  events = rdacc_sf,
+  time_field = "difftime",
+  w = rep(1, nrow(rdacc_sf)),
+  kernel_name = "quartic",
+  method = "continuous",
+  diggle_correction = FALSE,
+  study_area = NULL,
+  max_depth = 10,
+  digits = 2,tol = 0.1,
+  agg = 10,
+  sparse = TRUE,
+  grid_shape = c(2, 2),
+  sub_sample = 1, verbose = FALSE, check = TRUE )
+```
+
+Based on this, the optimal set of bandwidths is 4000m and 70 days.
+
+![](images/Screenshot 2024-09-22 221432.png){fig-align="center"}
+
+The code first defines a sequence of sample times from 0 to the maximum difference in time (`difftime`) in increments of 10, which is used for temporal analysis of road accidents in `rdacc_sf`. Then, it employs the tnkde function to perform a spatio-temporal kernel density estimation on road network data, utilizing the defined sample times and locations (samples) to calculate densities, adjusting for both space (`bw_net`) and time (`bw_time`) with an adaptive approach to better capture the density patterns over the network and time. The inputs are from the method we used above.
+
+```{r}
+sample_time <- seq(0, max(rdacc_sf$difftime), by = 10)
 ```
