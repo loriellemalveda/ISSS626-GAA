@@ -303,7 +303,7 @@ tm_shape(diff) +
   tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
 ```
 
-![](images/Screenshot 2024-09-22 153345.png){fig-align="center"}
+![](images/Screenshot%202024-09-22%20153345.png){fig-align="center"}
 
 The plot above reveals several red areas, indicating locations with a higher concentration of accidents. Upon closer inspection, many of these high-density areas are located at or near intersections, suggesting that intersections may be key hotspots for accidents. This highlights the need for further investigation into intersection safety and potential improvements in traffic management at these critical points.
 
@@ -346,6 +346,138 @@ tm_shape(diff) +
   tm_dots("density", style = "kmeans", palette = colorRamp, n = 7, size = 0.04)
 ```
 
-![](images/Screenshot 2024-09-22 155910.png){fig-align="center"}
+![](images/Screenshot%202024-09-22%20155910.png){fig-align="center"}
 
 In the adaptive bandwidth density plot, no red areas are observed, indicating that the density of accidents is more evenly distributed. The adaptive bandwidth adjusts to local conditions, smoothing the density in areas with fewer accidents and concentrating on high-density areas, which may explain the absence of extreme hotspots. This approach provides a more balanced view of accident distribution across the network, but it may also mask the intensity of certain critical areas, such as intersections, which were more visible in the fixed bandwidth plot.
+
+# 6. CALCULATING TKNDE
+
+Let's now explore the temporal dimensions of the data. We'll begin by performing some data wrangling to prepare it for analysis, such as adding datetime information and separating it into date, month, and weekday components.
+
+```{r}
+rdacc_sf$Date <- as.Date(rdacc_sf$incident_datetime)  
+start <- as.Date("2019-01-01")  
+rdacc_sf$difftime <- difftime(rdacc_sf$Date, start, units = "days") 
+rdacc_sf$difftime <- as.numeric(rdacc_sf$difftime)
+```
+
+```{r}
+class(rdacc_sf$incident_datetime)
+```
+
+```{r}
+min(rdacc_sf$incident_datetime)
+```
+
+## PER MONTH
+
+```{r}
+months <- as.character(1:12) 
+months <- ifelse(nchar(months)==1, paste0("0", months), months) 
+months_starts_labs <- paste("2019/",months,"/01", sep = "") 
+months_starts_num <- as.POSIXct(months_starts_labs, format = "%Y/%m/%d") 
+
+months_starts_num <- difftime(months_starts_num, start, units = "days")
+
+months_starts_num <- as.numeric(months_starts_num) 
+months_starts_labs <- gsub("2019/", "", months_starts_labs, fixed = TRUE)
+```
+
+```{r}
+rdacc_sf$high_fatalities <- ifelse(rdacc_sf$number_of_fatalities >= 1, "High", "Low")
+```
+
+The plot below shows accidents per month.
+
+```{r}
+ggplot(rdacc_sf) +    
+  geom_histogram(aes(x = difftime), bins = 30, color = "white", alpha = 0.5) +    
+  scale_x_continuous(     breaks = months_starts_num,      
+                          labels = months_starts_labs,      
+                          limits = c(min(months_starts_num), 
+                                     max(months_starts_num)),     
+                          expand = c(0, 0)   ) +   ggtitle("Accidents per Month")
+```
+
+Based on the histogram, January appears to have the highest number of accidents, with notable peaks also in April and July. In contrast, December shows a lower frequency of accidents. These trends might reflect seasonal or behavioral patterns that influence road safety throughout the year.
+
+The high number of accidents in January may be linked to New Year celebrations, while the peaks in April could be associated with Songkran, Thailand's water festival, which is known for increased travel and festivities. The lower number of accidents in December might reflect reduced activity as the year comes to a close.
+
+```{r}
+ggplot(rdacc_sf) +    
+  geom_histogram(aes(x = difftime, fill = high_fatalities), bins = 30, 
+                 color = "white", alpha = 0.5) +    
+  scale_x_continuous(     breaks = months_starts_num,      
+                          labels = months_starts_labs,      
+                          limits = c(min(months_starts_num), 
+                                     max(months_starts_num)),     
+                          expand = c(0, 0)   ) +   
+  scale_fill_manual(values = c("High" = "red", "Low" = "blue")) +    
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+Although the number of fatalities is relatively small compared to non-fatal accidents, each loss of life is significant. The map below highlights the areas where fatalities have occurred, emphasizing the importance of addressing these critical locations to improve road safety and save lives.
+
+```{r}
+fatalities_data <- rdacc_sf %>%   
+  filter(number_of_fatalities > 0)  
+tmap_mode("view") 
+tm_shape(fatalities_data) +   
+  tm_dots(col = "red", size = 0.1) +   
+  tm_layout(title = "Locations with Fatalities")
+```
+
+```{r}
+w <- rep(1, nrow(rdacc_sf))
+samples_temporal <- seq(0, max(rdacc_sf$difftime), 0.5)
+
+time_kernel_values <- data.frame(
+  bw_10 = tkde(rdacc_sf$difftime, w = w, samples = samples_temporal, bw = 10, kernel_name = "quartic"),
+  bw_20 = tkde(rdacc_sf$difftime, w = w, samples = samples_temporal, bw = 20, kernel_name = "quartic"),
+  bw_30 = tkde(rdacc_sf$difftime, w = w, samples = samples_temporal, bw = 30, kernel_name = "quartic"),
+  bw_40 = tkde(rdacc_sf$difftime, w = w, samples = samples_temporal, bw = 40, kernel_name = "quartic"),
+  bw_50 = tkde(rdacc_sf$difftime, w = w, samples = samples_temporal, bw = 50, kernel_name = "quartic"),
+  bw_60 = tkde(rdacc_sf$difftime, w = w, samples = samples_temporal, bw = 60, kernel_name = "quartic"),
+  time = samples_temporal
+)
+
+df_time <- reshape2::melt(time_kernel_values, id.vars = "time")
+df_time$variable <- as.factor(df_time$variable)
+
+ggplot(data = df_time) +
+  geom_line(aes(x = time, y = value)) +
+  scale_x_continuous(
+    breaks = months_starts_num, 
+    labels = months_starts_labs,
+    limits = c(min(months_starts_num), max(months_starts_num))
+  ) +
+  facet_wrap(
+    vars(variable), 
+    ncol = 2, 
+    scales = "free"
+  ) +
+  theme(axis.text = element_text(size = 5))
+```
+
+The series of plots above depict temporal kernel density estimates of road accidents in Thailand over a year, differentiated by various bandwidth settings from 10 to 60. The varying bandwidths reveal different levels of data smoothness, where smaller bandwidths capture more abrupt fluctuations in accident occurrences, potentially highlighting seasonal spikes or specific events. Larger bandwidths smooth out these details, indicating broader trends, such as increased accidents during peak tourist seasons or major festivals like Songkran, which are obscured in higher bandwidth plots.
+
+## WEEKDAY
+
+```{r}
+rdacc_sf$day_of_week <- weekdays(as.Date(rdacc_sf$incident_datetime)) 
+
+rdacc_sf$day_of_week <- factor(rdacc_sf$day_of_week,                                          levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+```
+
+In terms of accidents per day of the week, the data shows that Fridays and Saturdays have the highest number of incidents. This could be due to increased traffic and social activities during the weekend, contributing to higher accident rates on these days. Understanding these trends can help target road safety measures more effectively during high-risk periods.
+
+```{r}
+ggplot(rdacc_sf) +    
+  geom_bar(aes(x = day_of_week), 
+           color = "white", fill = "steelblue", alpha = 0.7) +    
+  labs(x = "Day of the Week", y = "Number of Accidents") +    
+  theme_minimal() +   
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+When visualizing the data using **tmap**, there are no noticeable spatial changes in accidents based on the day of the week. This suggests that the distribution of accidents remains consistent across the network, and the primary difference between days is likely the **amount of accidents**, rather than where they occur. This indicates that certain days like Friday and Saturday may simply see more traffic or activity, leading to more accidents, but without altering the overall spatial accident patterns.
