@@ -1,0 +1,79 @@
+[
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "",
+    "text": "Thailand has some of the most dangerous roads in the world, with around 20,000 people dying in road accidents each year—about 56 deaths a day, according to the World Health Organization (WHO). This makes road safety a critical issue in the country. Geospatial analytics can help by mapping where accidents happen, what types of roads are most dangerous, and identifying risk factors. By using this data, authorities can focus on improving dangerous areas, making roads safer, and planning better traffic enforcement. In a country with such high accident rates, geospatial analysis is a powerful tool to help reduce fatalities and protect lives.\nThis Take-Home Exercise attempts to:\n\nVisualize the spatio-temporal dynamics of road traffic accidents in BMR using appropriate statistical graphics and geovisualization methods.\nConduct detailed spatial analysis of road traffic accidents using appropriate Network Spatial Point Patterns Analysis methods.\nTo conduct detailed spatio-temporal analysis of road traffic accidents using appropriate Temporal Network Spatial Point Patterns Analysis methods."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#installing-the-r-packages",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#installing-the-r-packages",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "2.1 Installing the R Packages",
+    "text": "2.1 Installing the R Packages\nThis code chunk uses p_load() of the pacman package (stands for Package Manager) to check if the following packages are installed in the computer. The packages will then be launched into R.\n\npacman::p_load(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr, spatstat, raster, readxl, spNetwork, rgeos, future, future.apply, RColorBrewer, RcppArmadillo)"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#importing-the-datasets",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#importing-the-datasets",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "2.2 Importing the Datasets",
+    "text": "2.2 Importing the Datasets\nThis Take-Home Exercise will utilize 3 datasets. They are:\n\nThailand Road Accident [2019-2022] on Kaggle\nThailand Roads (OpenStreetMap Export) on HDX.\nThailand - Subnational Administrative Boundaries on HDX.\n\nLet’s use the sf package to import the datasets as sf data frames.\n\nBOUNDARIES DATA\nLet’s import the boundaries data using the code chunk below. This will filter out the boundaries in the different provinces under the Bangkok Metropolitan Region.\n\nboundaries &lt;- st_read(dsn = \"data/tha_adm_rtsd_itos_20210121_shp\", layer = \"tha_admbnda_adm1_rtsd_20220121\") %&gt;%\n  filter(!is.na(geometry)) %&gt;%\n  filter(ADM1_EN %in% c('Bangkok', 'Samut Prakan', 'Pathum Thani', 'Nonthaburi', 'Nakhon Pathom', 'Samut Sakhon' ))\n\n\n\nROAD ACCIDENT DATA\nThis code chunk reads the CSV file of road accident data for Thailand. It filters out rows with missing or empty longitude and latitude values and then keeps only accidents that occurred in specific provinces around the Bangkok Metropolitan Region.\nIt then converts the data into a spatial object (sf), assigning geographic coordinates (longitude and latitude) in the WGS 84 coordinate system (EPSG:4326) and transforms it to UTM zone 47N (EPSG:32647) for further spatial analysis.\n\nrdacc_sf &lt;- read_csv(\"data/thai_road_accident_2019_2022.csv\") %&gt;%\n  filter(!is.na(longitude) & longitude != \"\",\n         !is.na(latitude) & latitude !=\"\") %&gt;%\n  filter(province_en %in% c('Bangkok', 'Samut Prakan', 'Pathum Thani', 'Nonthaburi', 'Nakhon Pathom', 'Samut Sakhon' )) %&gt;%\n  st_as_sf(coords= c(\"longitude\", \"latitude\"),\n           crs=4326) %&gt;%\n  st_transform(crs=32647)\n\n\n\nROAD NETWORK DATA\nNext dataset we will import is the road network data.\nI filtered the road data based on a list of highway classifications from the WikiProject Thailand page, which includes road types such as ‘motorway,’ ‘trunk,’ ‘primary,’ and others. I chose only the highways which provide access to various types of vehicles, including motorcars, motorcycles, goods vehicles, heavy goods vehicles (HGV), and public service vehicles (PSV).\n\n\nLoading this dataset shows that there are 1551498 records. That’s a lot! Let us check which ones to remove in the next section.\nNote! To conserve space during rendering and when committing changes, I have included only images of some of the code implementations."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#changing-coordinate-systems",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#changing-coordinate-systems",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "3.1 CHANGING COORDINATE SYSTEMS",
+    "text": "3.1 CHANGING COORDINATE SYSTEMS\nThis code first sets the coordinate reference system (CRS) of the throad dataset to EPSG:4326 (WGS 84), which is a common geographic coordinate system. Then, both the throad and boundaries datasets are transformed to the UTM Zone 47N projection (EPSG:32647), which is a local projection for Thailand that is suitable for spatial analysis and accurate distance measurements. This ensures that both datasets are in the same CRS for further spatial operations.\nWe have also done this at the start when we created rdacc_sf."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#road-accident-data-1",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#road-accident-data-1",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "3.2 ROAD ACCIDENT DATA",
+    "text": "3.2 ROAD ACCIDENT DATA\nLet’s check the number of road accidents in each province listed in the province_en column of the rdacc_sf dataset.\n\nrdacc_sf %&gt;% count(province_en)\n\nI am selecting Bangkok for analysis because it has a comparably higher number of road accidents (6,089) compared to other provinces, such as Samut Prakan (2,241) and Nakhon Pathom (891).\n\nrdacc_sf &lt;- rdacc_sf %&gt;%       \n  filter(province_en %in% c('Bangkok'))"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#boundaries-data-1",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#boundaries-data-1",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "3.3 BOUNDARIES DATA",
+    "text": "3.3 BOUNDARIES DATA\nSince we have already filtered the accident data to only include Bangkok, this boundary dataset must also be filtered to Bangkok to ensure consistency in the analysis.\n\nboundaries &lt;- st_read(dsn = \"data/tha_adm_rtsd_itos_20210121_shp\", layer = \"tha_admbnda_adm1_rtsd_20220121\") %&gt;%   filter(!is.na(geometry)) %&gt;%   filter(ADM1_EN %in% c('Bangkok'))"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#road-network-data-1",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#road-network-data-1",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "3.4 ROAD NETWORK DATA",
+    "text": "3.4 ROAD NETWORK DATA\nBased on the data, the category that stands out is residential, containing over 1 million records, while the others, typically classified as highways without many walkroads, have significantly fewer records.\n\nTo further analyze this, we will check which areas have more accidents by applying a buffer to these road types.\nBasically, the goal is to check whether accidents involve accidents TO PEOPLE vs accidents BETWEEN VEHICLES.\n\nThe code chunk below performs a spatial join, specifically an intersection between the road network (throad and throad_residential)and the boundaries (boundaries) dataset. This will return only the parts of the road network that are within the boundaries (which is filtered to only “Bangkok”).\nEssentially, this step ensures that only the roads within Bangkok are retained, and any road segments outside the specified boundaries are excluded from the result stored in diff and diff_residential.\n\nChecking the buffer for accidents in both expressway (non-residential) and residential areas reveals that non-residential areas have around 6,075 accidents, while residential areas have around 2,397 accidents. This indicates that there are significantly more accidents occurring near expressways compared to residential areas, suggesting that high-traffic roads, such as expressways, may be more prone to accidents despite the higher population density in residential zones.\n\nLet’s use diff and not diff_residential in the calculation of NKDE and TKNDE, meaning we are not using residential data to check for hotspot areas for traffic accidents in Bangkok.\n\nthroad_filtered &lt;- st_read(dsn = \"data/hotosm_tha_roads_lines_shp\", layer = \"hotosm_tha_roads_lines_shp\") %&gt;%\n  filter(!is.na(geometry)) %&gt;%\n  filter(highway %in% c('motorway', 'motorway_link', 'trunk', 'trunk_link', \n                        'primary', 'primary_link', 'secondary', 'secondary_link', \n                        'tertiary', 'tertiary_link', 'unclassified', 'living_street', \n                        'road'))\n\n\nthroad_filtered &lt;- st_set_crs(throad_filtered, 4326)\nthroad_filtered &lt;- st_transform(throad_filtered, 32647)\nboundaries &lt;- st_transform(boundaries, 32647)\n\n\ndiff &lt;- st_intersection(throad_filtered, boundaries)\n\nFor the next two code chunks, they provide additional insights and essentially emphasize the greater need to focus on non-residential areas, rather than residential ones, as they highlight the higher frequency of accidents in these high-traffic regions. This suggests that focusing on expressways and similar roads may yield more actionable insights than studying residential areas."
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#saving-and-writing-rds",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#saving-and-writing-rds",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "3.5 Saving and Writing RDS",
+    "text": "3.5 Saving and Writing RDS\nI used readRDS and writeRDS functions to efficiently manage and preserve the exact state of R objects, ensuring that all attributes such as data types and row names are maintained accurately across sessions.\n\nsaveRDS(diff, \"diff.rds\")\nsaveRDS(rdacc_sf, \"rdacc_sf.rds\")\n\n\ndiff &lt;- readRDS(\"diff.rds\")\nrdacc_sf &lt;- readRDS(\"rdacc_sf.rds\")"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#general",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#general",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "GENERAL",
+    "text": "GENERAL\nThis is our final geospatial data before calculating NKDE and TNKDE. This code sets the tmap mode to interactive viewing and visualizes the road segments (diff) in purple and the accident points (rdacc_sf) in yellow.\n\ntmap_mode('view') \n\n\ntm_shape(diff) +\n  tm_lines(col=\"lightblue\", size=0.02)+\ntm_shape(rdacc_sf) +\n  tm_dots(col=\"blue\", size=0.02)"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#by-agency",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#by-agency",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "BY AGENCY",
+    "text": "BY AGENCY\nBased on the map, when visualizing accidents by agency, it is clear that most are reported under the agency of the Department of Highways. In terms of policy creation and implementation, this suggests that the government can focus more on these roads and the agency’s involvement. Additionally, there is an apparent concentration of roads specific to this agency, which could be a point of investigation to understand why accidents are primarily occurring on these roads and how they can be addressed.\n\ntm_shape(diff) +   \n  tm_lines(col = \"lightblue\") + \n  tm_shape(rdacc_sf) +   \n  tm_dots(col = \"agency\", palette = \"Set1\", size = 0.02)"
+  },
+  {
+    "objectID": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#by-vehicle",
+    "href": "Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html#by-vehicle",
+    "title": "Take-Home Exercise 1: PART 1",
+    "section": "BY VEHICLE",
+    "text": "BY VEHICLE\n\ntm_shape(diff) +   \n  tm_lines(col = \"lightblue\") + \n  tm_shape(rdacc_sf) +   \n  tm_dots(col = \"vehicle_type\", palette = \"Set1\", size = 0.02)"
+  }
+]
