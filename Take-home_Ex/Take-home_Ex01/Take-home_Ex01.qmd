@@ -202,7 +202,7 @@ tm_shape(rdacc_sf) +
   tm_dots(col="blue", size=0.02)
 ```
 
-![](images/Screenshot%202024-09-22%20142655.png)
+![](images/1.png){fig-align="center"}
 
 ## BY AGENCY
 
@@ -216,7 +216,7 @@ tm_shape(diff) +
   tm_dots(col = "agency", palette = "Set1", size = 0.02)
 ```
 
-![](images/Screenshot 2024-09-22 143113.png)
+![](images/2.png){fig-align="center"}
 
 ## BY VEHICLE
 
@@ -228,7 +228,7 @@ tm_shape(diff) +
   tm_dots(col = "vehicle_type", palette = "Set1", size = 0.02)
 ```
 
-![](images/Screenshot 2024-09-22 143316.png)
+![](images/3.png){fig-align="center"}
 
 We can observe that certain colors stand out on the map, indicating potential patterns in vehicle-related accidents. The **pink dots**, representing private/passenger cars, are scattered across different areas, while the **yellow dots**, representing motorized tricycles (commonly known as **tuk tuks**, which are famous among tourists for being fast vehicles), are concentrated in the central region. This may be due to the presence of tourist spots and high-traffic areas. Given their speed, tuk tuks may have a higher chance of being involved in accidents.
 
