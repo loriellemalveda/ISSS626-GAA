@@ -260,7 +260,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#preparing-lisa-map-classes" id="toc-preparing-lisa-map-classes" class="nav-link" data-scroll-target="#preparing-lisa-map-classes">5.3 Preparing LISA Map Classes</a></li>
   <li><a href="#plotting-lisa-map" id="toc-plotting-lisa-map" class="nav-link" data-scroll-target="#plotting-lisa-map">5.4 Plotting LISA map</a></li>
   </ul></li>
-  <li><a href="#hot-spot-and-cold-spot-area-analysis" id="toc-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#hot-spot-and-cold-spot-area-analysis"><strong>6. Hot Spot and Cold Spot Area Analysis</strong></a>
+  <li><a href="#hot-spot-and-cold-spot-area-analysis" id="toc-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#hot-spot-and-cold-spot-area-analysis"><strong>6. HOT SPOT AND COLD SPOT AREA ANALYSIS</strong></a>
   <ul class="collapse">
   <li><a href="#getis-and-ords-g-statistics" id="toc-getis-and-ords-g-statistics" class="nav-link" data-scroll-target="#getis-and-ords-g-statistics">6.1 Getis and Ord’s G-Statistics</a></li>
   <li><a href="#deriving-distance-based-weight-matrix" id="toc-deriving-distance-based-weight-matrix" class="nav-link" data-scroll-target="#deriving-distance-based-weight-matrix">6.2 Deriving Distance-Based Weight Matrix</a>
@@ -277,7 +277,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#mapping-gi-values-with-fixed-distance-weights" id="toc-mapping-gi-values-with-fixed-distance-weights" class="nav-link" data-scroll-target="#mapping-gi-values-with-fixed-distance-weights">7.2 Mapping Gi Values with Fixed Distance Weights</a></li>
   </ul></li>
-  <li><a href="#gi-statistics-using-adaptive-distance" id="toc-gi-statistics-using-adaptive-distance" class="nav-link" data-scroll-target="#gi-statistics-using-adaptive-distance"><strong>7.3 Gi Statistics Using Adaptive Distance</strong></a></li>
   <li><a href="#mapping-gi-values-with-adaptive-distance-weights" id="toc-mapping-gi-values-with-adaptive-distance-weights" class="nav-link" data-scroll-target="#mapping-gi-values-with-adaptive-distance-weights">7.4 Mapping Gi Values with Adaptive Distance Weights</a></li>
   </ul></li>
   </ul>
@@ -843,31 +842,32 @@ Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</co
 </section>
 </section>
 <section id="hot-spot-and-cold-spot-area-analysis" class="level1">
-<h1><strong>6. Hot Spot and Cold Spot Area Analysis</strong></h1>
+<h1><strong>6. HOT SPOT AND COLD SPOT AREA ANALYSIS</strong></h1>
 <p>Aside from cluster and outlier detection, localized spatial statistics can also be used to detect hot spot and/or cold spot areas.</p>
 <section id="getis-and-ords-g-statistics" class="level2">
 <h2 class="anchored" data-anchor-id="getis-and-ords-g-statistics">6.1 Getis and Ord’s G-Statistics</h2>
-<p>An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
-<p>The analysis consists of three steps:</p>
-<ul>
-<li><p>Deriving spatial weight matrix</p></li>
-<li><p>Computing Gi statistics</p></li>
-<li><p>Mapping Gi statistics</p></li>
-</ul>
+<p>An alternative spatial statistic for detecting spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It examines neighbors within a defined proximity to identify where clusters of high or low values occur. Statistically significant hot spots are areas with high values, surrounded by other high-value areas within a certain neighborhood range.</p>
+<p><strong>It consists of three steps:</strong></p>
+<ol type="1">
+<li><strong>Deriving a spatial weight matrix</strong></li>
+<li><strong>Computing the Gi statistics</strong></li>
+<li><strong>Mapping the Gi statistics</strong></li>
+</ol>
 </section>
 <section id="deriving-distance-based-weight-matrix" class="level2">
 <h2 class="anchored" data-anchor-id="deriving-distance-based-weight-matrix">6.2 Deriving Distance-Based Weight Matrix</h2>
-<p>First, we need to define a new set of neighbours. Whist the spatial autocorrelation considered units which shared borders, for Getis-Ord we are defining neighbours based on distance.</p>
-<p>There are two type of distance-based proximity matrix, they are:</p>
-<ul>
-<li><p>fixed distance weight matrix; and</p></li>
-<li><p>adaptive distance weight matrix.</p></li>
-</ul>
+<p>Let’s first define a new set of neighbors.</p>
+<p>While spatial autocorrelation focused on units that share borders, the Getis-Ord method defines neighbors based on distance.</p>
+<p><strong>There are two types of distance-based proximity matrices:</strong></p>
+<ol type="1">
+<li><p><strong>Fixed distance weight matrix</strong></p></li>
+<li><p><strong>Adaptive distance weight matrix</strong></p></li>
+</ol>
 <section id="deriving-the-centroid-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="deriving-the-centroid-matrix">DERIVING THE CENTROID MATRIX</h3>
-<p>We will need points to associate with each polygon before we can make our connectivity graph. It will be a little more complicated than just running <em>st_centroid()</em> on the sf object: <strong>us.bound</strong>. We need the coordinates in a separate data frame for this to work. To do this we will use a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of us.bound. Our function will be <em>st_centroid()</em>. We will be using map_dbl variation of map from the purrr package. For more documentation, check out map documentation</p>
-<p>To get our longitude values we map the <em>st_centroid()</em> function over the geometry column of us.bound and access the longitude value through double bracket notation [[]] and 1. This allows us to get only the longitude, which is the first value in each centroid.<br>
-</p>
+<p>Before creating the connectivity graph, we need to assign points to each polygon. This requires more than just applying <code>st_centroid()</code> to the <code>sf</code> object <code>us.bound</code>. We need to extract the coordinates into a separate data frame. To do this, we will use a mapping function, which applies a given function to each element of a vector and returns a vector of the same length.</p>
+<p>In this case, the input vector will be the geometry column of <code>us.bound</code>, and the function applied will be <code>st_centroid()</code>. We will use the <code>map_dbl</code> variation from the <code>purrr</code> package. For more details, you can refer to the <code>map</code> function documentation.</p>
+<p>To extract the longitude values, we will map the <code>st_centroid()</code> function over the geometry column and access the longitude through double bracket notation <code>[[]]</code> with an index of 1. This ensures we capture only the longitude, which is the first value of each centroid.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -875,20 +875,20 @@ Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</co
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>latitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">2</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Now that we have latitude and longitude, we use cbind to put longitude and latitude into the same object.</p>
+<p>Now that we have the latitude and longitude, we use <code>cbind</code> to put longitude and latitude into the same object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="determine-the-cut-off-distance" class="level3">
 <h3 class="anchored" data-anchor-id="determine-the-cut-off-distance">DETERMINE THE CUT-OFF DISTANCE</h3>
-<p>Firstly, we need to determine the upper limit for distance band by using the steps below:</p>
-<ul>
-<li><p>Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other by using <a href="https://r-spatial.github.io/spdep/reference/knearneigh.html"><em>knearneigh()</em></a> of <strong>spdep</strong>.</p></li>
-<li><p>Convert the knn object returned by <em>knearneigh()</em> into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using <a href="https://r-spatial.github.io/spdep/reference/knn2nb.html"><em>knn2nb()</em></a>.</p></li>
-<li><p>Return the length of neighbour relationship edges by using <a href="https://r-spatial.github.io/spdep/reference/nbdists.html"><em>nbdists()</em></a> of <strong>spdep</strong>. The function returns in the units of the coordinates if the coordinates are projected, in km otherwise.</p></li>
-<li><p>Remove the list structure of the returned object by using <a href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unlist"><strong>unlist()</strong></a>.</p></li>
-</ul>
+<p>To determine the upper limit for the distance band, we follow these steps:</p>
+<ol type="1">
+<li><p><strong>Identify k-nearest neighbors</strong>: Use the <code>knearneigh()</code> function from the <code>spdep</code> package to generate a matrix that lists the indices of the k-nearest neighbors for each point.</p></li>
+<li><p><strong>Convert to neighbors list</strong>: Transform the result from <code>knearneigh()</code> into a neighbors list of class <code>nb</code>, which contains integer vectors representing neighbor IDs for each region, using <code>knn2nb()</code>.</p></li>
+<li><p><strong>Calculate neighbor distances</strong>: Use the <code>nbdists()</code> function to calculate the distances between neighbors. The distances are returned in the units of the coordinates (or in kilometers if the coordinates are not projected).</p></li>
+<li><p><strong>Flatten the structure</strong>: Use <code>unlist()</code> to convert the list structure returned by <code>nbdists()</code> into a simple vector of distances.</p></li>
+</ol>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co">#coords &lt;- coordinates(hunan)</span></span>
 <span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))</span>
@@ -899,11 +899,11 @@ Zixing        -7.6849e-01 -8.8210e-02  9.4057e-01 -7.0144e-01         0.4830</co
   24.79   32.57   38.01   39.07   44.52   61.79 </code></pre>
 </div>
 </div>
-<p>The summary report shows that the largest first nearest neighbour distance is 61.79 km, so using this as the upper threshold gives certainty that all units will have at least one neighbour.</p>
+<p>The summary report shows that the largest first nearest neighbor distance is 61.79 km, so using this as the upper threshold gives certainty that all units will have at least one neighbor.</p>
 </section>
 <section id="computing-fixed-distance-weight-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="computing-fixed-distance-weight-matrix">COMPUTING FIXED DISTANCE WEIGHT MATRIX</h3>
-<p>Now, we will compute the distance weight matrix by using&nbsp;<a href="https://r-spatial.github.io/spdep/reference/dnearneigh.html"><em>dnearneigh()</em></a>&nbsp;as shown in the code chunk below.</p>
+<p>Now, we will compute the distance weight matrix by using <code>dnearneigh()</code>as shown in the code chunk below.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>wm_d62 <span class="ot">&lt;-</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">62</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>wm_d62</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -915,7 +915,7 @@ Percentage nonzero weights: 4.183884
 Average number of links: 3.681818 </code></pre>
 </div>
 </div>
-<p>Next,&nbsp;<em>nb2listw()</em>&nbsp;is used to convert the nb object into spatial weights object.</p>
+<p>Next, <code>nb2listw()</code> is used to convert the <strong><em>nb</em></strong> object into spatial weights object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>wm62_lw <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_d62, <span class="at">style =</span> <span class="st">'B'</span>)</span>
 <span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm62_lw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -941,12 +941,12 @@ Weights constants summary:
 B 88 7744 324 648 5440</code></pre>
 </div>
 </div>
-<p>The output spatial weights object is called&nbsp;<code>wm62_lw</code>.</p>
+<p>The output spatial weights object is called <code>wm62_lw</code>.</p>
 </section>
 <section id="computing-adaptive-distance-weight-matrix" class="level3">
 <h3 class="anchored" data-anchor-id="computing-adaptive-distance-weight-matrix">COMPUTING ADAPTIVE DISTANCE WEIGHT MATRIX</h3>
-<p>One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have lesser neighbours. Having many neighbours smoothes the neighbour relationship across more neighbours.</p>
-<p>It is possible to control the numbers of neighbours directly using k-nearest neighbours, either accepting asymmetric neighbours or imposing symmetry as shown in the code chunk below.</p>
+<p>One characteristic of a fixed distance weight matrix is that more densely populated areas, typically urban regions, tend to have more neighbors, while less densely populated areas, such as rural counties, have fewer neighbors. Having more neighbors in densely settled areas can result in a smoother relationship across a broader range of neighbors.</p>
+<p>You can control the number of neighbors directly by using k-nearest neighbors (k-NN), either allowing for asymmetric neighbor relationships or enforcing symmetry, as demonstrated in the code snippet below. This approach ensures a consistent number of neighbors across different regions, regardless of population density.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>knn <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k=</span><span class="dv">8</span>))</span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>knn</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -959,7 +959,7 @@ Average number of links: 8
 Non-symmetric neighbours list</code></pre>
 </div>
 </div>
-<p>Next,&nbsp;<em>nb2listw()</em>&nbsp;is used to convert the nb object into spatial weights object.</p>
+<p>Next, <code>nb2listw()</code> is used to convert the <strong><em>nb</em></strong> object into spatial weights object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>knn_lw <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(knn, <span class="at">style =</span> <span class="st">'B'</span>)</span>
 <span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(knn_lw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1122,17 +1122,17 @@ attr(,"class")
 [1] "localG"</code></pre>
 </div>
 </div>
-<p>The output of localG() is a vector of G or Gstar values, with attributes “gstari” set to TRUE or FALSE, “call” set to the function call, and class “localG”.</p>
-<p>The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.</p>
-<p>Next, we will join the Gi values to their corresponding hunan sf data frame by using the code chunk below.</p>
+<p>The output of the <code>localG()</code> function is a vector of G or Gstar values. These values have several attributes: <code>"gstari"</code>, which indicates whether Gstar is TRUE or FALSE, <code>"call"</code>, which stores the function call, and the class <code>"localG"</code>.</p>
+<p>The <strong>Gi Statistic</strong> is expressed as a Z-score, where larger values indicate stronger clustering. The direction of the Z-score (positive or negative) shows whether the clustering is of high or low values.</p>
+<p>Next, we will associate these Gi values with their respective entries in the <code>hunan</code> sf data frame using the following code chunk. This step ensures that each spatial feature is assigned the appropriate <strong>Gi statistic</strong> for further analysis and visualization.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>hunan.gi <span class="ot">&lt;-</span> <span class="fu">cbind</span>(hunan, <span class="fu">as.matrix</span>(gi.fixed)) <span class="sc">%&gt;%</span></span>
 <span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">gstat_fixed =</span> as.matrix.gi.fixed.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>In fact, the code chunk above performs three tasks. First, it convert the output vector (i.e.&nbsp;<em>gi.fixed</em>) into r matrix object by using&nbsp;<em>as.matrix()</em>. Next,&nbsp;<em>cbind()</em>&nbsp;is used to join hunan@data and&nbsp;<em>gi.fixed</em>&nbsp;matrix to produce a new SpatialPolygonDataFrame called&nbsp;<em>hunan.gi</em>. Lastly, the field name of the gi values is renamed to&nbsp;<em>gstat_fixed</em>&nbsp;by using&nbsp;<em>rename()</em>.</p>
+<p>The code chunk mentioned performs three tasks. First, it converts the output vector (<code>gi.fixed</code>) into an R matrix object using <code>as.matrix()</code>. Next, it uses <code>cbind()</code> to combine <code>hunan@data</code> and the <code>gi.fixed</code> matrix, creating a new <code>SpatialPolygonDataFrame</code> called <code>hunan.gi</code>. Lastly, the <code>rename()</code> function is applied to rename the field containing the Gi values to <code>gstat_fixed</code>. This process integrates the Gi statistics into the spatial dataset for further analysis and mapping.</p>
 <section id="mapping-gi-values-with-fixed-distance-weights" class="level3">
 <h3 class="anchored" data-anchor-id="mapping-gi-values-with-fixed-distance-weights">7.2 Mapping Gi Values with Fixed Distance Weights</h3>
-<p>The code chunk below shows the functions used to map the Gi values derived using fixed distance weight matrix.</p>
+<p>The code chunk below shows the functions used to map the <strong>Gi values</strong> derived using fixed distance weight matrix.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1153,13 +1153,9 @@ attr(,"class")
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Question: What statistical observation can you draw from the Gi map above?</p>
+<p>The hot spots (in red) were primarily concentrated in the central-eastern part of the region, indicating strong clustering of high GDP per capita values. The cold spots (in blue) were located in the southwestern area, showing regions with low GDP per capita clustering.</p>
 </blockquote>
-</section>
-</section>
-<section id="gi-statistics-using-adaptive-distance" class="level2">
-<h2 class="anchored" data-anchor-id="gi-statistics-using-adaptive-distance"><strong>7.3 Gi Statistics Using Adaptive Distance</strong></h2>
-<p>The code chunk below are used to compute the Gi values for GDPPC2012 by using an adaptive distance weight matrix (i.e <em>knb_lw</em>).</p>
+<p>The code chunk below is used to compute the Gi values for GDPPC2012 by using an adaptive distance weight matrix (i.e <code>knb_lw</code>).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> <span class="fu">order</span>(hunan<span class="sc">$</span>County)</span>
 <span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>gi.adaptive <span class="ot">&lt;-</span> <span class="fu">localG</span>(hunan<span class="sc">$</span>GDPPC, knn_lw)</span>
@@ -1167,10 +1163,11 @@ attr(,"class")
 <span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">gstat_adaptive =</span> as.matrix.gi.adaptive.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
+</section>
 <section id="mapping-gi-values-with-adaptive-distance-weights" class="level2">
 <h2 class="anchored" data-anchor-id="mapping-gi-values-with-adaptive-distance-weights">7.4 Mapping Gi Values with Adaptive Distance Weights</h2>
-<p>It is time for us to visualise the locations of hot spot and cold spot areas. The choropleth mapping functions of <strong>tmap</strong> package will be used to map the Gi values.</p>
-<p>The code chunk below shows the functions used to map the Gi values derived using fixed distance weight matrix.</p>
+<p>Now it’s time to visualize the hot spot and cold spot areas. We will use the choropleth mapping functions from the <code>tmap</code> package to map the Gi values.</p>
+<p>The code chunk below demonstrates how to map the Gi values, which were derived using a fixed distance weight matrix. This will allow us to clearly see the spatial distribution of hot and cold spots across the region.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>gdppc<span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
 <span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a></span>
@@ -1194,7 +1191,8 @@ attr(,"class")
 </div>
 </div>
 <blockquote class="blockquote">
-<p>Question: What statistical observation can you draw from the Gi map above?</p>
+<p>The hot spot areas (in red) are still concentrated in the same regions as those in the previous map with a fixed distance weight matrix, but the intensity of clustering appears more pronounced. The blue areas (cold spots), have shifted slightly compared to the fixed distance map, with some new cold spots in the southwest.</p>
+<p>The adaptive distance weight matrix allows for more flexibility in the number of neighbors, which may lead to a more refined representation of hot and cold spot areas compared to the fixed distance approach.</p>
 </blockquote>
 
 

@@ -393,37 +393,39 @@ tmap_arrange(gdppc, LISAmap,
 
 > Areas highlighted in red are regions where the GDP per capita is high, and they are also surrounded by other areas with high GDP per capita. Most of the dark orange areas in the GDPPC map correspond to the red regions in the LISA map, reinforcing their status as economically prosperous clusters.
 
-# **6. Hot Spot and Cold Spot Area Analysis**
+# **6. HOT SPOT AND COLD SPOT AREA ANALYSIS**
 
 Aside from cluster and outlier detection, localized spatial statistics can also be used to detect hot spot and/or cold spot areas.
 
 ## 6.1 Getis and Ord’s G-Statistics
 
-An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
+An alternative spatial statistic for detecting spatial anomalies is the Getis and Ord’s G-statistics (Getis and Ord, 1972; Ord and Getis, 1995). It examines neighbors within a defined proximity to identify where clusters of high or low values occur. Statistically significant hot spots are areas with high values, surrounded by other high-value areas within a certain neighborhood range.
 
-The analysis consists of three steps:
+**It consists of three steps:**
 
--   Deriving spatial weight matrix
-
--   Computing Gi statistics
-
--   Mapping Gi statistics
+1.  **Deriving a spatial weight matrix**
+2.  **Computing the Gi statistics**
+3.  **Mapping the Gi statistics**
 
 ## 6.2 Deriving Distance-Based Weight Matrix
 
-First, we need to define a new set of neighbours. Whist the spatial autocorrelation considered units which shared borders, for Getis-Ord we are defining neighbours based on distance.
+Let's first define a new set of neighbors.
 
-There are two type of distance-based proximity matrix, they are:
+While spatial autocorrelation focused on units that share borders, the Getis-Ord method defines neighbors based on distance.
 
--   fixed distance weight matrix; and
+**There are two types of distance-based proximity matrices:**
 
--   adaptive distance weight matrix.
+1.  **Fixed distance weight matrix**
+
+2.  **Adaptive distance weight matrix**
 
 ### DERIVING THE CENTROID MATRIX
 
-We will need points to associate with each polygon before we can make our connectivity graph. It will be a little more complicated than just running *st_centroid()* on the sf object: **us.bound**. We need the coordinates in a separate data frame for this to work. To do this we will use a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of us.bound. Our function will be *st_centroid()*. We will be using map_dbl variation of map from the purrr package. For more documentation, check out map documentation
+Before creating the connectivity graph, we need to assign points to each polygon. This requires more than just applying `st_centroid()` to the `sf` object `us.bound`. We need to extract the coordinates into a separate data frame. To do this, we will use a mapping function, which applies a given function to each element of a vector and returns a vector of the same length.
 
-To get our longitude values we map the *st_centroid()* function over the geometry column of us.bound and access the longitude value through double bracket notation \[\[\]\] and 1. This allows us to get only the longitude, which is the first value in each centroid.\
+In this case, the input vector will be the geometry column of `us.bound`, and the function applied will be `st_centroid()`. We will use the `map_dbl` variation from the `purrr` package. For more details, you can refer to the `map` function documentation.
+
+To extract the longitude values, we will map the `st_centroid()` function over the geometry column and access the longitude through double bracket notation `[[]]` with an index of 1. This ensures we capture only the longitude, which is the first value of each centroid.
 
 ```{r}
 longitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])
@@ -435,7 +437,7 @@ We do the same for latitude with one key difference. We access the second value 
 latitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[2]])
 ```
 
-Now that we have latitude and longitude, we use cbind to put longitude and latitude into the same object.
+Now that we have the latitude and longitude, we use `cbind` to put longitude and latitude into the same object.
 
 ```{r}
 coords <- cbind(longitude, latitude)
@@ -443,15 +445,15 @@ coords <- cbind(longitude, latitude)
 
 ### DETERMINE THE CUT-OFF DISTANCE
 
-Firstly, we need to determine the upper limit for distance band by using the steps below:
+To determine the upper limit for the distance band, we follow these steps:
 
--   Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other by using [*knearneigh()*](https://r-spatial.github.io/spdep/reference/knearneigh.html) of **spdep**.
+1.  **Identify k-nearest neighbors**: Use the `knearneigh()` function from the `spdep` package to generate a matrix that lists the indices of the k-nearest neighbors for each point.
 
--   Convert the knn object returned by *knearneigh()* into a neighbours list of class nb with a list of integer vectors containing neighbour region number ids by using [*knn2nb()*](https://r-spatial.github.io/spdep/reference/knn2nb.html).
+2.  **Convert to neighbors list**: Transform the result from `knearneigh()` into a neighbors list of class `nb`, which contains integer vectors representing neighbor IDs for each region, using `knn2nb()`.
 
--   Return the length of neighbour relationship edges by using [*nbdists()*](https://r-spatial.github.io/spdep/reference/nbdists.html) of **spdep**. The function returns in the units of the coordinates if the coordinates are projected, in km otherwise.
+3.  **Calculate neighbor distances**: Use the `nbdists()` function to calculate the distances between neighbors. The distances are returned in the units of the coordinates (or in kilometers if the coordinates are not projected).
 
--   Remove the list structure of the returned object by using [**unlist()**](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unlist).
+4.  **Flatten the structure**: Use `unlist()` to convert the list structure returned by `nbdists()` into a simple vector of distances.
 
 ```{r}
 #coords <- coordinates(hunan)
@@ -460,38 +462,38 @@ k1dists <- unlist(nbdists(k1, coords, longlat = TRUE))
 summary(k1dists)
 ```
 
-The summary report shows that the largest first nearest neighbour distance is 61.79 km, so using this as the upper threshold gives certainty that all units will have at least one neighbour.
+The summary report shows that the largest first nearest neighbor distance is 61.79 km, so using this as the upper threshold gives certainty that all units will have at least one neighbor.
 
 ### COMPUTING FIXED DISTANCE WEIGHT MATRIX
 
-Now, we will compute the distance weight matrix by using [*dnearneigh()*](https://r-spatial.github.io/spdep/reference/dnearneigh.html) as shown in the code chunk below.
+Now, we will compute the distance weight matrix by using `dnearneigh()`as shown in the code chunk below.
 
 ```{r}
 wm_d62 <- dnearneigh(coords, 0, 62, longlat = TRUE)
 wm_d62
 ```
 
-Next, *nb2listw()* is used to convert the nb object into spatial weights object.
+Next, `nb2listw()` is used to convert the ***nb*** object into spatial weights object.
 
 ```{r}
 wm62_lw <- nb2listw(wm_d62, style = 'B')
 summary(wm62_lw)
 ```
 
-The output spatial weights object is called `wm62_lw`.
+The output spatial weights object is called `wm62_lw`.
 
 ### COMPUTING ADAPTIVE DISTANCE WEIGHT MATRIX
 
-One of the characteristics of fixed distance weight matrix is that more densely settled areas (usually the urban areas) tend to have more neighbours and the less densely settled areas (usually the rural counties) tend to have lesser neighbours. Having many neighbours smoothes the neighbour relationship across more neighbours.
+One characteristic of a fixed distance weight matrix is that more densely populated areas, typically urban regions, tend to have more neighbors, while less densely populated areas, such as rural counties, have fewer neighbors. Having more neighbors in densely settled areas can result in a smoother relationship across a broader range of neighbors.
 
-It is possible to control the numbers of neighbours directly using k-nearest neighbours, either accepting asymmetric neighbours or imposing symmetry as shown in the code chunk below.
+You can control the number of neighbors directly by using k-nearest neighbors (k-NN), either allowing for asymmetric neighbor relationships or enforcing symmetry, as demonstrated in the code snippet below. This approach ensures a consistent number of neighbors across different regions, regardless of population density.
 
 ```{r}
 knn <- knn2nb(knearneigh(coords, k=8))
 knn
 ```
 
-Next, *nb2listw()* is used to convert the nb object into spatial weights object.
+Next, `nb2listw()` is used to convert the ***nb*** object into spatial weights object.
 
 ```{r}
 knn_lw <- nb2listw(knn, style = 'B')
@@ -508,22 +510,22 @@ gi.fixed <- localG(hunan$GDPPC, wm62_lw)
 gi.fixed
 ```
 
-The output of localG() is a vector of G or Gstar values, with attributes “gstari” set to TRUE or FALSE, “call” set to the function call, and class “localG”.
+The output of the `localG()` function is a vector of G or Gstar values. These values have several attributes: `"gstari"`, which indicates whether Gstar is TRUE or FALSE, `"call"`, which stores the function call, and the class `"localG"`.
 
-The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
+The **Gi Statistic** is expressed as a Z-score, where larger values indicate stronger clustering. The direction of the Z-score (positive or negative) shows whether the clustering is of high or low values.
 
-Next, we will join the Gi values to their corresponding hunan sf data frame by using the code chunk below.
+Next, we will associate these Gi values with their respective entries in the `hunan` sf data frame using the following code chunk. This step ensures that each spatial feature is assigned the appropriate **Gi statistic** for further analysis and visualization.
 
 ```{r}
 hunan.gi <- cbind(hunan, as.matrix(gi.fixed)) %>%
   rename(gstat_fixed = as.matrix.gi.fixed.)
 ```
 
-In fact, the code chunk above performs three tasks. First, it convert the output vector (i.e. *gi.fixed*) into r matrix object by using *as.matrix()*. Next, *cbind()* is used to join hunan\@data and *gi.fixed* matrix to produce a new SpatialPolygonDataFrame called *hunan.gi*. Lastly, the field name of the gi values is renamed to *gstat_fixed* by using *rename()*.
+The code chunk mentioned performs three tasks. First, it converts the output vector (`gi.fixed`) into an R matrix object using `as.matrix()`. Next, it uses `cbind()` to combine `hunan@data` and the `gi.fixed` matrix, creating a new `SpatialPolygonDataFrame` called `hunan.gi`. Lastly, the `rename()` function is applied to rename the field containing the Gi values to `gstat_fixed`. This process integrates the Gi statistics into the spatial dataset for further analysis and mapping.
 
 ### 7.2 Mapping Gi Values with Fixed Distance Weights
 
-The code chunk below shows the functions used to map the Gi values derived using fixed distance weight matrix.
+The code chunk below shows the functions used to map the **Gi values** derived using fixed distance weight matrix.
 
 ```{r}
 gdppc <- qtm(hunan, "GDPPC")
@@ -538,11 +540,9 @@ Gimap <-tm_shape(hunan.gi) +
 tmap_arrange(gdppc, Gimap, asp=1, ncol=2)
 ```
 
-> Question: What statistical observation can you draw from the Gi map above?
+> The hot spots (in red) were primarily concentrated in the central-eastern part of the region, indicating strong clustering of high GDP per capita values. The cold spots (in blue) were located in the southwestern area, showing regions with low GDP per capita clustering.
 
-## **7.3 Gi Statistics Using Adaptive Distance**
-
-The code chunk below are used to compute the Gi values for GDPPC2012 by using an adaptive distance weight matrix (i.e *knb_lw*).
+The code chunk below is used to compute the Gi values for GDPPC2012 by using an adaptive distance weight matrix (i.e `knb_lw`).
 
 ```{r}
 fips <- order(hunan$County)
@@ -553,9 +553,9 @@ hunan.gi <- cbind(hunan, as.matrix(gi.adaptive)) %>%
 
 ## 7.4 Mapping Gi Values with Adaptive Distance Weights
 
-It is time for us to visualise the locations of hot spot and cold spot areas. The choropleth mapping functions of **tmap** package will be used to map the Gi values.
+Now it's time to visualize the hot spot and cold spot areas. We will use the choropleth mapping functions from the `tmap` package to map the Gi values.
 
-The code chunk below shows the functions used to map the Gi values derived using fixed distance weight matrix.
+The code chunk below demonstrates how to map the Gi values, which were derived using a fixed distance weight matrix. This will allow us to clearly see the spatial distribution of hot and cold spots across the region.
 
 ```{r}
 gdppc<- qtm(hunan, "GDPPC")
@@ -573,4 +573,6 @@ tmap_arrange(gdppc,
              ncol=2)
 ```
 
-> Question: What statistical observation can you draw from the Gi map above?
+> The hot spot areas (in red) are still concentrated in the same regions as those in the previous map with a fixed distance weight matrix, but the intensity of clustering appears more pronounced. The blue areas (cold spots), have shifted slightly compared to the fixed distance map, with some new cold spots in the southwest.
+>
+> The adaptive distance weight matrix allows for more flexibility in the number of neighbors, which may lead to a more refined representation of hot and cold spot areas compared to the fixed distance approach.
