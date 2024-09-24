@@ -67,16 +67,16 @@ If available, the packages will then be launched into R.
 To import the datasets, `st_read()` of the ***sf*** package will be used.
 
 ```{r}
-childcare_sf <- st_read("C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex04/data/data/child-care-services-geojson.geojson") %>%
+childcare_sf <- st_read("data/data/child-care-services-geojson.geojson") %>%
   st_transform(crs = 3414)
 ```
 
 ```{r}
-sg_sf <- st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex04/data/data", layer="CostalOutline")
+sg_sf <- st_read(dsn = "data/data", layer="CostalOutline")
 ```
 
 ```{r}
-mpsz_sf <- st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex04/data/data", 
+mpsz_sf <- st_read(dsn = "data/data", 
                 layer = "MP14_SUBZONE_WEB_PL")
 ```
 

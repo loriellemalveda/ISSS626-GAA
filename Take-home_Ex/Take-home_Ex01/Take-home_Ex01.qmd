@@ -525,7 +525,7 @@ cv_scores <- bw_tnkde_cv_likelihood_calc(
 
 Based on this, the optimal set of bandwidths is 4000m and 70 days.
 
-![](images/Screenshot 2024-09-22 221432.png){fig-align="center"}
+![](images/Screenshot%202024-09-22%20221432.png){fig-align="center"}
 
 The code first defines a sequence of sample times from 0 to the maximum difference in time (`difftime`) in increments of 10, which is used for temporal analysis of road accidents in `rdacc_sf`. Then, it employs the tnkde function to perform a spatio-temporal kernel density estimation on road network data, utilizing the defined sample times and locations (samples) to calculate densities, adjusting for both space (`bw_net`) and time (`bw_time`) with an adaptive approach to better capture the density patterns over the network and time. The inputs are from the method we used above.
 

@@ -1,5 +1,5 @@
 ---
-title: "Hands-on Exercise (latest)"
+title: "Hands-on Exercise 6"
 author: "Lorielle Malveda"
 date: "September 15, 2024"
 date-modified: "last-modified"

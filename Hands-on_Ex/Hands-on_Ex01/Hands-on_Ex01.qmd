@@ -1,6 +1,8 @@
 ---
 title: "Hands-on Exercise 1: Geospatial Data Science with R"
 author: "Lorielle Malveda"
+date: "August 25, 2024"
+date-modified: "last-modified"
 execute: 
   eval: true
   echo: true
@@ -41,7 +43,7 @@ The first 3 enumerated above are geospatial data while the last one is aspatial.
 ### Master Plan 2014 Subzone Boundary (Web)
 
 ```{r}
-mpsz = st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex01/data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+mpsz = st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
 ```
 
 Running the code chunk shows that there are a total of ***323 multipolygon features and 15 fields*** in the simple feature data frame.
@@ -51,7 +53,7 @@ Running the code chunk shows that there are a total of ***323 multipolygon featu
 ### Cycling Path
 
 ```{r}
-cyclingpath = st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex01/data/geospatial", layer = "CyclingPathGazette")
+cyclingpath = st_read(dsn = "data/geospatial", layer = "CyclingPathGazette")
 ```
 
 There are ***2558 features and 2 fields*** in the **`cyclingpath`** linestring feature data frame and is also in the svy21 projected coordinates system.
@@ -59,7 +61,7 @@ There are ***2558 features and 2 fields*** in the **`cyclingpath`** linestring f
 ### Pre-school Location
 
 ```{r}
-preschool = st_read("C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex01/data/geospatial/PreSchoolsLocation.kml")
+preschool = st_read("data/geospatial/PreSchoolsLocation.kml")
 ```
 
 **`preschool`** is a point feature dataframe with 2290 features and 2 fields. If the first2 data frames are in the svy21 coordinates system, preschool is in the wgs84 coordinates system.
@@ -171,7 +173,7 @@ For this section, we are using listings.csv of the Airbnb data set.
 **Importing and Displaying the Dataset.**
 
 ```{r}
-listings <- read_csv("C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex01/data/aspatial/listings.csv")
+listings <- read_csv("data/aspatial/listings.csv")
 ```
 
 The code chunk below shows `list()` of Base R instead of `glimpse(`). For this code chunk, we are just checking if the file has been imported properly.

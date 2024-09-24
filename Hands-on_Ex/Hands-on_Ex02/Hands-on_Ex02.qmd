@@ -39,7 +39,7 @@ The second one is aspatial and we are going to use PA and PZ as unique identifie
 ### **GEOSPATIAL DATA**
 
 ```{r}
-mpsz <- st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex02/data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
 ```
 
 Examine the created ***mpsz***.
@@ -57,7 +57,7 @@ Next to import is the respopagsex2011to2020.csv file and save it into a datafram
 The task will be performed by using `read_csv()` function of ***readr*** package.
 
 ```{r}
-popdata <- read_csv("C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex02/data/aspatial/respopagesextod2011to2020.csv", 
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv", 
                     show_col_types = FALSE)
 ```
 
@@ -119,7 +119,7 @@ We used `left_join()` to ensure that the output is a simple features data frame.
 Lastly, we create:
 
 ```{r}
-write_rds(mpsz_pop2020, "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex02/data/rds/mpszpop2020.rds")
+write_rds(mpsz_pop2020, "data/rds/mpszpop2020.rds")
 ```
 
 The code above is used to save an R object to an RDS file.

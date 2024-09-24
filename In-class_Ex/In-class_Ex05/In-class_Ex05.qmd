@@ -1,0 +1,175 @@
+---
+title: "In-class Exercise 5"
+author: "Lorielle Malveda"
+date: "September 23, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
+---
+
+```{r}
+pacman::p_load(sf, spdep, sfdep, tmap, tidyverse, knitr)
+```
+
+```{r}
+hunan <- st_read(dsn = "data/geospatial", 
+                 layer = "Hunan")
+```
+
+```{r}
+hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
+```
+
+```{r}
+hunan_GDPPC <- left_join(hunan,hunan2012) %>%
+  select(1:4, 7, 15)
+```
+
+```{r}
+wm_q <- hunan_GDPPC %>%
+  mutate(nb = st_contiguity(geometry),
+         wt=st_weights(nb, style = 'W'),
+         .before=1)
+```
+
+```{r}
+qtm(wm_q)
+```
+
+```{r}
+global_moran_test(wm_q$GDPPC,
+                       wm_q$nb,
+                       wm_q$wt)
+```
+
+```{r}
+set.seed(1234)
+#to make sure IT IS REPRODUCIBLE
+```
+
+```{r}
+global_moran_perm(wm_q$GDPPC,
+                  wm_q$nb,
+                  wm_q$wt,
+                  nsim=999)
+```
+
+```{r}
+lisa <- wm_q %>%
+  mutate(local_moran=local_moran(GDPPC, nb, wt, nsim = 99),
+                     .before =1) %>%
+           unnest(local_moran)
+#unnest - instead of keeping it in a list it will be in the df?
+
+
+# ii is local moran i
+#eii exp of local moran if (condition) {
+ # 3 p values 
+
+#the quadrants if you use spdep you need to do it one by one to classify high high high low etc
+#in sfdep the label is already there
+
+```
+
+```{r}
+tmap_mode('plot')
+tm_shape(lisa)+
+  tm_fill("ii")+
+  tm_borders(alpha=0.5)+
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_layout(
+    main.title = "local Moran I of G",
+    main.title.size=2)
+```
+
+```{r}
+tmap_mode('plot')
+tm_shape(lisa)+
+  tm_fill("p_ii_sim")+
+  tm_borders(alpha=0.5)+
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_layout(
+    main.title = "p-value of local Moran I",
+    main.title.size=2)
+```
+
+```{r}
+map1 <- tm_shape(lisa)+
+  tm_fill("ii")+
+  tm_borders(alpha=0.5)+
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_layout(
+    main.title = "local Moran I of G",
+    main.title.size=2)
+  
+  
+  map2 <- tm_shape(lisa)+
+  tm_fill("p_ii_sim")+
+  tm_borders(alpha=0.5)+
+  tm_view(set.zoom.limits = c(6,8)) +
+  tm_layout(
+    main.title = "p-value of local Moran I",
+    main.title.size=2)
+  
+  tmap_arrange(map1,map2,ncol=2)
+```
+
+```{r}
+lisa_sig <- lisa %>%
+  filter(p_ii < 0.05)
+tm_shape(lisa)+
+  tm_polygons()+
+  tm_borders(alpha = 0.5)+
+  tm_shape(lisa_sig)+
+  tm_fill("mean")+
+  tm_borders(alpha=0.4)
+  
+  #in this map you ar eonly pulling out statistically significant values
+```
+
+based on this map, you have the high-high clusters then 2 outliers one is the purple outlier means they are low surrounded by high
+
+the green one is not an outlier but is actually a cluster that is a lowlow cluster
+
+be wary of this lisa map because it filtered out the non-statistically significant values
+
+so the cluster low low might be a cluster that is surrounded by non statistically significant values
+
+```{r}
+wm_idw <- hunan_GDPPC %>%
+  mutate(nb= st_contiguity(geometry),
+         wts= st_inverse_distance(nb, geometry, scale=1, alpha=1))
+
+#each of the table will have different values - depends on how close to the central it is
+#when we calculate the disrtance we use the inverse distance
+#nb = nearest nneighbor
+```
+
+```{r}
+HCSA <- wm_idw %>%
+  mutate(local_Gi = local_gstar_perm(GDPPC, nb,wt,nsi=999),
+         .before=1) %>%
+  unnest(local_Gi)
+HCSA
+```
+
+```{r}
+tm_shape(HCSA)+
+  tm_fill("gi_star")+
+  tm_borders(alpha=0.5)
+tm_view(set.zoom.limits = c(6,8))
+```
+
+```{r}
+HCSA_sig <- HCSA %>%
+  filter(p_sim < 0.05)
+tm_shape(HCSA) + 
+  tm_polygons()+
+  tm_borders(alpha = 0.5)+
+  tm_shape(HCSA_sig)+
+  tm_fill("cluster")+
+tm_borders(alpha=0.4)
+```

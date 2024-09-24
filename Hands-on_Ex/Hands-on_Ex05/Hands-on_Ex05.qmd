@@ -56,12 +56,12 @@ More information on the 4 R Packages:
 use the ***sf*** package to import the datasets as ***sf*** data frames.
 
 ```{r}
-network <- st_read(dsn="C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex05/data/geospatial", 
+network <- st_read(dsn="data/geospatial", 
                    layer="Punggol_St")
 ```
 
 ```{r}
-childcare <- st_read(dsn="C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex05/data/geospatial",
+childcare <- st_read(dsn="data/geospatial",
                      layer="Punggol_CC") %>%
 st_zm(drop=TRUE, what='ZM')
 ```
