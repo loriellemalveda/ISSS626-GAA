@@ -237,7 +237,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#getting-the-data-into-r-environment" id="toc-getting-the-data-into-r-environment" class="nav-link" data-scroll-target="#getting-the-data-into-r-environment">3. GETTING THE DATA INTO R ENVIRONMENT</a>
   <ul class="collapse">
   <li><a href="#importing-shapefile-into-the-r-environment" id="toc-importing-shapefile-into-the-r-environment" class="nav-link" data-scroll-target="#importing-shapefile-into-the-r-environment">3.1 Importing <em>shapefile</em> into the R Environment</a></li>
-  <li><a href="#importing-the-csv-file-into-the-r-environment" id="toc-importing-the-csv-file-into-the-r-environment" class="nav-link" data-scroll-target="#importing-the-csv-file-into-the-r-environment">3.2 Importing the <em>csv</em> file into the R Environment</a></li>
+  <li><a href="#importing-csv-into-the-r-environment" id="toc-importing-csv-into-the-r-environment" class="nav-link" data-scroll-target="#importing-csv-into-the-r-environment">3.2 Importing <em>csv</em> into the R Environment</a></li>
   <li><a href="#performing-relational-join" id="toc-performing-relational-join" class="nav-link" data-scroll-target="#performing-relational-join">3.3 Performing Relational Join</a></li>
   <li><a href="#visualizing-the-regional-development-indicator" id="toc-visualizing-the-regional-development-indicator" class="nav-link" data-scroll-target="#visualizing-the-regional-development-indicator">3.4 Visualizing the Regional Development Indicator</a></li>
   </ul></li>
@@ -325,53 +325,45 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="overview" class="level1">
 <h1>1. OVERVIEW</h1>
-<p>Local Measures of Spatial Autocorrelation (LMSA) focus on the relationships between each observation and its surroundings, rather than providing a single summary of these relationships across the map. In this sense, they are not summary statistics but scores that allow us to learn more about the spatial structure in our data. The general intuition behind the metrics however is similar to that of global ones. Some of them are even mathematically connected, where the global version can be decomposed into a collection of local ones. One such example are Local Indicators of Spatial Association (LISA). Beside LISA, Getis-Ord’s Gi-statistics will be introduce as an alternative LMSA statistics that present complementary information or allow us to obtain similar insights for geographically referenced data.</p>
-<p>In this hands-on exercise, you will learn how to compute Local Measures of Spatial Autocorrelation (LMSA) by using <strong>spdep</strong> package. By the end to this hands-on exercise, you will be able to:</p>
+<p><strong>Local Measures of Spatial Autocorrelation (LMSA)</strong> analyze the relationships between each observation and its surroundings, offering detailed insights into the spatial structure of data rather than providing a global summary. These measures are not mere summary statistics; they are specific scores that reveal the spatial dynamics within the dataset. Often, these local measures are related to their global counterparts, sometimes being components that together form the global statistic. For example, Local Indicators of Spatial Association (LISA) are directly linked to broader global metrics and can be seen as their disaggregated form. Another local measure, the <strong>Getis-Ord’s Gi-statistics</strong>, offers complementary perspectives or similar insights for data with geographical references.</p>
+<p>In this practical exercise, you will learn to compute various Local Measures of Spatial Autocorrelation using the <code>spdep</code> package.</p>
+<p>By the end of this session, you will be able to:</p>
 <ul>
-<li><p>import geospatial data using appropriate function(s) of <strong>sf</strong> package,</p></li>
-<li><p>import csv file using appropriate function of <strong>readr</strong> package,</p></li>
-<li><p>perform relational join using appropriate join function of <strong>dplyr</strong> package,</p></li>
-<li><p>compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers by using appropriate functions <strong>spdep</strong> package;</p></li>
-<li><p>compute Getis-Ord’s Gi-statistics for detecting hot spot or/and cold spot area by using appropriate functions of <strong>spdep</strong> package; and</p></li>
-<li><p>to visualise the analysis output by using <strong>tmap</strong> package.</p></li>
+<li>Import geospatial data using the relevant functions from the <code>sf</code> package,</li>
+<li>Load a CSV file using the <code>readr</code> package,</li>
+<li>Perform relational joins using the appropriate functions from the <code>dplyr</code> package,</li>
+<li>Calculate Local Indicator of Spatial Association (LISA) statistics to identify clusters and outliers using the <code>spdep</code> package,</li>
+<li>Determine hot spots and cold spots using Getis-Ord’s Gi-statistics with the <code>spdep</code> package, and</li>
+<li>Visualize your analysis results using the <code>tmap</code> package.</li>
 </ul>
 </section>
 <section id="getting-started" class="level1">
 <h1>2. GETTING STARTED</h1>
 <section id="objective---the-analytical-question" class="level2">
 <h2 class="anchored" data-anchor-id="objective---the-analytical-question">2.1 Objective - The Analytical Question</h2>
-<p>In spatial policy, one of the main development objective of the local govenment and planners is to ensure equal distribution of development in the province. Our task in this study, hence, is to apply appropriate spatial statistical methods to discover if development are even distributed geographically. If the answer is <strong>No</strong>. Then, our next question will be “is there sign of spatial clustering?”. And, if the answer for this question is yes, then our next question will be “where are these clusters?”</p>
-<p>In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e.&nbsp;GDP per capita) of Hunan Provice, People Republic of China.(https://en.wikipedia.org/wiki/Hunan)</p>
+<p>In spatial policy, a key development goal for local governments and planners is to ensure an equal distribution of development across the province.</p>
+<p>The objective of this study is to apply appropriate spatial statistical methods to determine whether development is distributed geographically. If it is not, the next step is to investigate whether there is evidence of spatial clustering. If clustering is present, we will then seek to identify the locations of these clusters.</p>
+<p>In this case study, we focus on analyzing the spatial pattern of a specific development indicator—GDP per capita—in Hunan Province, People’s Republic of China.</p>
 </section>
 <section id="study-area-and-dataset" class="level2">
 <h2 class="anchored" data-anchor-id="study-area-and-dataset">2.2 Study Area and Dataset</h2>
-<p>Two data sets will be used in this hands-on exercise, they are:</p>
-<ul>
-<li><p>Hunan province administrative boundary layer at county level. This is a geospatial data set in ESRI shapefile format.</p></li>
-<li><p>Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.</p></li>
-</ul>
+<p>Two data sets will be used in this hands-on exercise, which are:</p>
+<ol type="1">
+<li><strong>Hunan Province Administrative Boundary Layer (at County Level).</strong> This is a geospatial data set in ESRI shapefile format.</li>
+<li><strong>Hunan_2012.csv.</strong> This csv file contains selected Hunan’s local development indicators in 2012.</li>
+</ol>
 </section>
 <section id="setting-the-analytical-tools" class="level2">
 <h2 class="anchored" data-anchor-id="setting-the-analytical-tools">2.3 Setting the Analytical Tools</h2>
-<p>Before we get started, we need to ensure that <strong>spdep</strong>, <strong>sf</strong>, <strong>tmap</strong> and <strong>tidyverse</strong> packages of R are currently installed in your R.</p>
-<ul>
-<li><p>sf is use for importing and handling geospatial data in R,</p></li>
-<li><p>tidyverse is mainly use for wrangling attribute data in R,</p></li>
-<li><p>spdep will be used to compute spatial weights, global and local spatial autocorrelation statistics, and</p></li>
-<li><p>tmap will be used to prepare cartographic quality chropleth map.</p></li>
-</ul>
-<p>The code chunk below is used to perform the following tasks:</p>
-<ul>
-<li><p>creating a package list containing the necessary R packages,</p></li>
-<li><p>checking if the R packages in the package list have been installed in R,</p>
-<ul>
-<li>if they have yet to be installed, RStudio will installed the missing packages,</li>
-</ul></li>
-<li><p>launching the packages into R environment.</p></li>
-</ul>
+<p>This code chunk uses <code>p_load()</code> of the <strong><em>pacman</em></strong> package (stands for Package Manager) to check if the following packages are installed:</p>
+<p><strong>sf:</strong> used for importing and handling geospatial data in R.</p>
+<p><strong>tidyverse:</strong> mainly used for wrangling attribute data in R.</p>
+<p><strong><em>spdep:</em></strong> used to compute spatial weights, global and local spatial autocorrelation statistics.</p>
+<p><strong>tmap:</strong> used to prepare cartographic quality chropleth map.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, spdep, tmap, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>If available, the packages will then be launched into R.</p>
 </section>
 </section>
 <section id="getting-the-data-into-r-environment" class="level1">
@@ -379,7 +371,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>In this section, you will learn how to bring a geospatial data and its associated attribute table into R environment. The geospatial data is in ESRI shapefile format and the attribute table is in csv fomat.</p>
 <section id="importing-shapefile-into-the-r-environment" class="level2">
 <h2 class="anchored" data-anchor-id="importing-shapefile-into-the-r-environment">3.1 Importing <em>shapefile</em> into the R Environment</h2>
-<p>The code chunk below uses&nbsp;<a href="https://r-spatial.github.io/sf/reference/st_read.html"><code>st_read()</code></a>&nbsp;of&nbsp;<strong>sf</strong>&nbsp;package to import Hunan shapefile into R. The imported shapefile will be&nbsp;<strong>simple features</strong>&nbsp;Object of&nbsp;<strong>sf</strong>.</p>
+<p>Let us use the <strong><em>sf</em></strong> package to import the Hunan shapefile into R.</p>
+<p>The output is a simple features <strong><em>sf</em></strong> object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,                   <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -394,23 +387,25 @@ Geodetic CRS:  WGS 84</code></pre>
 </div>
 </div>
 </section>
-<section id="importing-the-csv-file-into-the-r-environment" class="level2">
-<h2 class="anchored" data-anchor-id="importing-the-csv-file-into-the-r-environment">3.2 Importing the <em>csv</em> file into the R Environment</h2>
-<p>Next, we will import&nbsp;<em>Hunan_2012.csv</em>&nbsp;into R by using&nbsp;<a href="https://readr.tidyverse.org/reference/read_delim.html"><code>read_csv()</code></a>&nbsp;of&nbsp;<strong>readr</strong>&nbsp;package. The output is R data frame class.</p>
+<section id="importing-csv-into-the-r-environment" class="level2">
+<h2 class="anchored" data-anchor-id="importing-csv-into-the-r-environment">3.2 Importing <em>csv</em> into the R Environment</h2>
+<p>Next, we will import <code>Hunan_2012.csv</code> into R by using the <code>read_csv</code> function of the <strong><em>readr</em></strong> package.</p>
+<p>The output is R dataframe class.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>hunan2012 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="performing-relational-join" class="level2">
 <h2 class="anchored" data-anchor-id="performing-relational-join">3.3 Performing Relational Join</h2>
-<p>The code chunk below will be used to update the attribute table of&nbsp;<em>hunan</em>’s SpatialPolygonsDataFrame with the attribute fields of&nbsp;<em>hunan2012</em>&nbsp;dataframe. This is performed by using&nbsp;<a href="https://dplyr.tidyverse.org/reference/mutate-joins.html"><code>left_join()</code></a>&nbsp;of&nbsp;<strong>dplyr</strong>&nbsp;package.</p>
+<p>The following code chunk updates the attribute table of the <code>hunan</code> SpatialPolygonsDataFrame by merging it with the attribute fields of the <code>hunan2012</code> dataframe. This is accomplished using the <code>left_join()</code> function from the <code>dplyr</code> package:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan,hunan2012) <span class="sc">%&gt;%</span>   <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan,hunan2012) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>, <span class="dv">7</span>, <span class="dv">15</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="visualizing-the-regional-development-indicator" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-the-regional-development-indicator">3.4 Visualizing the Regional Development Indicator</h2>
-<p>Now, we are going to prepare a basemap and a choropleth map showing the distribution of GDPPC 2012 by using&nbsp;<code>qtm()</code>&nbsp;of&nbsp;<strong>tmap</strong>&nbsp;package.</p>
+<p>Next, we’ll prepare a basemap and a choropleth map to display the distribution of GDP per capita for 2012, using the <code>qtm()</code> function from the <code>tmap</code> package.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>equal <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(hunan) <span class="sc">+</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"GDPPC"</span>,</span>

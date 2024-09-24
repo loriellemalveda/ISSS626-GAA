@@ -12,63 +12,53 @@ execute:
 
 # 1. OVERVIEW
 
-Local Measures of Spatial Autocorrelation (LMSA) focus on the relationships between each observation and its surroundings, rather than providing a single summary of these relationships across the map. In this sense, they are not summary statistics but scores that allow us to learn more about the spatial structure in our data. The general intuition behind the metrics however is similar to that of global ones. Some of them are even mathematically connected, where the global version can be decomposed into a collection of local ones. One such example are Local Indicators of Spatial Association (LISA). Beside LISA, Getis-Ord’s Gi-statistics will be introduce as an alternative LMSA statistics that present complementary information or allow us to obtain similar insights for geographically referenced data.
+**Local Measures of Spatial Autocorrelation (LMSA)** analyze the relationships between each observation and its surroundings, offering detailed insights into the spatial structure of data rather than providing a global summary. These measures are not mere summary statistics; they are specific scores that reveal the spatial dynamics within the dataset. Often, these local measures are related to their global counterparts, sometimes being components that together form the global statistic. For example, Local Indicators of Spatial Association (LISA) are directly linked to broader global metrics and can be seen as their disaggregated form. Another local measure, the **Getis-Ord’s Gi-statistics**, offers complementary perspectives or similar insights for data with geographical references.
 
-In this hands-on exercise, you will learn how to compute Local Measures of Spatial Autocorrelation (LMSA) by using **spdep** package. By the end to this hands-on exercise, you will be able to:
+In this practical exercise, you will learn to compute various Local Measures of Spatial Autocorrelation using the `spdep` package.
 
--   import geospatial data using appropriate function(s) of **sf** package,
+By the end of this session, you will be able to:
 
--   import csv file using appropriate function of **readr** package,
-
--   perform relational join using appropriate join function of **dplyr** package,
-
--   compute Local Indicator of Spatial Association (LISA) statistics for detecting clusters and outliers by using appropriate functions **spdep** package;
-
--   compute Getis-Ord’s Gi-statistics for detecting hot spot or/and cold spot area by using appropriate functions of **spdep** package; and
-
--   to visualise the analysis output by using **tmap** package.
+-   Import geospatial data using the relevant functions from the `sf` package,
+-   Load a CSV file using the `readr` package,
+-   Perform relational joins using the appropriate functions from the `dplyr` package,
+-   Calculate Local Indicator of Spatial Association (LISA) statistics to identify clusters and outliers using the `spdep` package,
+-   Determine hot spots and cold spots using Getis-Ord’s Gi-statistics with the `spdep` package, and
+-   Visualize your analysis results using the `tmap` package.
 
 # 2. GETTING STARTED
 
 ## 2.1 Objective - The Analytical Question
 
-In spatial policy, one of the main development objective of the local govenment and planners is to ensure equal distribution of development in the province. Our task in this study, hence, is to apply appropriate spatial statistical methods to discover if development are even distributed geographically. If the answer is **No**. Then, our next question will be “is there sign of spatial clustering?”. And, if the answer for this question is yes, then our next question will be “where are these clusters?”
+In spatial policy, a key development goal for local governments and planners is to ensure an equal distribution of development across the province.
 
-In this case study, we are interested to examine the spatial pattern of a selected development indicator (i.e. GDP per capita) of Hunan Provice, People Republic of China.(https://en.wikipedia.org/wiki/Hunan)
+The objective of this study is to apply appropriate spatial statistical methods to determine whether development is distributed geographically. If it is not, the next step is to investigate whether there is evidence of spatial clustering. If clustering is present, we will then seek to identify the locations of these clusters.
+
+In this case study, we focus on analyzing the spatial pattern of a specific development indicator—GDP per capita—in Hunan Province, People's Republic of China.
 
 ## 2.2 Study Area and Dataset
 
-Two data sets will be used in this hands-on exercise, they are:
+Two data sets will be used in this hands-on exercise, which are:
 
--   Hunan province administrative boundary layer at county level. This is a geospatial data set in ESRI shapefile format.
-
--   Hunan_2012.csv: This csv file contains selected Hunan’s local development indicators in 2012.
+1.  **Hunan Province Administrative Boundary Layer (at County Level).** This is a geospatial data set in ESRI shapefile format.
+2.  **Hunan_2012.csv.** This csv file contains selected Hunan’s local development indicators in 2012.
 
 ## 2.3 Setting the Analytical Tools
 
-Before we get started, we need to ensure that **spdep**, **sf**, **tmap** and **tidyverse** packages of R are currently installed in your R.
+This code chunk uses `p_load()` of the ***pacman*** package (stands for Package Manager) to check if the following packages are installed:
 
--   sf is use for importing and handling geospatial data in R,
+**sf:** used for importing and handling geospatial data in R.
 
--   tidyverse is mainly use for wrangling attribute data in R,
+**tidyverse:** mainly used for wrangling attribute data in R.
 
--   spdep will be used to compute spatial weights, global and local spatial autocorrelation statistics, and
+***spdep:*** used to compute spatial weights, global and local spatial autocorrelation statistics.
 
--   tmap will be used to prepare cartographic quality chropleth map.
-
-The code chunk below is used to perform the following tasks:
-
--   creating a package list containing the necessary R packages,
-
--   checking if the R packages in the package list have been installed in R,
-
-    -   if they have yet to be installed, RStudio will installed the missing packages,
-
--   launching the packages into R environment.
+**tmap:** used to prepare cartographic quality chropleth map.
 
 ```{r}
 pacman::p_load(sf, spdep, tmap, tidyverse)
 ```
+
+If available, the packages will then be launched into R.
 
 # 3. GETTING THE DATA INTO R ENVIRONMENT
 
@@ -76,15 +66,19 @@ In this section, you will learn how to bring a geospatial data and its associate
 
 ## 3.1 Importing *shapefile* into the R Environment
 
-The code chunk below uses [`st_read()`](https://r-spatial.github.io/sf/reference/st_read.html) of **sf** package to import Hunan shapefile into R. The imported shapefile will be **simple features** Object of **sf**.
+Let us use the ***sf*** package to import the Hunan shapefile into R.
+
+The output is a simple features ***sf*** object.
 
 ```{r}
 hunan <- st_read(dsn = "data/geospatial",                   layer = "Hunan")
 ```
 
-## 3.2 Importing the *csv* file into the R Environment
+## 3.2 Importing *csv* into the R Environment
 
-Next, we will import *Hunan_2012.csv* into R by using [`read_csv()`](https://readr.tidyverse.org/reference/read_delim.html) of **readr** package. The output is R data frame class.
+Next, we will import `Hunan_2012.csv` into R by using the `read_csv` function of the ***readr*** package.
+
+The output is R dataframe class.
 
 ```{r}
 hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
@@ -92,15 +86,16 @@ hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
 
 ## 3.3 Performing Relational Join
 
-The code chunk below will be used to update the attribute table of *hunan*’s SpatialPolygonsDataFrame with the attribute fields of *hunan2012* dataframe. This is performed by using [`left_join()`](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr** package.
+The following code chunk updates the attribute table of the `hunan` SpatialPolygonsDataFrame by merging it with the attribute fields of the `hunan2012` dataframe. This is accomplished using the `left_join()` function from the `dplyr` package:
 
 ```{r}
-hunan <- left_join(hunan,hunan2012) %>%   select(1:4, 7, 15)
+hunan <- left_join(hunan,hunan2012) %>%
+  select(1:4, 7, 15)
 ```
 
 ## 3.4 Visualizing the Regional Development Indicator
 
-Now, we are going to prepare a basemap and a choropleth map showing the distribution of GDPPC 2012 by using `qtm()` of **tmap** package.
+Next, we'll prepare a basemap and a choropleth map to display the distribution of GDP per capita for 2012, using the `qtm()` function from the `tmap` package.
 
 ```{r}
 equal <- tm_shape(hunan) +
