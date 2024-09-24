@@ -120,17 +120,17 @@ tmap_arrange(equal,
 
 # 4. LOCAL INDICATORS OF SPATIAL ASSOCIATION (LISA)
 
-Local Indicators of Spatial Association or LISA are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. For instance if we are studying distribution of GDP per capita of Hunan Provice, People Republic of China, local clusters in GDP per capita mean that there are counties that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
+**Local Indicators of Spatial Association or LISA** are statistics that evaluate the existence of clusters and/or outliers in the spatial arrangement of a given variable. For instance if we are studying distribution of GDP per capita of Hunan Provice, People Republic of China, local clusters in GDP per capita mean that there are counties that have higher or lower rates than is to be expected by chance alone; that is, the values occurring are above or below those of a random distribution in space.
 
-In this section, you will learn how to apply appropriate Local Indicators for Spatial Association (LISA), especially local Moran’I to detect cluster and/or outlier from GDP per capita 2012 of Hunan Province, PRC.
+In this section, you will learn how to apply appropriate Local Indicators for Spatial Association (LISA), especially local Moran’s I to detect cluster and/or outlier from GDP per capita 2012 of Hunan Province, PRC.
 
 ## 4.1 Computing Contiguity Spatial Weights
 
-Before we can compute the local spatial autocorrelation statistics, we need to construct a spatial weights of the study area. The spatial weights is used to define the neighbourhood relationships between the geographical units (i.e. county) in the study area.
+Before we can compute the global spatial autocorrelation statistics, we need to construct **a spatial weights matrix f**or the study area. This matrix defines the neighborhood relationships between the geographical units (e.g., counties) in the study area.
 
-In the code chunk below, [`poly2nb()`](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** package is used to compute contiguity weight matrices for the study area. This function builds a neighbours list based on regions with contiguous boundaries. If you look at the documentation you will see that you can pass a “queen” argument that takes TRUE or FALSE as options. If you do not specify this argument the default is set to TRUE, that is, if you don’t specify queen = FALSE this function will return a list of first order neighbours using the Queen criteria.
+In the code below, the `poly2nb()` function from the `spdep` package is used to compute contiguity weight matrices. This function creates a neighbors list based on regions that share contiguous boundaries. According to the documentation, you can specify the "queen" argument, which takes either `TRUE` or `FALSE`. If you do not specify this argument, the default is `TRUE`, meaning that the function will return a list of first-order neighbors based on the Queen contiguity criteria unless you explicitly set `queen = FALSE`.
 
-More specifically, the code chunk below is used to compute Queen contiguity weight matrix.
+The following code chunk specifically computes the Queen contiguity weight matrix.
 
 ```{r}
 wm_q <- poly2nb(hunan, 
@@ -142,7 +142,9 @@ The summary report above shows that there are 88 area units in Hunan. The most c
 
 ## 4.2 Row-standardized Weights Matrix
 
-Next, we need to assign weights to each neighboring polygon. In our case, each neighboring polygon will be assigned equal weight (style=“W”). This is accomplished by assigning the fraction 1/(#ofneighbors) to each neighboring county then summing the weighted income values. While this is the most intuitive way to summaries the neighbors’ values it has one drawback in that polygons along the edges of the study area will base their lagged values on fewer polygons thus potentially over- or under-estimating the true nature of the spatial autocorrelation in the data. For this example, we’ll stick with the style=“W” option for simplicity’s sake but note that other more robust options are available, notably style=“B”.
+Next, we need to assign weights to each neighboring polygon. In our case, we will assign equal weights to each neighboring polygon (style = "W"). This is done by assigning the fraction 1 / (# of neighbors) to each neighboring county and then summing the weighted values, such as income. **While this method is intuitive, it has a potential drawback: polygons located at the edges of the study area will have fewer neighbors, which could lead to over- or under-estimating the true extent of spatial autocorrelation in the data.**
+
+For simplicity, we will use the style = "W" option in this example. However, it’s worth noting that other more robust options are available, such as style = "B", which might address some of these limitations.
 
 ```{r}
 rswm_q <- nb2listw(wm_q, 
@@ -151,7 +153,7 @@ rswm_q <- nb2listw(wm_q,
 rswm_q
 ```
 
-**What can we learn from the code chunk above?**
+The code chunk above demonstrates the use of the `nb2listw()` function, which converts a neighbors list object of class `nb` into a spatial weights list. There are two key arguments in this function: `style` and `zero.policy`.
 
 -   The input of [`nb2listw()`](https://r-spatial.github.io/spdep/reference/nb2listw.html) must be an object of class **nb**. The syntax of the function has two major arguments, namely style and zero.poly.
 
@@ -161,9 +163,9 @@ rswm_q
 
 ## 4.3 Computing Local Moran's I
 
-To compute local Moran’s I, the [*localmoran()*](https://r-spatial.github.io/spdep/reference/localmoran.html) function of **spdep** will be used. It computes *Ii* values, given a set of *zi* values and a listw object providing neighbour weighting information for the polygon associated with the zi values.
+To calculate local Moran’s I, the `localmoran()` function from the `spdep` package is used. This function analyzes local spatial autocorrelation using `zi` values (like GDP per capita for counties) and a `listw` object for neighbor weighting.
 
-The code chunks below are used to compute local Moran’s I of *GDPPC2012* at the county level.
+The code provided specifically calculates local Moran’s I for GDP per capita in 2012 at the county level, identifying areas where GDP per capita is significantly clustered or dispersed among neighboring counties.
 
 ```{r}
 fips <- order(hunan$County)
@@ -171,19 +173,19 @@ localMI <- localmoran(hunan$GDPPC, rswm_q)
 head(localMI)
 ```
 
-*localmoran()* function returns a matrix of values whose columns are:
+*The* `localmoran()` function returns a matrix of values whose columns are:
 
--   Ii: the local Moran’s I statistics
+-   **Ii:** the local Moran’s I statistics
 
--   E.Ii: the expectation of local moran statistic under the randomisation hypothesis
+-   **E.Ii:** the expectation of the local Moran statistic under the randomization hypothesis
 
--   Var.Ii: the variance of local moran statistic under the randomisation hypothesis
+-   **Var.Ii:** the variance of the local Moran statistic under the randomization hypothesis
 
--   Z.Ii:the standard deviate of local moran statistic
+-   **Z.Ii:** the standard deviation of the local Moran statistic
 
--   Pr(): the p-value of local moran statistic
+-   **Pr():** the p-value of the local Moran statistic
 
-The code chunk below list the content of the local Moran matrix derived by using [*printCoefmat()*](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/printCoefmat).
+The code chunk below lists the content of the local Moran matrix derived by using `printCoefmat()`.
 
 ```{r}
 printCoefmat(data.frame(
@@ -194,7 +196,7 @@ printCoefmat(data.frame(
 
 ### MAPPING THE LOCAL MORAN'S I
 
-Before mapping the local Moran’s I map, it is wise to append the local Moran’s I dataframe (i.e. localMI) onto hunan SpatialPolygonDataFrame. The code chunks below can be used to perform the task. The out SpatialPolygonDataFrame is called *hunan.localMI*.
+Before creating a map of local Moran’s I, it's practical to merge the local Moran’s I data frame (referred to as `localMI`) with the `hunan` SpatialPolygonDataFrame. The following code snippets facilitate this task, resulting in a new SpatialPolygonDataFrame named `hunan.localMI`. This merged data structure allows for the integrated visualization of the spatial data with the computed local Moran’s I values, enabling effective geographical analysis of the patterns.
 
 ```{r}
 hunan.localMI <- cbind(hunan,localMI) %>%
@@ -203,7 +205,7 @@ hunan.localMI <- cbind(hunan,localMI) %>%
 
 ### MAPPING LOCAL MORAN'S I VALUES
 
-Using choropleth mapping functions of **tmap** package, we can plot the local Moran’s I values by using the code chinks below.
+Using choropleth mapping functions of the ***tmap*** package, we can plot the local Moran’s I values by using the code chunk below.
 
 ```{r}
 tm_shape(hunan.localMI) +
@@ -231,9 +233,7 @@ tm_shape(hunan.localMI) +
 
 ### MAPPING BOTH LOCAL MORAN'S I AND P-VALUES
 
-For effective interpretation, it is better to plot both the local Moran’s I values map and its corresponding p-values map next to each other.
-
-The code chunk below will be used to create such visualisation.
+Let's now plot both the local Moran’s I values and its corresponding p-values next to each other.
 
 ```{r}
 localMI.map <- tm_shape(hunan.localMI) +
@@ -252,15 +252,17 @@ pvalue.map <- tm_shape(hunan.localMI) +
 tmap_arrange(localMI.map, pvalue.map, asp=1, ncol=2)
 ```
 
+The left map colors regions based on the value of local Moran's I, with green areas indicating a high positive autocorrelation (values from 3 to 5) suggesting clusters of similar high values, and yellow to orange areas showing lower or negative autocorrelation, indicating less similarity or dispersion. The right map, using shades of blue, shows areas with statistically significant local Moran's I values, with darker blues representing areas with very low p-values (less than 0.001), highlighting regions where the spatial patterns are most pronounced and statistically significant.
+
 # 5. CREATING A *LISA* CLUSTER MAP
 
-The LISA Cluster Map shows the significant locations color coded by type of spatial autocorrelation. The first step before we can generate the LISA cluster map is to plot the Moran scatterplot.
+The LISA Cluster Map visually represents significant areas, color-coded according to the type of spatial autocorrelation present. Before creating this map, the initial step involves plotting the Moran scatterplot.
 
 ## 5.1 Plotting Moran Scatterplot
 
-The Moran scatterplot is an illustration of the relationship between the values of the chosen attribute at each location and the average value of the same attribute at neighboring locations.
+The Moran Scatterplot is an illustration of the relationship between the values of the chosen attribute at each location and the average value of the same attribute at neighboring locations.
 
-The code chunk below plots the Moran scatterplot of GDPPC 2012 by using [*moran.plot()*](https://r-spatial.github.io/spdep/reference/moran.plot.html) of **spdep**.
+The code chunk below plots the Moran scatterplot of GDPPC 2012 by using `moran.plot()`of ***spdep***.
 
 ```{r}
 nci <- moran.plot(hunan$GDPPC, rswm_q,
@@ -269,20 +271,20 @@ nci <- moran.plot(hunan$GDPPC, rswm_q,
                   ylab="Spatially Lag GDPPC 2012")
 ```
 
-Notice that the plot is split in 4 quadrants. The top right corner belongs to areas that have high GDPPC and are surrounded by other areas that have the average level of GDPPC. This are the high-high locations in the lesson slide.
+The plot is split in 4 quadrants. The top right corner belongs to areas that have high GDPPC and are surrounded by other areas that have the average level of GDPPC. These are the high-high locations.
 
 ## 5.2 Plotting Moran Scatterplot with Standardized Variable
 
-First we will use [*scale()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/scale) to centers and scales the variable. Here centering is done by subtracting the mean (omitting NAs) the corresponding columns, and scaling is done by dividing the (centered) variable by their standard deviations.
+First, we'll use the `scale()` function to center and scale the variable. Centering is achieved by subtracting the mean (excluding any NAs) from each value in the column, and scaling involves dividing these centered values by their standard deviations. This standardizes the variable, creating a more uniform scale for analysis.
 
 ```{r}
 hunan$Z.GDPPC <- scale(hunan$GDPPC) %>% 
   as.vector 
 ```
 
-The [*as.vector()*](https://www.rdocumentation.org/packages/pbdDMAT/versions/0.5-1/topics/as.vector) added to the end is to make sure that the data type we get out of this is a vector, that map neatly into out dataframe.
+Next, `as.vector()` is appended to ensure that the output data type is a vector, which can be easily integrated into our dataframe.
 
-Now, we are ready to plot the Moran scatterplot again by using the code chunk below.
+With the data properly prepared and formatted as a vector, we are now set to recreate the Moran scatterplot using the following code chunk. This approach ensures the data is suitable for spatial analysis and visualization in R.
 
 ```{r}
 nci2 <- moran.plot(hunan$Z.GDPPC, rswm_q,
@@ -299,20 +301,20 @@ The code chunks below show the steps to prepare a LISA cluster map.
 quadrant <- vector(mode="numeric",length=nrow(localMI))
 ```
 
-Next, derives the spatially lagged variable of interest (i.e. GDPPC) and centers the spatially lagged variable around its mean.
+Next, we calculate the spatially lagged GDP per capita by taking the weighted average of the GDP per capita from neighboring areas. We then center this lagged value by subtracting its mean, which helps in standardizing the data for analysis.
 
 ```{r}
 hunan$lag_GDPPC <- lag.listw(rswm_q, hunan$GDPPC)
 DV <- hunan$lag_GDPPC - mean(hunan$lag_GDPPC)     
 ```
 
-This is follow by centering the local Moran’s around the mean.
+This is followed by centering the local Moran’s around the mean.
 
 ```{r}
 LM_I <- localMI[,1] - mean(localMI[,1])    
 ```
 
-Next, we will set a statistical significance level for the local Moran.
+Next, let's set a statistical significance level for the local Moran.
 
 ```{r}
 signif <- 0.05       
@@ -327,13 +329,13 @@ quadrant[DV <0 & LM_I<0] <- 3
 quadrant[DV >0 & LM_I>0] <- 4      
 ```
 
-Lastly, places non-significant Moran in the category 0.
+Lastly, places the non-significant Moran in category 0.
 
 ```{r}
 quadrant[localMI[,5]>signif] <- 0
 ```
 
-In fact, we can combined all the steps into one single code chunk as shown below:
+Actually, all the steps can be combined into one single code chunk as shown below:
 
 ```{r}
 quadrant <- vector(mode="numeric",length=nrow(localMI))
@@ -350,7 +352,7 @@ quadrant[localMI[,5]>signif] <- 0
 
 ## 5.4 Plotting LISA map
 
-Now, we can build the LISA map by using the code chunks below.
+Let's build the LISA map by using the code chunk below.
 
 ```{r}
 hunan.localMI$quadrant <- quadrant
@@ -367,9 +369,7 @@ tm_shape(hunan.localMI) +
   tm_borders(alpha=0.5)
 ```
 
-For effective interpretation, it is better to plot both the local Moran’s I values map and its corresponding p-values map next to each other.
-
-The code chunk below will be used to create such visualisation.
+To make for a better interpretation, we can display the local Moran's I values map alongside its corresponding p-values map. This side-by-side layout enhances the analysis by allowing direct visual comparison of spatial autocorrelation with the significance of these patterns.
 
 ```{r}
 gdppc <- qtm(hunan, "GDPPC")
@@ -391,15 +391,11 @@ tmap_arrange(gdppc, LISAmap,
              asp=1, ncol=2)
 ```
 
-We can also include the local Moran’s I map and p-value map as shown below for easy comparison.
-
-> Question: What statistical observations can you draw from the LISA map above?
+> Areas highlighted in red are regions where the GDP per capita is high, and they are also surrounded by other areas with high GDP per capita. Most of the dark orange areas in the GDPPC map correspond to the red regions in the LISA map, reinforcing their status as economically prosperous clusters.
 
 # **6. Hot Spot and Cold Spot Area Analysis**
 
-Beside detecting cluster and outliers, localised spatial statistics can be also used to detect hot spot and/or cold spot areas.
-
-The term ‘hot spot’ has been used generically across disciplines to describe a region or value that is higher relative to its surroundings (Lepers et al 2005, Aben et al 2012, Isobe et al 2015).
+Aside from cluster and outlier detection, localized spatial statistics can also be used to detect hot spot and/or cold spot areas.
 
 ## 6.1 Getis and Ord’s G-Statistics
 
