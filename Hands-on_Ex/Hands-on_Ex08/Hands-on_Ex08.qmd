@@ -1,0 +1,11 @@
+---
+title: "Hands-on Exercise 8: Local Measures of Spatial Autocorrelation"
+author: "Lorielle Malveda"
+date: "September 23, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
+---
