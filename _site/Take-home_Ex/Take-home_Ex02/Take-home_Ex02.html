@@ -242,6 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#importing-the-datasets" id="toc-importing-the-datasets" class="nav-link" data-scroll-target="#importing-the-datasets">2.2 Importing the Datasets</a>
   <ul class="collapse">
   <li><a href="#boundaries-data" id="toc-boundaries-data" class="nav-link" data-scroll-target="#boundaries-data">BOUNDARIES DATA</a></li>
+  <li><a href="#tourism" id="toc-tourism" class="nav-link" data-scroll-target="#tourism">TOURISM</a></li>
   </ul></li>
   <li><a href="#performing-a-relational-join" id="toc-performing-a-relational-join" class="nav-link" data-scroll-target="#performing-a-relational-join">2.3 Performing a Relational Join</a></li>
   <li><a href="#adding-derived-variables" id="toc-adding-derived-variables" class="nav-link" data-scroll-target="#adding-derived-variables">2.4 Adding Derived Variables</a></li>
@@ -273,7 +274,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#plotting-the-lisa-map" id="toc-plotting-the-lisa-map" class="nav-link" data-scroll-target="#plotting-the-lisa-map">PLOTTING THE LISA MAP</a></li>
   </ul></li>
   </ul></li>
-  <li><a href="#hot-spot-and-cold-spot-area-analysis" id="toc-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#hot-spot-and-cold-spot-area-analysis">6. HOT SPOT AND COLD SPOT AREA ANALYSIS</a></li>
+  <li><a href="#emerging-hot-spot-and-cold-spot-area-analysis" id="toc-emerging-hot-spot-and-cold-spot-area-analysis" class="nav-link" data-scroll-target="#emerging-hot-spot-and-cold-spot-area-analysis">6. EMERGING HOT SPOT AND COLD SPOT AREA ANALYSIS</a>
+  <ul class="collapse">
+  <li><a href="#creating-a-spacetime-s3-class-of-sfdep" id="toc-creating-a-spacetime-s3-class-of-sfdep" class="nav-link" data-scroll-target="#creating-a-spacetime-s3-class-of-sfdep">6.1 Creating a Spacetime s3 Class of <em>sfdep</em></a></li>
+  <li><a href="#using-emerging_hotspot_analysis" id="toc-using-emerging_hotspot_analysis" class="nav-link" data-scroll-target="#using-emerging_hotspot_analysis">6.2 Using <code>emerging_hotspot_analysis()</code></a>
+  <ul class="collapse">
+  <li><a href="#in-terms-of-revenue" id="toc-in-terms-of-revenue" class="nav-link" data-scroll-target="#in-terms-of-revenue">IN TERMS OF REVENUE</a></li>
+  <li><a href="#in-terms-of-number-of-thai-tourists" id="toc-in-terms-of-number-of-thai-tourists" class="nav-link" data-scroll-target="#in-terms-of-number-of-thai-tourists">IN TERMS OF NUMBER OF THAI TOURISTS</a></li>
+  </ul></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -366,6 +375,9 @@ Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
 Geodetic CRS:  WGS 84</code></pre>
 </div>
 </div>
+</section>
+<section id="tourism" class="level3">
+<h3 class="anchored" data-anchor-id="tourism">TOURISM</h3>
 <p>This code chunk reads the CSV file of tourism statistics for Thailand.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tourism <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/archive/thailand_domestic_tourism_2019_2023_ver2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -396,7 +408,7 @@ Geodetic CRS:  WGS 84</code></pre>
 </section>
 <section id="adding-derived-variables" class="level2">
 <h2 class="anchored" data-anchor-id="adding-derived-variables">2.4 Adding Derived Variables</h2>
-<p>The code snippet below creates a new column called <code>year_group</code> in the <code>map_left_joined</code> dataframe. The <code>mutate()</code> function from the <strong>dplyr</strong> package is used to categorize the <code>year</code> values into three groups: 2019, 2020-2021, and 2022-2023. These year groups were created to reflect key periods in Thailand’s tourism industry: 2019 represents the <strong>pre-pandemic</strong> period, 2020-2021 captures the <strong>pandemic</strong> period, and 2022-2023 represents the time when <strong>tourism numbers started to recover</strong>.</p>
+<p>This code creates a new variable <code>year</code> in the <code>map_left_joined</code> dataset by assigning each value of <code>Year</code> to its corresponding string representation (e.g., “2019” for 2019, “2020” for 2020, etc.).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>map_left_joined <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year =</span> <span class="fu">case_when</span>(</span>
@@ -407,6 +419,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    Year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2023</span>) <span class="sc">~</span> <span class="st">"2023"</span></span>
 <span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>This code creates a summarized dataset (<code>summarized_data</code>) by grouping the data in <code>map_left_joined</code> based on <code>ADM1_EN</code> (spatial location) and <code>year</code>, and then calculating the <strong>sum</strong> for several tourism-related variables (<code>no_tourist_all</code>, <code>no_tourist_foreign</code>, <code>no_tourist_stay</code>, <code>no_tourist_thai</code>, <code>revenue_all</code>, <code>revenue_foreign</code>, and <code>revenue_thai</code>) for each group, while handling missing values by setting <code>na.rm = TRUE</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>summarized_data <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, year) <span class="sc">%&gt;%</span></span>
@@ -421,13 +434,12 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>This code arranges the <code>summarized_data</code> dataset first by <code>year</code> and then by <code>ADM1_EN</code>, ensuring that the data is sorted chronologically and spatially.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange summarized_data by year and then by ADM1_EN</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>summarized_data <span class="ot">&lt;-</span> summarized_data <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(year, ADM1_EN)</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the first few rows to ensure it is correctly arranged</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(summarized_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summarized_data <span class="ot">&lt;-</span> summarized_data <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(year, ADM1_EN)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(summarized_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Simple feature collection with 6 features and 9 fields
 Geometry type: MULTIPOLYGON
@@ -448,7 +460,7 @@ Projected CRS: WGS 84 / UTM zone 47N
 #   revenue_foreign &lt;dbl&gt;, revenue_thai &lt;dbl&gt;, geometry &lt;MULTIPOLYGON [m]&gt;</code></pre>
 </div>
 </div>
-<p>The data is grouped by province (<code>ADM1_EN</code>) and year group (<code>year_group</code>), and then summarized to calculate the total number of tourists (both Thai and foreign), tourists who stayed, and total revenue (separated by Thai and foreign tourists) for each province and year group. Missing values are ignored in the calculation using <code>na.rm = TRUE</code>.</p>
+<p>The code snippet below creates a new column called <code>year_group</code> in the <code>map_left_joined</code> dataframe. The <code>mutate()</code> function from the <strong>dplyr</strong> package is used to categorize the <code>year</code> values into three groups: 2019, 2020-2021, and 2022-2023. These year groups were created to reflect key periods in Thailand’s tourism industry: 2019 represents the <strong>pre-pandemic</strong> period, 2020-2021 captures the <strong>pandemic</strong> period, and 2022-2023 represents the time when <strong>tourism numbers started to recover</strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tourism_final <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">case_when</span>(</span>
@@ -457,6 +469,7 @@ Projected CRS: WGS 84 / UTM zone 47N
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2022</span>,<span class="dv">2023</span>) <span class="sc">~</span> <span class="st">"2022-2023"</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p>The data is grouped by province (<code>ADM1_EN</code>) and year group (<code>year_group</code>), and then summarized to calculate the total number of tourists (both Thai and foreign), tourists who stayed, and total revenue (separated by Thai and foreign tourists) for each province and year group. Missing values are ignored in the calculation using <code>na.rm = TRUE</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tourism_final <span class="ot">&lt;-</span> tourism_final <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, Year) <span class="sc">%&gt;%</span></span>
@@ -588,7 +601,7 @@ W 76 5776 76 36.26113 315.652</code></pre>
 <section id="revenue" class="level3">
 <h3 class="anchored" data-anchor-id="revenue">REVENUE</h3>
 <p><strong>2019</strong></p>
-<p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2019 yields a Moran’s I statistic very close to zero, with a p-value of <strong>0.4057</strong>. This suggests no significant spatial autocorrelation, meaning the distribution of tourism revenue across Thailand’s regions in 2019 is random. There is no evidence of clustering or spatial dependence based on the standard Moran’s I test.</p>
+<p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2019 yields a Moran’s I statistic very close to zero, with a p-value of <strong>0.4055</strong>. This suggests no significant spatial autocorrelation, meaning the distribution of tourism revenue across Thailand’s regions in 2019 is random. There is no evidence of clustering or spatial dependence based on the standard Moran’s I test.</p>
 <p>The <strong>Monte Carlo simulation</strong> provides a slightly more refined result, with a p-value of <strong>0.084</strong>. Although closer to the significance threshold of 0.05, it is still not low enough to indicate meaningful spatial autocorrelation. Both tests ultimately suggest that there is no strong spatial clustering of tourism revenue per area in 2019, although the Monte Carlo result hints at a possible weak spatial pattern that may warrant further exploration.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>revenue_per_km2,</span>
@@ -631,7 +644,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 <p><strong>2022-2023</strong></p>
-<p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.0053</strong>, which is very close to zero. The p-value is <strong>0.3556</strong>, indicating no significant spatial autocorrelation. This suggests that the distribution of tourism revenue per area across regions in Thailand during the recovery period is random, with no evidence of clustering or spatial dependence.</p>
+<p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.0053</strong>, which is very close to zero. The p-value is <strong>0.3557</strong>, indicating no significant spatial autocorrelation. This suggests that the distribution of tourism revenue per area across regions in Thailand during the recovery period is random, with no evidence of clustering or spatial dependence.</p>
 <p>The <strong>Monte Carlo simulation</strong> provides a slightly more nuanced result, with a p-value of <strong>0.068</strong>. Although closer to significance, it still does not meet the 0.05 threshold for statistical significance. Overall, both the standard Moran’s I test and the Monte Carlo simulation suggest that there is no strong spatial clustering of tourism revenue per area in 2022-2023, though the Monte Carlo result hints at a potential weak spatial pattern that might require further exploration.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>revenue_per_km2, </span>
@@ -720,7 +733,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p><strong>2022-2023</strong></p>
 <p>The <strong>Moran’s I test</strong> for <strong>tourists per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.1014</strong>, with a p-value of <strong>0.01789</strong>. This indicates statistically significant <strong>positive spatial autocorrelation</strong>, suggesting that regions with higher densities of tourists tend to be spatially clustered. There is a clear pattern of tourist clustering in certain areas during the 2022-2023 recovery period.</p>
-<p>The <strong>Monte Carlo simulation</strong> further supports this finding, with a p-value of <strong>0.047</strong>, which is below the 0.05 threshold. This confirms the presence of significant spatial clustering of tourists per area in 2022-2023, reinforcing the result from the standard Moran’s I test.</p>
+<p>The Monte Carlo simulation yields a slightly higher p-value (0.068), indicating that while there is some evidence of spatial autocorrelation, it is not as strong as indicated by the standard Moran’s I test, although it’s close to significance.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>tourists_per_km2, </span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -1120,7 +1133,6 @@ alternative hypothesis: greater</code></pre>
 </section>
 <section id="tourists-who-stay-overnight" class="level3">
 <h3 class="anchored" data-anchor-id="tourists-who-stay-overnight">TOURISTS WHO STAY OVERNIGHT</h3>
-<p>In 2019, the <strong>ratio of tourists who stay overnight</strong> exhibited strong spatial autocorrelation, with significant clustering across provinces. By 2022-2023, this spatial clustering remained significant, though the strength of the spatial dependence had decreased. This suggests that while tourists who stay overnight were more concentrated in certain provinces in 2019, the distribution became somewhat more dispersed during the recovery period, but still followed a spatial pattern.</p>
 <p><strong>2019</strong></p>
 <p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for the <strong>ratio of tourists who stay overnight</strong> in 2019. While the Monte Carlo simulation indicates a possible weak spatial pattern, the overall findings suggest that the distribution of tourists who stay overnight was largely random across Thailand’s regions, with no clear clustering.</p>
 <div class="cell">
@@ -1474,6 +1486,7 @@ Yasothon                         0.4774</code></pre>
 </div>
 </div>
 </div>
+<p>The maps illustrate local Moran’s I statistics for Thailand, highlighting regions with significant spatial clustering of tourism-related data. The left map shows the degree of clustering, with stronger spatial autocorrelation in darker green areas, while the right map shows the statistical significance of these clusters, with dark blue areas indicating highly significant clusters (p-value &lt; 0.001). This suggests that certain regions exhibit strong and statistically significant patterns of similarity in tourism metrics compared to their neighboring areas.</p>
 </section>
 <section id="creating-a-lisa-cluster-map" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-lisa-cluster-map"><strong>5.3 Creating a LISA Cluster Map</strong></h2>
@@ -1492,12 +1505,14 @@ Yasothon                         0.4774</code></pre>
 </div>
 </div>
 </div>
+<p>Bangkok falls in the High-High quadrant, meaning both Bangkok and its neighboring regions have high values. The lower-left area represents Low-Low regions, where both the province and its neighbors exhibit low values.</p>
 </section>
 <section id="plotting-moran-scatterplot-with-a-standardized-variable" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-moran-scatterplot-with-a-standardized-variable">PLOTTING MORAN SCATTERPLOT WITH A STANDARDIZED VARIABLE</h3>
+<p>This code standardizes the <strong>tourists_per_km2</strong> variable by converting it into z-scores (stored in <code>Z.TOURISTS</code>) and then creates a Moran scatterplot using the <strong>moran.plot()</strong> function to visualize the relationship between the z-scores and their spatially lagged values for each region.</p>
+<p>The plot labels each region and shows how tourist densities are spatially distributed in 2022 and 2023, with the results being the same as the previous scatterplot.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023<span class="sc">$</span>Z.TOURISTS <span class="ot">&lt;-</span> <span class="fu">scale</span>(data_in_2022_and_2023<span class="sc">$</span>tourists_per_km2) <span class="sc">%&gt;%</span> </span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>  as.vector </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023<span class="sc">$</span>Z.TOURISTS <span class="ot">&lt;-</span> <span class="fu">scale</span>(data_in_2022_and_2023<span class="sc">$</span>tourists_per_km2) <span class="sc">%&gt;%</span> as.vector </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>nci2 <span class="ot">&lt;-</span> <span class="fu">moran.plot</span>(data_in_2022_and_2023<span class="sc">$</span>Z.TOURISTS, rswm_q,</span>
@@ -1530,6 +1545,7 @@ Yasothon                         0.4774</code></pre>
 </section>
 <section id="plotting-the-lisa-map" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-the-lisa-map">PLOTTING THE LISA MAP</h3>
+<p>The <strong>red areas (high-high)</strong> indicate regions with high values surrounded by other high-value areas, and the <strong>blue areas (low-high)</strong> indicate regions with low values surrounded by high-value neighbors.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023.localMI<span class="sc">$</span>quadrant <span class="ot">&lt;-</span> quadrant</span>
 <span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#ffffff"</span>, <span class="st">"#2c7bb6"</span>, <span class="st">"#abd9e9"</span>, <span class="st">"#fdae61"</span>, <span class="st">"#d7191c"</span>)</span>
@@ -1552,7 +1568,7 @@ Yasothon                         0.4774</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(data_in_2022_and_2023, <span class="st">"thai_tourist_per_km2"</span>)</span>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>thai_tourist <span class="ot">&lt;-</span> <span class="fu">qtm</span>(data_in_2022_and_2023, <span class="st">"thai_tourist_per_km2"</span>)</span>
 <span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023.localMI<span class="sc">$</span>quadrant <span class="ot">&lt;-</span> quadrant</span>
 <span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#ffffff"</span>, <span class="st">"#2c7bb6"</span>, <span class="st">"#abd9e9"</span>, <span class="st">"#fdae61"</span>, <span class="st">"#d7191c"</span>)</span>
@@ -1567,7 +1583,7 @@ Yasothon                         0.4774</code></pre>
 <span id="cb93-13"><a href="#cb93-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_view</span>(<span class="at">set.zoom.limits =</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">17</span>)) <span class="sc">+</span></span>
 <span id="cb93-14"><a href="#cb93-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha=</span><span class="fl">0.5</span>)</span>
 <span id="cb93-15"><a href="#cb93-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, LISAmap, </span>
+<span id="cb93-16"><a href="#cb93-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(thai_tourist, LISAmap, </span>
 <span id="cb93-17"><a href="#cb93-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
@@ -1577,11 +1593,16 @@ Yasothon                         0.4774</code></pre>
 </div>
 </div>
 </div>
+<p>The maps reveal that the <strong>central region</strong> of Thailand shows the highest density of Thai tourists per km², and this area is also where significant spatial clusters (both high-high and low-high) are concentrated, as shown in the LISA analysis.</p>
 </section>
 </section>
 </section>
-<section id="hot-spot-and-cold-spot-area-analysis" class="level1">
-<h1>6. HOT SPOT AND COLD SPOT AREA ANALYSIS</h1>
+<section id="emerging-hot-spot-and-cold-spot-area-analysis" class="level1">
+<h1>6. EMERGING HOT SPOT AND COLD SPOT AREA ANALYSIS</h1>
+<p><strong>Hot Spot and Cold Spot Area Analysis</strong> identifies regions where values are significantly higher (hot spots) or lower (cold spots) than expected, revealing important spatial patterns. This method is essential for detecting areas of intense activity or underdevelopment, guiding targeted interventions and informed decision-making.</p>
+<section id="creating-a-spacetime-s3-class-of-sfdep" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-spacetime-s3-class-of-sfdep">6.1 Creating a Spacetime s3 Class of <em>sfdep</em></h2>
+<p>In this section, we are going to create a <strong>spacetime s3 class</strong> to analyze the spatial and temporal patterns of our data.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="co"># replicate the guerry dataset 10 times</span></span>
 <span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1</span>, <span class="sc">~</span>summarized_data) <span class="sc">|&gt;</span> </span>
@@ -1651,8 +1672,19 @@ Projected CRS: WGS 84 / UTM zone 47N
 <pre><code>[1] TRUE</code></pre>
 </div>
 </div>
+<p>The Spacetime cube we created is used for emerging hot spot analysis as below.</p>
+</section>
+<section id="using-emerging_hotspot_analysis" class="level2">
+<h2 class="anchored" data-anchor-id="using-emerging_hotspot_analysis">6.2 Using <code>emerging_hotspot_analysis()</code></h2>
+<section id="in-terms-of-revenue" class="level3">
+<h3 class="anchored" data-anchor-id="in-terms-of-revenue">IN TERMS OF REVENUE</h3>
+<p>We will be using the <strong><code>emerging_hotspot_analysis()</code></strong> function for two key reasons. First, while manual calculations focus on spatial neighbors, this function allows us to incorporate the <strong>time-lag</strong> of our spatial neighbors, providing a more dynamic view of how patterns evolve. Second, it follows <strong>ESRI’s classifications</strong> to help us understand the changes in each location over time, such as whether a hotspot is emerging, intensifying, or persisting.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a><span class="fu">emerging_hotspot_analysis</span>(spt, <span class="st">"revenue_all"</span>, <span class="at">threshold =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>hotspot_coldspot_revenue <span class="ot">&lt;-</span> <span class="fu">emerging_hotspot_analysis</span>(spt, <span class="st">"revenue_all"</span>, <span class="at">threshold =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>A <strong>persistent hotspot</strong> is detected in <strong>Kanchanaburi</strong>, indicating a sustained high level of activity in this area. Additionally, there are several regions exhibiting <strong>consecutive coldspots</strong>, including <strong>Surat Thani</strong>, <strong>Prachuap Khiri Khan</strong>, <strong>Phichit</strong>, <strong>Ratchaburi</strong>, <strong>Mae Hong Son</strong>, <strong>Nong Khai</strong>, <strong>Maha Sarakham</strong>, <strong>Chaiyaphum</strong>, and <strong>Udon Thani</strong>, where low activity persists over time.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hotspot_coldspot_revenue,<span class="dv">77</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 77 × 4
    location                    tau p_value classification     
@@ -1670,8 +1702,137 @@ Projected CRS: WGS 84 / UTM zone 47N
 # ℹ 67 more rows</code></pre>
 </div>
 </div>
+<p>The majority of the perovinces (39) show <strong>no clear pattern</strong>, while 18 provinces exhibit a <strong>consecutive coldspot</strong>, indicating a sustained period of low revenue. Additionally, there is 1 <strong>persistent hotspot</strong>, 8 <strong>sporadic coldspots</strong>, and 11 <strong>sporadic hotspots</strong>, reflecting provinces with intermittent patterns of high or low revenue.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(hotspot_coldspot_revenue,classification)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  classification           n
+  &lt;chr&gt;                &lt;int&gt;
+1 consecutive coldspot    10
+2 new coldspot             1
+3 no pattern detected     47
+4 persistent hotspot       1
+5 sporadic coldspot        8
+6 sporadic hotspot        10</code></pre>
+</div>
+</div>
+</section>
+<section id="in-terms-of-number-of-thai-tourists" class="level3">
+<h3 class="anchored" data-anchor-id="in-terms-of-number-of-thai-tourists">IN TERMS OF NUMBER OF THAI TOURISTS</h3>
+<p>Next, let’s check for hotspots in terms of the <strong>number of Thai tourists</strong>. Identifying these hotspots will be highly beneficial for Thailand’s Department of Tourism, as it will help them better understand where Thai tourist activity is concentrated, enabling more effective resource allocation, marketing strategies, and infrastructure development in high-demand areas. Additionally, pinpointing coldspots could inform efforts to promote tourism in less-visited regions, thereby encouraging a more balanced distribution of tourist activities across the country.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_dfr</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">1</span>, <span class="sc">~</span>summarized_data) <span class="sc">|&gt;</span> </span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(ADM1_EN, no_tourist_thai) <span class="sc">|&gt;</span> </span>
+<span id="cb106-3"><a href="#cb106-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-4"><a href="#cb106-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">time_period =</span> <span class="fu">sort</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="dv">77</span>)), </span>
+<span id="cb106-5"><a href="#cb106-5" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb106-6"><a href="#cb106-6" aria-hidden="true" tabindex="-1"></a>         <span class="at">no_tourist_thai =</span> no_tourist_thai <span class="sc">*</span> <span class="fu">runif</span>(<span class="dv">77</span>, <span class="at">max =</span> <span class="dv">2</span>))</span>
+<span id="cb106-7"><a href="#cb106-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb106-8"><a href="#cb106-8" aria-hidden="true" tabindex="-1"></a>x</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 385 features and 3 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 325178.8 ymin: 620860.6 xmax: 1213656 ymax: 2263241
+Projected CRS: WGS 84 / UTM zone 47N
+# A tibble: 385 × 4
+   ADM1_EN       no_tourist_thai                            geometry time_period
+ * &lt;chr&gt;                   &lt;dbl&gt;                  &lt;MULTIPOLYGON [m]&gt;       &lt;int&gt;
+ 1 Amnat Charoen         541640. (((1137720 1809629, 1137724 180962…           1
+ 2 Ang Thong             485643. (((643472.8 1636469, 643496 163642…           1
+ 3 Bangkok             25631077. (((674339.8 1543300, 674382.3 1543…           1
+ 4 Bueng Kan             265870. (((965496 2045531, 965625.5 204552…           1
+ 5 Buri Ram               67457. (((921217 1750212, 921217 1750211,…           1
+ 6 Chachoengsao         5842004. (((722656.1 1546054, 722796 154604…           1
+ 7 Chai Nat             1580227. (((620165.4 1704256, 620291.4 1704…           1
+ 8 Chaiyaphum           3054113. (((772997.4 1851276, 773104.5 1851…           1
+ 9 Chanthaburi          2460677. (((853764.8 1360716, 853783.1 1360…           1
+10 Chiang Mai             72880. (((554883.3 2226795, 555000.6 2226…           1
+# ℹ 375 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_drop_geometry</span>(x)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>spt <span class="ot">&lt;-</span> <span class="fu">spacetime</span>(</span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">.data =</span> df,            </span>
+<span id="cb109-3"><a href="#cb109-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">.geometry =</span> map,        </span>
+<span id="cb109-4"><a href="#cb109-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">.loc_col =</span> <span class="st">"ADM1_EN"</span>,   </span>
+<span id="cb109-5"><a href="#cb109-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">.time_col =</span> <span class="st">"time_period"</span>  </span>
+<span id="cb109-6"><a href="#cb109-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb109-7"><a href="#cb109-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-8"><a href="#cb109-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb109-9"><a href="#cb109-9" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(spt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 385 × 3
+   ADM1_EN       no_tourist_thai time_period
+ * &lt;chr&gt;                   &lt;dbl&gt;       &lt;int&gt;
+ 1 Amnat Charoen         541640.           1
+ 2 Ang Thong             485643.           1
+ 3 Bangkok             25631077.           1
+ 4 Bueng Kan             265870.           1
+ 5 Buri Ram               67457.           1
+ 6 Chachoengsao         5842004.           1
+ 7 Chai Nat             1580227.           1
+ 8 Chaiyaphum           3054113.           1
+ 9 Chanthaburi          2460677.           1
+10 Chiang Mai             72880.           1
+# ℹ 375 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is_spacetime_cube</span>(spt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>hotspot_coldspot_thai_tourist <span class="ot">&lt;-</span> <span class="fu">emerging_hotspot_analysis</span>(spt, <span class="st">"no_tourist_thai"</span>, <span class="at">threshold =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>hotspot_coldspot_thai_tourist</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 77 × 4
+   location                   tau p_value classification     
+   &lt;chr&gt;                    &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;              
+ 1 Bangkok                  0       1     sporadic coldspot  
+ 2 Samut Prakan             0.200   0.806 no pattern detected
+ 3 Nonthaburi               0.200   0.806 sporadic hotspot   
+ 4 Pathum Thani             0.400   0.462 no pattern detected
+ 5 Phra Nakhon Si Ayutthaya 0.200   0.806 sporadic hotspot   
+ 6 Ang Thong                0.200   0.806 sporadic hotspot   
+ 7 Lop Buri                 0.400   0.462 no pattern detected
+ 8 Sing Buri                0.200   0.806 sporadic hotspot   
+ 9 Chai Nat                 0.200   0.806 no pattern detected
+10 Saraburi                 0.400   0.462 no pattern detected
+# ℹ 67 more rows</code></pre>
+</div>
+</div>
+<p>The table displays the results of the hotspot and coldspot analysis based on the number of Thai tourists. It shows that most regions (29) have no clear pattern detected, while 22 regions exhibit sporadic hotspots, indicating occasional high tourist activity. Additionally, there are 10 sporadic coldspots and 8 regions with consecutive coldspots, which reflect persistent low tourist activity, while 3 persistent hotspots signal consistently high tourist activity in specific regions.</p>
+<p>The persistent hotspots are: Bueng Kan, Sakon Nakhon, and Kanchanaburi. New hotspot is the province of Lamphun.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="fu">count</span>(hotspot_coldspot_thai_tourist, classification)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 2
+  classification           n
+  &lt;chr&gt;                &lt;int&gt;
+1 consecutive coldspot     8
+2 consecutive hotspot      1
+3 new hotspot              1
+4 no pattern detected     29
+5 oscilating hotspot       2
+6 persistent coldspot      1
+7 persistent hotspot       3
+8 sporadic coldspot       10
+9 sporadic hotspot        22</code></pre>
+</div>
+</div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
