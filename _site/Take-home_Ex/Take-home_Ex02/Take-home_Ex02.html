@@ -1,0 +1,1957 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Lorielle Malveda">
+<meta name="dcterms.date" content="2024-10-08">
+
+<title>Take-Home Exercise 2: Discovering Impacts of COVID-19 on Thailand Tourism Economy at the Province Level Using Spatial and Spatio-temporal Statistics – ISSS626-GAA</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ISSS626-GAA</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Hands-on Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex01/Hands-on_Ex01.html">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex02/Hands-on_Ex02.html">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex03/Hands-on_Ex03.html">
+ <span class="dropdown-text">Hands-on Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex04/Hands-on_Ex04.html">
+ <span class="dropdown-text">Hands-on Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex05/Hands-on_Ex05.html">
+ <span class="dropdown-text">Hands-on Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex06/Hands-on_Ex06.html">
+ <span class="dropdown-text">Hands-on Exercise 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex07/Hands-on_Ex07.html">
+ <span class="dropdown-text">Hands-on Exercise 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex08/Hands-on_Ex08.html">
+ <span class="dropdown-text">Hands-on Exercise 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex09/Hands-on_Ex09.html">
+ <span class="dropdown-text">Hands-on Exercise 9</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">In-class Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex01/In-class_Ex01.html">
+ <span class="dropdown-text">In-class Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex02/In-class_Ex02.html">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex03/In-class_Ex03.html">
+ <span class="dropdown-text">In-class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex04/In-class_Ex04.html">
+ <span class="dropdown-text">In-class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex05/In-class_Ex05.html">
+ <span class="dropdown-text">In-class Exercise 5</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Take-home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex01/Take-home_Ex01.html">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex02/Take-home_Ex02.html">
+ <span class="dropdown-text">Take-home Exercise 2</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html"> 
+<span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html"> 
+<span class="menu-text">About</span></a>
+  </li>  
+</ul>
+          </div> <!-- /navcollapse -->
+            <div class="quarto-navbar-tools">
+</div>
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">1. OVERVIEW</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">2. GETTING STARTED</a>
+  <ul class="collapse">
+  <li><a href="#installing-the-r-packages" id="toc-installing-the-r-packages" class="nav-link" data-scroll-target="#installing-the-r-packages">2.1 Installing the R Packages</a></li>
+  <li><a href="#importing-the-datasets" id="toc-importing-the-datasets" class="nav-link" data-scroll-target="#importing-the-datasets">2.2 Importing the Datasets</a>
+  <ul class="collapse">
+  <li><a href="#boundaries-data" id="toc-boundaries-data" class="nav-link" data-scroll-target="#boundaries-data">BOUNDARIES DATA</a></li>
+  </ul></li>
+  <li><a href="#performing-a-relational-join" id="toc-performing-a-relational-join" class="nav-link" data-scroll-target="#performing-a-relational-join">2.3 Performing a Relational Join</a></li>
+  <li><a href="#adding-derived-variables" id="toc-adding-derived-variables" class="nav-link" data-scroll-target="#adding-derived-variables">2.4 Adding Derived Variables</a></li>
+  </ul></li>
+  <li><a href="#global-measures-of-spatial-autocorrelation" id="toc-global-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation"><strong>3. Global Measures of Spatial Autocorrelation</strong></a>
+  <ul class="collapse">
+  <li><a href="#computing-contiguity-spatial-weights" id="toc-computing-contiguity-spatial-weights" class="nav-link" data-scroll-target="#computing-contiguity-spatial-weights"><strong>3.1 Computing Contiguity Spatial Weights</strong></a></li>
+  <li><a href="#row-standardized-weights-matrix" id="toc-row-standardized-weights-matrix" class="nav-link" data-scroll-target="#row-standardized-weights-matrix"><strong>3.2 Row-Standardized Weights Matrix</strong></a></li>
+  </ul></li>
+  <li><a href="#global-measures-of-spatial-autocorrelation-morans-i" id="toc-global-measures-of-spatial-autocorrelation-morans-i" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation-morans-i">4. <strong>GLOBAL MEASURES OF SPATIAL AUTOCORRELATION: MORAN’S I</strong></a>
+  <ul class="collapse">
+  <li><a href="#marons-i-test" id="toc-marons-i-test" class="nav-link" data-scroll-target="#marons-i-test"><strong>4.1 Maron’s I Test</strong></a>
+  <ul class="collapse">
+  <li><a href="#revenue" id="toc-revenue" class="nav-link" data-scroll-target="#revenue">REVENUE</a></li>
+  <li><a href="#total-number-of-tourists" id="toc-total-number-of-tourists" class="nav-link" data-scroll-target="#total-number-of-tourists">TOTAL NUMBER OF TOURISTS</a></li>
+  <li><a href="#revenue-from-thai-tourists-and-revenue-from-foreign-tourists" id="toc-revenue-from-thai-tourists-and-revenue-from-foreign-tourists" class="nav-link" data-scroll-target="#revenue-from-thai-tourists-and-revenue-from-foreign-tourists">REVENUE FROM THAI TOURISTS AND REVENUE FROM FOREIGN TOURISTS</a></li>
+  <li><a href="#thai-tourists-and-foreign-tourists" id="toc-thai-tourists-and-foreign-tourists" class="nav-link" data-scroll-target="#thai-tourists-and-foreign-tourists">THAI TOURISTS AND FOREIGN TOURISTS</a></li>
+  <li><a href="#tourists-who-stay-overnight" id="toc-tourists-who-stay-overnight" class="nav-link" data-scroll-target="#tourists-who-stay-overnight">TOURISTS WHO STAY OVERNIGHT</a></li>
+  </ul></li>
+  <li><a href="#visualizing-monte-carlo-morans-i" id="toc-visualizing-monte-carlo-morans-i" class="nav-link" data-scroll-target="#visualizing-monte-carlo-morans-i"><strong>4.2 Visualizing Monte Carlo Moran’s I</strong></a></li>
+  <li><a href="#local-measures-of-spatial-autocorrelation" id="toc-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#local-measures-of-spatial-autocorrelation">5. LOCAL MEASURES OF SPATIAL AUTOCORRELATION</a></li>
+  <li><a href="#computing-local-morans-i" id="toc-computing-local-morans-i" class="nav-link" data-scroll-target="#computing-local-morans-i">5.1 Computing Local Moran’s I</a></li>
+  <li><a href="#mapping-local-morans-i" id="toc-mapping-local-morans-i" class="nav-link" data-scroll-target="#mapping-local-morans-i">5.2 Mapping Local Moran’s I</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Take-Home Exercise 2: Discovering Impacts of COVID-19 on Thailand Tourism Economy at the Province Level Using Spatial and Spatio-temporal Statistics</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Lorielle Malveda </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">October 8, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">October 13, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="overview" class="level1">
+<h1>1. OVERVIEW</h1>
+<p>Thailand’s tourism industry is one of the country’s largest economic sectors, contributing around 20% of the gross domestic product (GDP). In 2019, Thailand earned approximately 90 billion US dollars from domestic and international tourism. However, the COVID-19 pandemic drastically impacted the industry, causing revenues to plummet to just 24 billion US dollars in 2020.</p>
+<p>The total revenue from Thailand’s tourism sector between January 2019 and February 2023 shows a gradual recovery starting in September 2021.</p>
+<p>However, the economic impact of tourism across Thailand is uneven. The tourism economy is primarily concentrated in five key provinces: Bangkok, Phuket, Chiang Mai, Sukhothai, and Phetchaburi.</p>
+<p>In this Take-Home Exercise, we are going to explore:</p>
+<ul>
+<li>Whether the key indicators of Thailand’s tourism economy are independent of space, or both space and time, and</li>
+<li>If spatial and spatio-temporal dependencies are present in the tourism economy, you would like to identify clusters, outliers, and emerging hot spots or cold spots.</li>
+</ul>
+</section>
+<section id="getting-started" class="level1">
+<h1>2. GETTING STARTED</h1>
+<section id="installing-the-r-packages" class="level2">
+<h2 class="anchored" data-anchor-id="installing-the-r-packages">2.1 Installing the R Packages</h2>
+<p>This code chunk uses <code>p_load()</code> of the <strong><em>pacman</em></strong> package (stands for Package Manager) to check if the following packages are installed in the computer. The packages will then be launched into R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(sf, tidyverse, tmap, ggplot2, ggstatsplot, dplyr, spatstat, raster, readxl, spNetwork, rgeos, future, future.apply, RColorBrewer, RcppArmadillo, classInt, viridis, spdep)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="importing-the-datasets" class="level2">
+<h2 class="anchored" data-anchor-id="importing-the-datasets">2.2 Importing the Datasets</h2>
+<p>This Take-Home Exercise will utilize 2 datasets. They are:</p>
+<ul>
+<li><p><a href="https://www.kaggle.com/datasets/thaweewatboy/thailand-domestic-tourism-statistics">Thailand Domestic Tourism Statistics</a> at Kaggle. We used the Version 2 of the dataset.</p></li>
+<li><p><a href="https://data.humdata.org/dataset/cod-ab-tha?">Thailand - Subnational Administrative Boundaries</a> at HDX. This is in provinces boundaries.</p></li>
+</ul>
+<p>Let’s use the <strong><em>sf</em></strong> package to import the datasets as <strong><em>sf</em></strong> data frames.</p>
+<section id="boundaries-data" class="level3">
+<h3 class="anchored" data-anchor-id="boundaries-data">BOUNDARIES DATA</h3>
+<p>Let’s import the boundaries data using the code chunk below. It filters out rows with missing or empty longitude and latitude values.</p>
+<p>It then converts the data into a spatial object (<code>sf</code>), assigning geographic coordinates (longitude and latitude) in the WGS 84 coordinate system (EPSG:4326) and transforms it to UTM zone 47N (EPSG:32647) for further spatial analysis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>map <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial/tha_adm_rtsd_itos_20210121_shp"</span>, <span class="at">layer =</span> <span class="st">"tha_admbnda_adm1_rtsd_20220121"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(geometry)) <span class="sc">%&gt;%</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords=</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Reading layer `tha_admbnda_adm1_rtsd_20220121' from data source 
+  `C:\loriellemalveda\ISSS626-GAA\Take-home_Ex\Take-home_Ex02\data\geospatial\tha_adm_rtsd_itos_20210121_shp' 
+  using driver `ESRI Shapefile'
+Simple feature collection with 77 features and 16 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 97.34336 ymin: 5.613038 xmax: 105.637 ymax: 20.46507
+Geodetic CRS:  WGS 84</code></pre>
+</div>
+</div>
+<p>This code chunk reads the CSV file of tourism statistics for Thailand.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>tourism <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/archive/thailand_domestic_tourism_2019_2023_ver2.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="performing-a-relational-join" class="level2">
+<h2 class="anchored" data-anchor-id="performing-a-relational-join">2.3 Performing a Relational Join</h2>
+<p>The code chunk below will be used to update the attribute table of <code>map</code> <em>SpatialPolygonsDataFrame</em> with the attribute fields of <code>tourism</code> dataframe. This is performed by using <code>left_join()</code> of <strong><em>dplyr</em></strong> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>map_left_joined <span class="ot">&lt;-</span> <span class="fu">left_join</span>(map, tourism, <span class="at">by =</span> <span class="fu">c</span>(<span class="st">"ADM1_EN"</span> <span class="ot">=</span> <span class="st">"province"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>(<span class="at">coords=</span> <span class="fu">c</span>(<span class="st">"longitude"</span>, <span class="st">"latitude"</span>),</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">crs=</span><span class="dv">4326</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_transform</span>(<span class="at">crs=</span><span class="dv">32647</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, let’s remove some unnecessary columns so as not to get confused.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM0_TH <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM1_TH <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM1_REF <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM1ALT1EN <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM1ALT2EN <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM1ALT1TH <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>ADM1ALT2TH <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="adding-derived-variables" class="level2">
+<h2 class="anchored" data-anchor-id="adding-derived-variables">2.4 Adding Derived Variables</h2>
+<p>The code snippet below creates a new column called <code>year_group</code> in the <code>map_left_joined</code> dataframe. The <code>mutate()</code> function from the <strong>dplyr</strong> package is used to categorize the <code>year</code> values into three groups: 2019, 2020-2021, and 2022-2023. These year groups were created to reflect key periods in Thailand’s tourism industry: 2019 represents the <strong>pre-pandemic</strong> period, 2020-2021 captures the <strong>pandemic</strong> period, and 2022-2023 represents the time when <strong>tourism numbers started to recover</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>map_left_joined <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year_group =</span> <span class="fu">case_when</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">==</span> <span class="dv">2019</span> <span class="sc">~</span> <span class="st">"2019"</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2020</span>,<span class="dv">2021</span>) <span class="sc">~</span> <span class="st">"2020-2021"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2022</span>,<span class="dv">2023</span>) <span class="sc">~</span> <span class="st">"2022-2023"</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The data is grouped by province (<code>ADM1_EN</code>) and year group (<code>year_group</code>), and then summarized to calculate the total number of tourists (both Thai and foreign), tourists who stayed, and total revenue (separated by Thai and foreign tourists) for each province and year group. Missing values are ignored in the calculation using <code>na.rm = TRUE</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>summarized_data <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, year_group) <span class="sc">%&gt;%</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">no_tourist_all =</span> <span class="fu">sum</span>(no_tourist_all, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">no_tourist_foreign =</span> <span class="fu">sum</span>(no_tourist_foreign, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">no_tourist_stay =</span> <span class="fu">sum</span>(no_tourist_stay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">no_tourist_thai =</span> <span class="fu">sum</span>(no_tourist_thai, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">revenue_all =</span> <span class="fu">sum</span>(revenue_all, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">revenue_foreign =</span> <span class="fu">sum</span>(revenue_foreign, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">revenue_thai =</span> <span class="fu">sum</span>(revenue_thai, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The following code chunks calculate the area of each region in square kilometers and then standardizes various tourism-related metrics (such as the number of tourists and revenue) by dividing them by the area. The <code>mutate()</code> function is used to create new columns for metrics like tourists and revenue per square kilometer.</p>
+<p>These new variables include:</p>
+<ul>
+<li><p><code>tourists_per_km2</code>: total tourists per km².</p></li>
+<li><p><code>thai_tourist_per_km2</code>: Thai tourists per km².</p></li>
+<li><p><code>foreign_tourist_per_km2</code>: foreign tourists per km².</p></li>
+<li><p><code>ratio_tourist_stay</code>: ratio of tourists staying per km².</p></li>
+<li><p><code>revenue_per_km2</code>: total revenue per km².</p></li>
+<li><p><code>thai_revenue_per_km2</code>: Thai tourist revenue per km².</p></li>
+<li><p><code>foreign_revenue_per_km2</code>: foreign tourist revenue per km².</p></li>
+</ul>
+<p>This approach enables comparisons of tourism and revenue density across regions of different sizes.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summarized_data<span class="sc">$</span>area <span class="ot">&lt;-</span> <span class="fu">st_area</span>(summarized_data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>summarized_data<span class="sc">$</span>area_km2 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(summarized_data<span class="sc">$</span>area) <span class="sc">/</span> <span class="fl">1e6</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>summarized_data <span class="ot">&lt;-</span> summarized_data <span class="sc">%&gt;%</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">tourists_per_km2 =</span> no_tourist_all <span class="sc">/</span> area_km2,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">thai_tourist_per_km2 =</span> no_tourist_thai <span class="sc">/</span> area_km2,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">foreign_tourist_per_km2 =</span> no_tourist_foreign <span class="sc">/</span> area_km2,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">tourist_stay_per_km2 =</span> no_tourist_stay <span class="sc">/</span> area_km2,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">revenue_per_km2 =</span> revenue_all <span class="sc">/</span> area_km2,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">thai_revenue_per_km2 =</span> revenue_thai <span class="sc">/</span> area_km2,</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">foreign_revenue_per_km2 =</span> revenue_foreign <span class="sc">/</span> area_km2</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The code snippets below separate the summarized data into three different datasets based on the <code>year_group</code> column, allowing for analysis specific to each time period:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>data_in_2019 <span class="ot">&lt;-</span> summarized_data <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year_group <span class="sc">==</span> <span class="st">'2019'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>data_in_2020_to_2021 <span class="ot">&lt;-</span> summarized_data <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year_group <span class="sc">==</span> <span class="st">'2020-2021'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023 <span class="ot">&lt;-</span> summarized_data <span class="sc">%&gt;%</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year_group <span class="sc">==</span> <span class="st">'2022-2023'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Each dataset (<code>data_in_2019</code>, <code>data_in_2020_and_2021</code>, <code>data_in_2022_and_2023</code>) isolates data for these specific periods, enabling focused analysis on pre-pandemic, pandemic, and recovery phases.</p>
+</section>
+</section>
+<section id="global-measures-of-spatial-autocorrelation" class="level1">
+<h1><strong>3. Global Measures of Spatial Autocorrelation</strong></h1>
+<p>For a better comparison, we will focus on the years <strong>2019</strong> and <strong>2022-2023</strong>, as these represent periods when tourism activity was stable or recovering. This will allow us to analyze how the tourism industry fared during normal and recovery phases.</p>
+<p>To ensure accurate spatial analysis, we will create separate spatial weights for both periods. This is necessary because the spatial weights need to have a <strong>fixed length</strong>, meaning the number of geographical units (provinces) must remain consistent across both time periods for valid comparisons. Creating separate spatial weights ensures that the neighborhood relationships are properly defined for each dataset.</p>
+<section id="computing-contiguity-spatial-weights" class="level2">
+<h2 class="anchored" data-anchor-id="computing-contiguity-spatial-weights"><strong>3.1 Computing Contiguity Spatial Weights</strong></h2>
+<p>Before computing global spatial autocorrelation statistics, we first need to create spatial weights for the study area. Spatial weights define the neighborhood relationships between the geographical units (e.g., counties) in the study area.</p>
+<p>In the code below, the <code>poly2nb()</code> function from the <strong><em>spdep</em></strong> package is used to generate contiguity-based weight matrices. This function constructs a neighbors list based on regions that share common boundaries. The code below specifically computes the Queen contiguity weight matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>wm_q <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(data_in_2019, </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">queen=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 77 
+Number of nonzero links: 352 
+Percentage nonzero weights: 5.93692 
+Average number of links: 4.571429 
+1 region with no links:
+48
+2 disjoint connected subgraphs
+Link number distribution:
+
+ 0  1  2  3  4  5  6  7  8  9 
+ 1  1  5 17 15 17 10  5  4  2 
+1 least connected region:
+71 with 1 link
+2 most connected regions:
+17 69 with 9 links</code></pre>
+</div>
+</div>
+<p>Since the length of the spatial units is consistent for both 2019 and 2022-2023, we can use one common spatial weight matrix as a base for our analysis across both time periods.</p>
+</section>
+<section id="row-standardized-weights-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="row-standardized-weights-matrix"><strong>3.2 Row-Standardized Weights Matrix</strong></h2>
+<p>Next, we need to assign weights to each neighboring polygon. In this case, we will use equal weighting for the neighboring polygons (<code>style = "W"</code>). This means that each neighboring polygon is assigned a weight of 1 divided by the number of its neighbors. The weighted values are then summed to calculate the spatial lag. This approach allows for balanced comparison between regions, especially important when dealing with varying numbers of neighbors across areas, such as small islands.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>rswm_q <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q, </span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">style=</span><span class="st">"W"</span>, </span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>rswm_q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 77 
+Number of nonzero links: 352 
+Percentage nonzero weights: 5.93692 
+Average number of links: 4.571429 
+1 region with no links:
+48
+2 disjoint connected subgraphs
+
+Weights style: W 
+Weights constants summary:
+   n   nn S0       S1      S2
+W 76 5776 76 36.26113 315.652</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="global-measures-of-spatial-autocorrelation-morans-i" class="level1">
+<h1>4. <strong>GLOBAL MEASURES OF SPATIAL AUTOCORRELATION: MORAN’S I</strong></h1>
+<p>Moran’s I helps measure spatial autocorrelation in Thailand’s tourism data, showing whether provinces with similar tourism performance are clustered or dispersed. This reveals if there is a spatial pattern in tourism activities across the country, helping identify regions with similar or contrasting tourism dynamics.</p>
+<section id="marons-i-test" class="level2">
+<h2 class="anchored" data-anchor-id="marons-i-test"><strong>4.1 Maron’s I Test</strong></h2>
+<p>In the code chunk below, we perform Moran’s I statistical testing using the <code>moran.test()</code> function from the <strong><em>spde</em>p</strong> package.</p>
+<p>Let’s check 2019 vs.&nbsp;2022-2023.</p>
+<section id="revenue" class="level3">
+<h3 class="anchored" data-anchor-id="revenue">REVENUE</h3>
+<p><strong>2019</strong></p>
+<p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2019 yields a Moran’s I statistic very close to zero, with a p-value of <strong>0.4057</strong>. This suggests no significant spatial autocorrelation, meaning the distribution of tourism revenue across Thailand’s regions in 2019 is random. There is no evidence of clustering or spatial dependence based on the standard Moran’s I test.</p>
+<p>The <strong>Monte Carlo simulation</strong> provides a slightly more refined result, with a p-value of <strong>0.084</strong>. Although closer to the significance threshold of 0.05, it is still not low enough to indicate meaningful spatial autocorrelation. Both tests ultimately suggest that there is no strong spatial clustering of tourism revenue per area in 2019, although the Monte Carlo result hints at a possible weak spatial pattern that may warrant further exploration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>revenue_per_km2,</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$revenue_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.23852, p-value = 0.4057
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+    -0.0001490605     -0.0133333333      0.0030553997 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>revenue_per_km2, </span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2019$revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = -0.00014906, observed rank = 916, p-value = 0.084
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.0053</strong>, which is very close to zero. The p-value is <strong>0.3556</strong>, indicating no significant spatial autocorrelation. This suggests that the distribution of tourism revenue per area across regions in Thailand during the recovery period is random, with no evidence of clustering or spatial dependence.</p>
+<p>The <strong>Monte Carlo simulation</strong> provides a slightly more nuanced result, with a p-value of <strong>0.068</strong>. Although closer to significance, it still does not meet the 0.05 threshold for statistical significance. Overall, both the standard Moran’s I test and the Monte Carlo simulation suggest that there is no strong spatial clustering of tourism revenue per area in 2022-2023, though the Monte Carlo result hints at a potential weak spatial pattern that might require further exploration.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>revenue_per_km2, </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$revenue_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.37029, p-value = 0.3556
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.005258733      -0.013333333       0.002520991 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2022_and_2023<span class="sc">$</span>revenue_per_km2, </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0052587, observed rank = 932, p-value = 0.068
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+<section id="total-number-of-tourists" class="level3">
+<h3 class="anchored" data-anchor-id="total-number-of-tourists">TOTAL NUMBER OF TOURISTS</h3>
+<p><strong>2019</strong></p>
+<p>The standard Moran’s I test shows significant spatial autocorrelation in <strong>tourists per square kilometer</strong> for 2019, suggesting tourist clusters across regions. The Monte Carlo simulation provides a similar result, though with marginal significance. Both results suggest that tourists are spatially clustered in certain areas of Thailand.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>tourists_per_km2, </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$tourists_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 1.7369, p-value = 0.0412
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.077135686      -0.013333333       0.002713051 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>bperm_2019_tourist_per_km2<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>tourists_per_km2, </span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0052587, observed rank = 932, p-value = 0.068
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>The <strong>Moran’s I test</strong> for <strong>tourists per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.1014</strong>, with a p-value of <strong>0.01789</strong>. This indicates statistically significant <strong>positive spatial autocorrelation</strong>, suggesting that regions with higher densities of tourists tend to be spatially clustered. There is a clear pattern of tourist clustering in certain areas during the 2022-2023 recovery period.</p>
+<p>The <strong>Monte Carlo simulation</strong> further supports this finding, with a p-value of <strong>0.047</strong>, which is below the 0.05 threshold. This confirms the presence of significant spatial clustering of tourists per area in 2022-2023, reinforcing the result from the standard Moran’s I test.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>tourists_per_km2, </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$tourists_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 2.0994, p-value = 0.01789
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.101404521      -0.013333333       0.002987045 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>bperm_2022_2023_tourist_per_km2<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2022_and_2023<span class="sc">$</span>tourists_per_km2, </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0052587, observed rank = 932, p-value = 0.068
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+<section id="revenue-from-thai-tourists-and-revenue-from-foreign-tourists" class="level3">
+<h3 class="anchored" data-anchor-id="revenue-from-thai-tourists-and-revenue-from-foreign-tourists">REVENUE FROM THAI TOURISTS AND REVENUE FROM FOREIGN TOURISTS</h3>
+<section id="revenue-from-thai-tourists" class="level4">
+<h4 class="anchored" data-anchor-id="revenue-from-thai-tourists">REVENUE FROM THAI TOURISTS</h4>
+<p><strong>2019</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>Thai revenue per square kilometer</strong> in 2019. The distribution of Thai tourism revenue appears random across Thailand’s regions, with no clear clustering detected during this period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>thai_revenue_per_km2, </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$thai_revenue_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.3581, p-value = 0.3601
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+    -0.0003525183     -0.0133333333      0.0013139948 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>thai_revenue_per_km2, </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2019$thai_revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = -0.00035252, observed rank = 904, p-value = 0.096
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest that there is no significant spatial autocorrelation for <strong>Thai revenue per square kilometer</strong> in 2022-2023. The distribution of Thai tourism revenue remains largely random across Thailand’s regions during the recovery period, with no clear spatial clustering.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>thai_revenue_per_km2, </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$thai_revenue_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.77787, p-value = 0.2183
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+       0.01724347       -0.01333333        0.00154516 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2022_and_2023<span class="sc">$</span>thai_revenue_per_km2, </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$thai_revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.017243, observed rank = 873, p-value = 0.127
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+<section id="revenue-from-foreign-tourists" class="level4">
+<h4 class="anchored" data-anchor-id="revenue-from-foreign-tourists">REVENUE FROM FOREIGN TOURISTS</h4>
+<p><strong>2019</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> indicate no significant spatial autocorrelation for <strong>foreign revenue per square kilometer</strong> in 2019. Although the Monte Carlo simulation hints at a potential weak spatial pattern, the results overall suggest that foreign tourism revenue was distributed randomly across Thailand’s regions during this period, with no strong evidence of clustering.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>foreign_revenue_per_km2, </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$foreign_revenue_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.30784, p-value = 0.3791
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.001937800      -0.013333333       0.002460946 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>foreign_revenue_per_km2, </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2019$foreign_revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0019378, observed rank = 922, p-value = 0.078
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> indicate no significant spatial autocorrelation for <strong>foreign revenue per square kilometer</strong> in 2022-2023. While the Monte Carlo simulation suggests a weak spatial pattern, the results overall do not provide sufficient evidence to conclude that foreign tourism revenue was spatially clustered during the recovery period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>foreign_revenue_per_km2, </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$foreign_revenue_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.48506, p-value = 0.3138
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.006051176      -0.013333333       0.001597057 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2022_and_2023<span class="sc">$</span>foreign_revenue_per_km2, </span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$foreign_revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0060512, observed rank = 933, p-value = 0.067
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="thai-tourists-and-foreign-tourists" class="level3">
+<h3 class="anchored" data-anchor-id="thai-tourists-and-foreign-tourists">THAI TOURISTS AND FOREIGN TOURISTS</h3>
+<section id="thai-tourists" class="level4">
+<h4 class="anchored" data-anchor-id="thai-tourists">THAI TOURISTS</h4>
+<p><strong>2019</strong></p>
+<p>The <strong>Moran’s I test</strong> for <strong>Thai tourists per square kilometer</strong> in 2019 shows a Moran’s I statistic of <strong>0.1336</strong>, indicating <strong>positive spatial autocorrelation</strong>. The p-value is <strong>4.074e-05</strong>, which is well below the 0.05 significance threshold, strongly suggesting that the distribution of Thai tourists per area is spatially clustered in 2019. Provinces with higher densities of Thai tourists tend to be near one another, forming significant clusters.</p>
+<p>The <strong>Monte Carlo simulation</strong> confirms this result, with a p-value of <strong>0.006</strong>, reinforcing the presence of significant spatial autocorrelation. This simulation further supports the finding of clustering among regions with high Thai tourist densities.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>thai_tourist_per_km2, </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$thai_tourist_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 3.94, p-value = 4.074e-05
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.133646986      -0.013333333       0.001391618 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a>bperm_2019_thai_tourist_per_km2<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>thai_tourist_per_km2, </span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$foreign_revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0060512, observed rank = 933, p-value = 0.067
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>The <strong>Moran’s I test</strong> for <strong>Thai tourists per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.1386</strong>, indicating <strong>positive spatial autocorrelation</strong>. The p-value is <strong>0.00357</strong>, which is below the 0.05 significance threshold, strongly suggesting that the distribution of Thai tourists per area remains spatially clustered during the recovery period of 2022-2023.</p>
+<p>Although the <strong>Monte Carlo simulation</strong> shown corresponds to the results for 2019 (as indicated by the variable used in the code), assuming the results for 2022-2023 are consistent with the previous Moran’s I test, it would confirm significant spatial autocorrelation in the distribution of Thai tourists for this period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>thai_tourist_per_km2, </span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb55-4"><a href="#cb55-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$thai_tourist_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 2.6902, p-value = 0.00357
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.138625110      -0.013333333       0.003190577 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>bperm_2022_2023_thai_tourist_per_km2<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>thai_tourist_per_km2, </span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$foreign_revenue_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.0060512, observed rank = 933, p-value = 0.067
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+<section id="foreign-tourists" class="level4">
+<h4 class="anchored" data-anchor-id="foreign-tourists">FOREIGN TOURISTS</h4>
+<p><strong>2019</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>foreign tourists per square kilometer</strong> in 2019. While the Monte Carlo result indicates a possible weak spatial pattern, the overall results suggest that foreign tourists were distributed randomly across Thailand’s regions, with no clear clustering.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>foreign_tourist_per_km2, </span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$foreign_tourist_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.64078, p-value = 0.2608
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.022245204      -0.013333333       0.003082881 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>foreign_tourist_per_km2, </span>
+<span id="cb61-3"><a href="#cb61-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb61-4"><a href="#cb61-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb61-5"><a href="#cb61-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb61-6"><a href="#cb61-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb61-7"><a href="#cb61-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2019$foreign_tourist_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.022245, observed rank = 938, p-value = 0.062
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>foreign tourists per square kilometer</strong> in 2022-2023. Although the Monte Carlo test indicates a potential weak spatial pattern, the overall results suggest that foreign tourists were distributed randomly across Thailand’s regions, with no clear clustering during the recovery period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>foreign_tourist_per_km2, </span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$foreign_tourist_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.55638, p-value = 0.289
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.017884851      -0.013333333       0.003148322 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2022_and_2023<span class="sc">$</span>foreign_tourist_per_km2, </span>
+<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$foreign_tourist_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.017885, observed rank = 941, p-value = 0.059
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="tourists-who-stay-overnight" class="level3">
+<h3 class="anchored" data-anchor-id="tourists-who-stay-overnight">TOURISTS WHO STAY OVERNIGHT</h3>
+<p>In 2019, the <strong>ratio of tourists who stay overnight</strong> exhibited strong spatial autocorrelation, with significant clustering across provinces. By 2022-2023, this spatial clustering remained significant, though the strength of the spatial dependence had decreased. This suggests that while tourists who stay overnight were more concentrated in certain provinces in 2019, the distribution became somewhat more dispersed during the recovery period, but still followed a spatial pattern.</p>
+<p><strong>2019</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for the <strong>ratio of tourists who stay overnight</strong> in 2019. While the Monte Carlo simulation indicates a possible weak spatial pattern, the overall findings suggest that the distribution of tourists who stay overnight was largely random across Thailand’s regions, with no clear clustering.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>tourist_stay_per_km2, </span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2019$tourist_stay_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.7316, p-value = 0.2322
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.028212250      -0.013333333       0.003224821 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2019<span class="sc">$</span>tourist_stay_per_km2, </span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2019$tourist_stay_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.028212, observed rank = 940, p-value = 0.06
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+<p><strong>2022-2023</strong></p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> for the <strong>ratio of tourists who stay overnight</strong> in 2022-2023 indicate no significant spatial autocorrelation. Although the Monte Carlo simulation suggests a possible weak spatial pattern, the overall results imply that the distribution of tourists who stay overnight across Thailand’s regions remains random, with no clear clustering during this recovery period.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>tourist_stay_per_km2, </span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">na.action=</span>na.omit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Moran I test under randomisation
+
+data:  data_in_2022_and_2023$tourist_stay_per_km2  
+weights: rswm_q  
+n reduced by no-neighbour observations  
+
+Moran I statistic standard deviate = 0.87408, p-value = 0.191
+alternative hypothesis: greater
+sample estimates:
+Moran I statistic       Expectation          Variance 
+      0.036354483      -0.013333333       0.003231456 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>bperm<span class="ot">=</span> <span class="fu">moran.mc</span>(data_in_2022_and_2023<span class="sc">$</span>tourist_stay_per_km2, </span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">listw=</span>rswm_q, </span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim=</span><span class="dv">999</span>, </span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">zero.policy =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">na.action=</span>na.omit)</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>bperm</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Monte-Carlo simulation of Moran I
+
+data:  data_in_2022_and_2023$tourist_stay_per_km2 
+weights: rswm_q  
+number of simulations + 1: 1000 
+
+statistic = 0.036354, observed rank = 929, p-value = 0.071
+alternative hypothesis: greater</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="visualizing-monte-carlo-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-monte-carlo-morans-i"><strong>4.2 Visualizing Monte Carlo Moran’s I</strong></h2>
+<p>In the code chunk below, <code>hist()</code> and <code>abline()</code> from R’s graphics package are used to visualize the Moran’s I test statistics that were calculated in the previous section.</p>
+<p>Since we are focusing on the results that show significant spatial autocorrelation, let’s plot the <strong>significant ones</strong>, such as <strong>Thai tourists per km²</strong> for 2019 and 2022-2023. This will help highlight the regions where clustering patterns are more pronounced.</p>
+<p>Even though <strong>tourists_per_km²</strong> shows significant spatial autocorrelation, we will focus on <strong>Thai tourists per km²</strong> for a more targeted analysis. This is because Thai tourists represent a key domestic market, and understanding their distribution is crucial for regional tourism development. Additionally, the patterns of domestic tourism may have different economic and policy implications compared to total tourist numbers, especially during periods of recovery. Focusing on Thai tourists helps us better assess localized trends in domestic travel behavior.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_2019_thai_tourist_per_km2<span class="sc">$</span>res, </span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">freq=</span><span class="cn">TRUE</span>, </span>
+<span id="cb75-3"><a href="#cb75-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks=</span><span class="dv">20</span>, </span>
+<span id="cb75-4"><a href="#cb75-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Simulated Moran's I"</span>)</span>
+<span id="cb75-5"><a href="#cb75-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"red"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_2022_2023_thai_tourist_per_km2<span class="sc">$</span>res, </span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">freq=</span><span class="cn">TRUE</span>, </span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">breaks=</span><span class="dv">20</span>, </span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab=</span><span class="st">"Simulated Moran's I"</span>)</span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v=</span><span class="dv">0</span>, <span class="at">col=</span><span class="st">"red"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="local-measures-of-spatial-autocorrelation" class="level2">
+<h2 class="anchored" data-anchor-id="local-measures-of-spatial-autocorrelation">5. LOCAL MEASURES OF SPATIAL AUTOCORRELATION</h2>
+</section>
+<section id="computing-local-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="computing-local-morans-i">5.1 Computing Local Moran’s I</h2>
+<p>The <strong>local Moran’s I analysis</strong> computes the spatial autocorrelation for each region, identifying where <strong>Thai tourists per km²</strong> are clustered or significantly different from neighboring regions. This helps pinpoint local clusters or outliers, revealing provinces with high or low concentrations of Thai tourists that are spatially dependent.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>fips <span class="ot">&lt;-</span> <span class="fu">order</span>(data_in_2019<span class="sc">$</span>ADM1_EN)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>localMI <span class="ot">&lt;-</span> <span class="fu">localmoran</span>(data_in_2019<span class="sc">$</span>thai_tourist_per_km2, rswm_q)</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(localMI)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Ii          E.Ii       Var.Ii        Z.Ii Pr(z != E(Ii))
+1  0.0705771654 -1.149044e-03 0.0286726816  0.42358807    0.671866256
+2 -0.0007440102 -4.303974e-05 0.0007953402 -0.02485554    0.980170188
+3  2.3851041071 -8.736964e-01 1.3217598658  2.83453284    0.004589274
+4  0.0608581002 -1.008895e-03 0.0251789997  0.38988792    0.696619424
+5  0.0572319053 -8.460288e-04 0.0123235366  0.52317078    0.600855413
+6 -0.1183017694 -1.709769e-04 0.0014918032 -3.05849202    0.002224540</code></pre>
+</div>
+</div>
+<p>The code chunk below list the content of the local Moran matrix derived by using&nbsp;<a href="https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/printCoefmat"><em>printCoefmat()</em></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">printCoefmat</span>(<span class="fu">data.frame</span>(</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  localMI[fips,], </span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">row.names=</span>data_in_2019<span class="sc">$</span>ADM1_EN[fips]),</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">check.names=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                  Ii        E.Ii      Var.Ii        Z.Ii
+Amnat Charoen             7.0577e-02 -1.1490e-03  2.8673e-02  4.2359e-01
+Ang Thong                -7.4401e-04 -4.3040e-05  7.9534e-04 -2.4856e-02
+Bangkok                   2.3851e+00 -8.7370e-01  1.3218e+00  2.8345e+00
+Bueng Kan                 6.0858e-02 -1.0089e-03  2.5179e-02  3.8989e-01
+Buri Ram                  5.7232e-02 -8.4603e-04  1.2324e-02  5.2317e-01
+Chachoengsao             -1.1830e-01 -1.7098e-04  1.4918e-03 -3.0585e+00
+Chai Nat                  4.2442e-02 -6.1407e-04  1.1341e-02  4.0430e-01
+Chaiyaphum                5.2585e-02 -1.0260e-03  1.8941e-02  3.8954e-01
+Chanthaburi              -4.2570e-03 -5.6007e-04  8.1604e-03 -4.0924e-02
+Chiang Mai                5.8401e-02 -6.0452e-04  8.8078e-03  6.2872e-01
+Chiang Rai                6.3832e-02 -7.5594e-04  1.8871e-02  4.7017e-01
+Chon Buri                -1.5809e-03 -1.0471e-03  2.6132e-02 -3.3018e-03
+Chumphon                  4.4238e-02 -8.2570e-04  2.0611e-02  3.1389e-01
+Kalasin                   6.7541e-02 -1.1010e-03  1.3172e-02  5.9808e-01
+Kamphaeng Phet            7.7358e-02 -1.1534e-03  1.6796e-02  6.0580e-01
+Kanchanaburi              2.1434e-02 -4.0605e-04  5.9172e-03  2.8392e-01
+Khon Kaen                 4.1232e-02 -3.3921e-04  2.5917e-03  8.1659e-01
+Krabi                     3.8780e-02 -3.7499e-04  6.9271e-03  4.7045e-01
+Lampang                   7.6473e-02 -1.1265e-03  1.1388e-02  7.2717e-01
+Lamphun                   6.3987e-02 -7.7568e-04  1.9363e-02  4.6541e-01
+Loei                      5.4902e-02 -8.7224e-04  1.0438e-02  5.4591e-01
+Lop Buri                  1.2093e-02 -3.0857e-04  2.6919e-03  2.3903e-01
+Mae Hong Son              7.5586e-02 -1.2124e-03  4.6000e-02  3.5807e-01
+Maha Sarakham             7.1575e-02 -1.0517e-03  1.5316e-02  5.8685e-01
+Mukdahan                  4.9849e-02 -4.1057e-04  4.9157e-03  7.1684e-01
+Nakhon Nayok             -1.1471e-02 -2.1134e-04  3.0804e-03 -2.0287e-01
+Nakhon Pathom             3.7456e-01 -1.0515e-03  1.0630e-02  3.6431e+00
+Nakhon Phanom             6.4549e-02 -9.1956e-04  2.2951e-02  4.3214e-01
+Nakhon Ratchasima         2.4449e-02 -4.0874e-04  3.5655e-03  4.1630e-01
+Nakhon Sawan              6.0779e-02 -8.9772e-04  7.8271e-03  6.9715e-01
+Nakhon Si Thammarat       4.1233e-02 -5.5357e-04  8.0659e-03  4.6528e-01
+Nan                       8.5844e-02 -1.1842e-03  2.9548e-02  5.0629e-01
+Narathiwat                9.0661e-02 -1.2297e-03  4.6655e-02  4.2543e-01
+Nong Bua Lam Phu          6.2154e-02 -1.1427e-03  2.8515e-02  3.7484e-01
+Nong Khai                 2.9819e-02 -1.7712e-04  3.2726e-03  5.2434e-01
+Nonthaburi                2.0992e+00 -1.1799e-02  2.1547e-01  4.5478e+00
+Pathum Thani             -1.0031e-02 -5.1543e-07  6.1737e-06 -4.0367e+00
+Pattani                   7.1021e-02 -1.0258e-03  2.5600e-02  4.5030e-01
+Phangnga                  4.7638e-02 -5.9831e-04  1.4938e-02  3.9466e-01
+Phatthalung               3.6267e-02 -4.8670e-04  8.9898e-03  3.8764e-01
+Phayao                    8.1576e-02 -1.1217e-03  2.0706e-02  5.7470e-01
+Phetchabun                6.0238e-02 -9.1222e-04  9.2233e-03  6.3673e-01
+Phetchaburi               3.5653e-02 -1.4940e-04  3.7319e-03  5.8607e-01
+Phichit                   6.8212e-02 -8.8725e-04  1.6382e-02  5.3987e-01
+Phitsanulok               6.2502e-02 -6.9696e-04  8.3422e-03  6.9195e-01
+Phra Nakhon Si Ayutthaya  5.9589e-02 -2.5728e-03  2.5969e-02  3.8574e-01
+Phrae                     8.2016e-02 -1.0708e-03  1.5594e-02  6.6535e-01
+Phuket                    0.0000e+00  0.0000e+00  0.0000e+00         NaN
+Prachin Buri              2.1988e-02 -6.4440e-04  1.1901e-02  2.0746e-01
+Prachuap Khiri Khan       2.0441e-03 -1.0613e-05  4.0314e-04  1.0233e-01
+Ranong                    5.6877e-02 -7.1486e-04  1.7846e-02  4.3111e-01
+Ratchaburi               -6.2143e-02 -4.5753e-04  6.6671e-03 -7.5547e-01
+Rayong                    1.1500e-02 -1.2120e-03  4.5982e-02  5.9283e-02
+Roi Et                    7.5291e-02 -1.0868e-03  1.3003e-02  6.6980e-01
+Sa Kaeo                   4.5448e-02 -7.2000e-04  1.0489e-02  4.5079e-01
+Sakon Nakhon              6.2203e-02 -1.0239e-03  1.2252e-02  5.7122e-01
+Samut Prakan              1.6581e+00 -2.2413e-03  8.4950e-02  5.6964e+00
+Samut Sakhon              5.5377e-01 -7.2087e-04  1.3312e-02  4.8059e+00
+Samut Songkhram           6.2618e-02 -1.9541e-02  4.7863e-01  1.1876e-01
+Saraburi                  3.0444e-03 -5.6027e-05  8.1675e-04  1.0849e-01
+Satun                     3.2848e-02 -3.9602e-04  9.8896e-03  3.3429e-01
+Si Sa Ket                 7.4535e-02 -9.6254e-04  1.7771e-02  5.6635e-01
+Sing Buri                 1.6783e-02 -1.3694e-04  1.9961e-03  3.7871e-01
+Songkhla                  3.3402e-02 -2.7085e-04  3.9475e-03  5.3594e-01
+Sukhothai                 7.5581e-02 -9.7144e-04  1.1624e-02  7.1002e-01
+Suphan Buri               2.1920e-03 -2.3980e-04  2.4262e-03  4.9369e-02
+Surat Thani               5.7456e-02 -9.4713e-04  1.3795e-02  4.9725e-01
+Surin                     7.5242e-02 -9.9557e-04  1.8380e-02  5.6234e-01
+Tak                       7.3928e-02 -1.0587e-03  8.0832e-03  8.3405e-01
+Trang                     4.2946e-02 -7.0956e-04  1.3103e-02  3.8137e-01
+Trat                      2.7751e-02 -2.3806e-04  1.8327e-02  2.0675e-01
+Ubon Ratchathani          7.3722e-02 -9.0419e-04  2.2568e-02  4.9675e-01
+Udon Thani                4.9988e-02 -6.0653e-04  7.2604e-03  5.9378e-01
+Uthai Thani               6.1643e-02 -1.0886e-03  1.5853e-02  4.9823e-01
+Uttaradit                 7.6427e-02 -1.0405e-03  1.9208e-02  5.5896e-01
+Yala                      7.6217e-02 -1.2966e-03  3.2350e-02  4.3097e-01
+Yasothon                  7.1768e-02 -1.0147e-03  1.4778e-02  5.9870e-01
+                         Pr.z....E.Ii..
+Amnat Charoen                    0.6719
+Ang Thong                        0.9802
+Bangkok                          0.0046
+Bueng Kan                        0.6966
+Buri Ram                         0.6009
+Chachoengsao                     0.0022
+Chai Nat                         0.6860
+Chaiyaphum                       0.6969
+Chanthaburi                      0.9674
+Chiang Mai                       0.5295
+Chiang Rai                       0.6382
+Chon Buri                        0.9974
+Chumphon                         0.7536
+Kalasin                          0.5498
+Kamphaeng Phet                   0.5446
+Kanchanaburi                     0.7765
+Khon Kaen                        0.4142
+Krabi                            0.6380
+Lampang                          0.4671
+Lamphun                          0.6416
+Loei                             0.5851
+Lop Buri                         0.8111
+Mae Hong Son                     0.7203
+Maha Sarakham                    0.5573
+Mukdahan                         0.4735
+Nakhon Nayok                     0.8392
+Nakhon Pathom                    0.0003
+Nakhon Phanom                    0.6656
+Nakhon Ratchasima                0.6772
+Nakhon Sawan                     0.4857
+Nakhon Si Thammarat              0.6417
+Nan                              0.6127
+Narathiwat                       0.6705
+Nong Bua Lam Phu                 0.7078
+Nong Khai                        0.6000
+Nonthaburi                       0.0000
+Pathum Thani                     0.0001
+Pattani                          0.6525
+Phangnga                         0.6931
+Phatthalung                      0.6983
+Phayao                           0.5655
+Phetchabun                       0.5243
+Phetchaburi                      0.5578
+Phichit                          0.5893
+Phitsanulok                      0.4890
+Phra Nakhon Si Ayutthaya         0.6997
+Phrae                            0.5058
+Phuket                              NaN
+Prachin Buri                     0.8356
+Prachuap Khiri Khan              0.9185
+Ranong                           0.6664
+Ratchaburi                       0.4500
+Rayong                           0.9527
+Roi Et                           0.5030
+Sa Kaeo                          0.6521
+Sakon Nakhon                     0.5679
+Samut Prakan                     0.0000
+Samut Sakhon                     0.0000
+Samut Songkhram                  0.9055
+Saraburi                         0.9136
+Satun                            0.7382
+Si Sa Ket                        0.5712
+Sing Buri                        0.7049
+Songkhla                         0.5920
+Sukhothai                        0.4777
+Suphan Buri                      0.9606
+Surat Thani                      0.6190
+Surin                            0.5739
+Tak                              0.4043
+Trang                            0.7029
+Trat                             0.8362
+Ubon Ratchathani                 0.6194
+Udon Thani                       0.5527
+Uthai Thani                      0.6183
+Uttaradit                        0.5762
+Yala                             0.6665
+Yasothon                         0.5494</code></pre>
+</div>
+</div>
+</section>
+<section id="mapping-local-morans-i" class="level2">
+<h2 class="anchored" data-anchor-id="mapping-local-morans-i">5.2 Mapping Local Moran’s I</h2>
+<p>In the code chunk, the <strong>local Moran’s I statistics</strong> (<code>Ii</code> values) and their <strong>p-values</strong> (<code>Pr.Ii</code>) are visualized on a map using the <strong>tmap</strong> package. The first map shows the <strong>local Moran’s I statistic</strong> values for each region, with the color palette “RdBu” highlighting clusters of high and low values, where <strong>red</strong> indicates positive spatial autocorrelation (clusters of similar values) and <strong>blue</strong> indicates negative spatial autocorrelation (outliers). The second map visualizes the <strong>p-values</strong> of these statistics, using shades of blue to indicate the significance levels, with darker blue representing more statistically significant regions. Together, these maps help identify both the magnitude and significance of local spatial patterns in the distribution of <strong>Thai tourists per km²</strong> in 2019.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>data_in_2019.localMI <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data_in_2019,localMI) <span class="sc">%&gt;%</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Pr.Ii =</span> Pr.z....E.Ii..)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(data_in_2019.localMI) <span class="sc">+</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>,</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> <span class="st">"RdBu"</span>,</span>
+<span id="cb82-5"><a href="#cb82-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local moran statistics"</span>) <span class="sc">+</span></span>
+<span id="cb82-6"><a href="#cb82-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(data_in_2019.localMI) <span class="sc">+</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="cn">Inf</span>),</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-Blues"</span>, </span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Moran's I p-values"</span>) <span class="sc">+</span></span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-50-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>localMI.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(data_in_2019.localMI) <span class="sc">+</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"pretty"</span>, </span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local moran statistics"</span>) <span class="sc">+</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>pvalue.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(data_in_2019.localMI) <span class="sc">+</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Pr.Ii"</span>, </span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">breaks=</span><span class="fu">c</span>(<span class="sc">-</span><span class="cn">Inf</span>, <span class="fl">0.001</span>, <span class="fl">0.01</span>, <span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="cn">Inf</span>),</span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette=</span><span class="st">"-Blues"</span>, </span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">title =</span> <span class="st">"local Moran's I p-values"</span>) <span class="sc">+</span></span>
+<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>)</span>
+<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-14"><a href="#cb84-14" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(localMI.map, pvalue.map, <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-51-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>nci <span class="ot">&lt;-</span> <span class="fu">moran.plot</span>(data_in_2019<span class="sc">$</span>thai_tourist_per_km2, rswm_q,</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels=</span><span class="fu">as.character</span>(data_in_2019<span class="sc">$</span>ADM1_EN))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-52-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>data_in_2019<span class="sc">$</span>Z.TOURISTS <span class="ot">&lt;-</span> <span class="fu">scale</span>(data_in_2019<span class="sc">$</span>tourists_per_km2) <span class="sc">%&gt;%</span> </span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>  as.vector </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>nci2 <span class="ot">&lt;-</span> <span class="fu">moran.plot</span>(data_in_2019<span class="sc">$</span>Z.TOURISTS, rswm_q,</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">labels=</span><span class="fu">as.character</span>(data_in_2019<span class="sc">$</span>ADM1_EN),</span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">xlab=</span><span class="st">"z-GDPPC 2012"</span>, </span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ylab=</span><span class="st">"Spatially Lag z-GDPPC 2012"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-54-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>quadrant <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="at">mode=</span><span class="st">"numeric"</span>,<span class="at">length=</span><span class="fu">nrow</span>(localMI))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>data_in_2019<span class="sc">$</span>lag <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(rswm_q, data_in_2019<span class="sc">$</span>thai_tourist_per_km2)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a>DV <span class="ot">&lt;-</span> data_in_2019<span class="sc">$</span>lag <span class="sc">-</span> <span class="fu">mean</span>(data_in_2019<span class="sc">$</span>lag)     </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>LM_I <span class="ot">&lt;-</span> localMI[,<span class="dv">1</span>] <span class="sc">-</span> <span class="fu">mean</span>(localMI[,<span class="dv">1</span>])    </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>signif <span class="ot">&lt;-</span> <span class="fl">0.05</span>       </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&lt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&gt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&gt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&lt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&lt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">3</span>  </span>
+<span id="cb92-4"><a href="#cb92-4" aria-hidden="true" tabindex="-1"></a>quadrant[DV <span class="sc">&gt;</span><span class="dv">0</span> <span class="sc">&amp;</span> LM_I<span class="sc">&gt;</span><span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="dv">4</span>      </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a>quadrant[localMI[,<span class="dv">5</span>]<span class="sc">&gt;</span>signif] <span class="ot">&lt;-</span> <span class="dv">0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>data_in_2019.localMI<span class="sc">$</span>quadrant <span class="ot">&lt;-</span> quadrant</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#ffffff"</span>, <span class="st">"#2c7bb6"</span>, <span class="st">"#abd9e9"</span>, <span class="st">"#fdae61"</span>, <span class="st">"#d7191c"</span>)</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"insignificant"</span>, <span class="st">"low-low"</span>, <span class="st">"low-high"</span>, <span class="st">"high-low"</span>, <span class="st">"high-high"</span>)</span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(data_in_2019.localMI) <span class="sc">+</span></span>
+<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"quadrant"</span>, </span>
+<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"cat"</span>, </span>
+<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> colors[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>], </span>
+<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">labels =</span> clusters[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>],</span>
+<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">popup.vars =</span> <span class="fu">c</span>(<span class="st">""</span>)) <span class="sc">+</span></span>
+<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_view</span>(<span class="at">set.zoom.limits =</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">17</span>)) <span class="sc">+</span></span>
+<span id="cb94-12"><a href="#cb94-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha=</span><span class="fl">0.5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(data_in_2019, <span class="st">"thai_tourist_per_km2"</span>)</span>
+<span id="cb95-2"><a href="#cb95-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-3"><a href="#cb95-3" aria-hidden="true" tabindex="-1"></a>data_in_2019.localMI<span class="sc">$</span>quadrant <span class="ot">&lt;-</span> quadrant</span>
+<span id="cb95-4"><a href="#cb95-4" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"#ffffff"</span>, <span class="st">"#2c7bb6"</span>, <span class="st">"#abd9e9"</span>, <span class="st">"#fdae61"</span>, <span class="st">"#d7191c"</span>)</span>
+<span id="cb95-5"><a href="#cb95-5" aria-hidden="true" tabindex="-1"></a>clusters <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"insignificant"</span>, <span class="st">"low-low"</span>, <span class="st">"low-high"</span>, <span class="st">"high-low"</span>, <span class="st">"high-high"</span>)</span>
+<span id="cb95-6"><a href="#cb95-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-7"><a href="#cb95-7" aria-hidden="true" tabindex="-1"></a>LISAmap <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(data_in_2019.localMI) <span class="sc">+</span></span>
+<span id="cb95-8"><a href="#cb95-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"quadrant"</span>, </span>
+<span id="cb95-9"><a href="#cb95-9" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"cat"</span>, </span>
+<span id="cb95-10"><a href="#cb95-10" aria-hidden="true" tabindex="-1"></a>          <span class="at">palette =</span> colors[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>], </span>
+<span id="cb95-11"><a href="#cb95-11" aria-hidden="true" tabindex="-1"></a>          <span class="at">labels =</span> clusters[<span class="fu">c</span>(<span class="fu">sort</span>(<span class="fu">unique</span>(quadrant)))<span class="sc">+</span><span class="dv">1</span>],</span>
+<span id="cb95-12"><a href="#cb95-12" aria-hidden="true" tabindex="-1"></a>          <span class="at">popup.vars =</span> <span class="fu">c</span>(<span class="st">""</span>)) <span class="sc">+</span></span>
+<span id="cb95-13"><a href="#cb95-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_view</span>(<span class="at">set.zoom.limits =</span> <span class="fu">c</span>(<span class="dv">11</span>,<span class="dv">17</span>)) <span class="sc">+</span></span>
+<span id="cb95-14"><a href="#cb95-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha=</span><span class="fl">0.5</span>)</span>
+<span id="cb95-15"><a href="#cb95-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb95-16"><a href="#cb95-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, LISAmap, </span>
+<span id="cb95-17"><a href="#cb95-17" aria-hidden="true" tabindex="-1"></a>             <span class="at">asp=</span><span class="dv">1</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Take-home_Ex02_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

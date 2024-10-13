@@ -60,7 +60,7 @@ This code chunk uses `p_load()` of the ***pacman*** package (stands for Package 
 **tmap:** used to prepare cartographic quality chropleth map.
 
 ```{r}
-pacman::p_load(sf, spdep, tmap, tidyverse)
+pacman::p_load(sf, spdep, tmap, tidyverse, dplyr)
 ```
 
 If available, the packages will then be launched into R.
@@ -99,8 +99,9 @@ hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
 The following code chunk updates the attribute table of the `hunan` SpatialPolygonsDataFrame by merging it with the attribute fields of the `hunan2012` dataframe. This is accomplished using the `left_join()` function from the `dplyr` package:
 
 ```{r}
-hunan <- left_join(hunan,hunan2012) %>%
-  select(1:4, 7, 15)
+hunan <- left_join(hunan, hunan2012) %>%
+  dplyr::select(1:4, 7, 15)
+
 ```
 
 ## 3.4 Visualizing the Regional Development Indicator
