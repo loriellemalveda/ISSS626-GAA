@@ -4,6 +4,11 @@
 .httr-oauth
 .DS_Store
 .quarto
+_site/search.json
+Take-home_Ex/Take-home_Ex01/Take-home_Ex01.qmd
 
 /.quarto/
 /Take-home_Ex/Take-home_Ex01/data
+/Take-home_Ex/Take-home_Ex02/
+/Take-home_Ex/Take-home_Ex01/*
+.*
