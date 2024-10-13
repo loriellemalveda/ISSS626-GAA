@@ -245,14 +245,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#tourism" id="toc-tourism" class="nav-link" data-scroll-target="#tourism">TOURISM</a></li>
   </ul></li>
   <li><a href="#performing-a-relational-join" id="toc-performing-a-relational-join" class="nav-link" data-scroll-target="#performing-a-relational-join">2.3 Performing a Relational Join</a></li>
-  <li><a href="#adding-derived-variables" id="toc-adding-derived-variables" class="nav-link" data-scroll-target="#adding-derived-variables">2.4 Adding Derived Variables</a></li>
+  <li><a href="#adding-derived-variables-and-geospatial-data-wrangling" id="toc-adding-derived-variables-and-geospatial-data-wrangling" class="nav-link" data-scroll-target="#adding-derived-variables-and-geospatial-data-wrangling">2.4 Adding Derived Variables and Geospatial Data Wrangling</a></li>
   </ul></li>
-  <li><a href="#global-measures-of-spatial-autocorrelation" id="toc-global-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation"><strong>3. Global Measures of Spatial Autocorrelation</strong></a>
+  <li><a href="#global-measures-of-spatial-autocorrelation" id="toc-global-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation">3. GLOBAL MEASURES OF SPATIAL AUTOCORRELATION</a>
   <ul class="collapse">
   <li><a href="#computing-contiguity-spatial-weights" id="toc-computing-contiguity-spatial-weights" class="nav-link" data-scroll-target="#computing-contiguity-spatial-weights"><strong>3.1 Computing Contiguity Spatial Weights</strong></a></li>
   <li><a href="#row-standardized-weights-matrix" id="toc-row-standardized-weights-matrix" class="nav-link" data-scroll-target="#row-standardized-weights-matrix"><strong>3.2 Row-Standardized Weights Matrix</strong></a></li>
   </ul></li>
-  <li><a href="#global-measures-of-spatial-autocorrelation-morans-i" id="toc-global-measures-of-spatial-autocorrelation-morans-i" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation-morans-i">4. <strong>GLOBAL MEASURES OF SPATIAL AUTOCORRELATION: MORAN’S I</strong></a>
+  <li><a href="#global-measures-of-spatial-autocorrelation-morans-i" id="toc-global-measures-of-spatial-autocorrelation-morans-i" class="nav-link" data-scroll-target="#global-measures-of-spatial-autocorrelation-morans-i">4. GLOBAL MEASURES OF SPATIAL AUTOCORRELATION: MORAN’S I</a>
   <ul class="collapse">
   <li><a href="#marons-i-test" id="toc-marons-i-test" class="nav-link" data-scroll-target="#marons-i-test"><strong>4.1 Maron’s I Test</strong></a>
   <ul class="collapse">
@@ -263,7 +263,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#tourists-who-stay-overnight" id="toc-tourists-who-stay-overnight" class="nav-link" data-scroll-target="#tourists-who-stay-overnight">TOURISTS WHO STAY OVERNIGHT</a></li>
   </ul></li>
   <li><a href="#visualizing-monte-carlo-morans-i" id="toc-visualizing-monte-carlo-morans-i" class="nav-link" data-scroll-target="#visualizing-monte-carlo-morans-i"><strong>4.2 Visualizing Monte Carlo Moran’s I</strong></a></li>
-  <li><a href="#local-measures-of-spatial-autocorrelation" id="toc-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#local-measures-of-spatial-autocorrelation">5. LOCAL MEASURES OF SPATIAL AUTOCORRELATION</a></li>
+  </ul></li>
+  <li><a href="#local-measures-of-spatial-autocorrelation" id="toc-local-measures-of-spatial-autocorrelation" class="nav-link" data-scroll-target="#local-measures-of-spatial-autocorrelation">5. LOCAL MEASURES OF SPATIAL AUTOCORRELATION</a>
+  <ul class="collapse">
   <li><a href="#computing-local-morans-i" id="toc-computing-local-morans-i" class="nav-link" data-scroll-target="#computing-local-morans-i">5.1 Computing Local Moran’s I</a></li>
   <li><a href="#mapping-local-morans-i" id="toc-mapping-local-morans-i" class="nav-link" data-scroll-target="#mapping-local-morans-i">5.2 Mapping Local Moran’s I</a></li>
   <li><a href="#creating-a-lisa-cluster-map" id="toc-creating-a-lisa-cluster-map" class="nav-link" data-scroll-target="#creating-a-lisa-cluster-map"><strong>5.3 Creating a LISA Cluster Map</strong></a>
@@ -406,8 +408,8 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>map_left_joined<span class="sc">$</span>date <span class="ot">&lt;-</span> <span class="cn">NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="adding-derived-variables" class="level2">
-<h2 class="anchored" data-anchor-id="adding-derived-variables">2.4 Adding Derived Variables</h2>
+<section id="adding-derived-variables-and-geospatial-data-wrangling" class="level2">
+<h2 class="anchored" data-anchor-id="adding-derived-variables-and-geospatial-data-wrangling">2.4 Adding Derived Variables and Geospatial Data Wrangling</h2>
 <p>This code creates a new variable <code>year</code> in the <code>map_left_joined</code> dataset by assigning each value of <code>Year</code> to its corresponding string representation (e.g., “2019” for 2019, “2020” for 2020, etc.).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>map_left_joined <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
@@ -434,7 +436,7 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This code arranges the <code>summarized_data</code> dataset first by <code>year</code> and then by <code>ADM1_EN</code>, ensuring that the data is sorted chronologically and spatially.</p>
+<p>This code arranges the <code>summarized_data</code> dataset first by <code>year</code> and then by <code>ADM1_EN</code>, to sort the data chronologically and spatially.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>summarized_data <span class="ot">&lt;-</span> summarized_data <span class="sc">|&gt;</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">arrange</span>(year, ADM1_EN)</span>
@@ -460,7 +462,7 @@ Projected CRS: WGS 84 / UTM zone 47N
 #   revenue_foreign &lt;dbl&gt;, revenue_thai &lt;dbl&gt;, geometry &lt;MULTIPOLYGON [m]&gt;</code></pre>
 </div>
 </div>
-<p>The code snippet below creates a new column called <code>year_group</code> in the <code>map_left_joined</code> dataframe. The <code>mutate()</code> function from the <strong>dplyr</strong> package is used to categorize the <code>year</code> values into three groups: 2019, 2020-2021, and 2022-2023. These year groups were created to reflect key periods in Thailand’s tourism industry: 2019 represents the <strong>pre-pandemic</strong> period, 2020-2021 captures the <strong>pandemic</strong> period, and 2022-2023 represents the time when <strong>tourism numbers started to recover</strong>.</p>
+<p>The code chunk below creates a new column called <code>year_group</code> in the <code>map_left_joined</code> dataframe. The <code>mutate()</code> function from the <strong>dplyr</strong> package is used to categorize the <code>year</code> values into three groups: 2019, 2020-2021, and 2022-2023. These year groups were created to reflect key periods in Thailand’s tourism industry: 2019 represents the <strong>pre-pandemic</strong> period, 2020-2021 captures the <strong>pandemic</strong> period, and 2022-2023 represents the time when <strong>tourism numbers started to recover</strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tourism_final <span class="ot">&lt;-</span> map_left_joined <span class="sc">%&gt;%</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Year =</span> <span class="fu">case_when</span>(</span>
@@ -469,7 +471,7 @@ Projected CRS: WGS 84 / UTM zone 47N
 <span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    year <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">2022</span>,<span class="dv">2023</span>) <span class="sc">~</span> <span class="st">"2022-2023"</span></span>
 <span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The data is grouped by province (<code>ADM1_EN</code>) and year group (<code>year_group</code>), and then summarized to calculate the total number of tourists (both Thai and foreign), tourists who stayed, and total revenue (separated by Thai and foreign tourists) for each province and year group. Missing values are ignored in the calculation using <code>na.rm = TRUE</code>.</p>
+<p>The data is grouped by province (<code>ADM1_EN</code>) and year group (<code>year_group</code>), and then summarized to calculate the total number of tourists (both Thai and foreign), tourists who stayed overnight, and total revenue (separated by Thai and foreign tourists) for each province and year group. Missing values are ignored in the calculation using <code>na.rm = TRUE</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tourism_final <span class="ot">&lt;-</span> tourism_final <span class="sc">%&gt;%</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(ADM1_EN, Year) <span class="sc">%&gt;%</span></span>
@@ -484,8 +486,8 @@ Projected CRS: WGS 84 / UTM zone 47N
 <span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The following code chunks calculate the area of each region in square kilometers and then standardizes various tourism-related metrics (such as the number of tourists and revenue) by dividing them by the area. The <code>mutate()</code> function is used to create new columns for metrics like tourists and revenue per square kilometer.</p>
-<p>These new variables include:</p>
+<p>The following code chunks calculate the area of each region in sq. kilometers and then standardizes various tourism-related metrics (such as the number of tourists and revenue) by dividing them by the area. The <code>mutate()</code> function is used to create new columns for metrics like tourists and revenue per square kilometer.</p>
+<p>These new variables are:</p>
 <ul>
 <li><p><code>tourists_per_km2</code>: total tourists per km².</p></li>
 <li><p><code>thai_tourist_per_km2</code>: Thai tourists per km².</p></li>
@@ -515,7 +517,7 @@ Projected CRS: WGS 84 / UTM zone 47N
 <span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    </span>
 <span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>The code snippets below separate the summarized data into three different datasets based on the <code>year_group</code> column, allowing for analysis specific to each time period:</p>
+<p>The code chunks below separate the summarized data into three different datasets based on the <code>year_group</code> column to allow for analysis specific to each time period:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>data_in_2019 <span class="ot">&lt;-</span> tourism_final <span class="sc">%&gt;%</span></span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="st">'2019'</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -528,11 +530,11 @@ Projected CRS: WGS 84 / UTM zone 47N
 <div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023 <span class="ot">&lt;-</span> tourism_final <span class="sc">%&gt;%</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(Year <span class="sc">==</span> <span class="st">'2022-2023'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Each dataset (<code>data_in_2019</code>, <code>data_in_2020_and_2021</code>, <code>data_in_2022_and_2023</code>) isolates data for these specific periods, enabling focused analysis on pre-pandemic, pandemic, and recovery phases.</p>
+<p>Each dataset (<code>data_in_2019</code>, <code>data_in_2020_and_2021</code>, <code>data_in_2022_and_2023</code>) isolates data for these specific periods, enabling focused analysis on <strong>pre-pandemic, pandemic, and recovery phases</strong>.</p>
 </section>
 </section>
 <section id="global-measures-of-spatial-autocorrelation" class="level1">
-<h1><strong>3. Global Measures of Spatial Autocorrelation</strong></h1>
+<h1>3. GLOBAL MEASURES OF SPATIAL AUTOCORRELATION</h1>
 <p>For a better comparison, we will focus on the years <strong>2019</strong> and <strong>2022-2023</strong>, as these represent periods when tourism activity was stable or recovering. This will allow us to analyze how the tourism industry fared during normal and recovery phases.</p>
 <p>To ensure accurate spatial analysis, we will create separate spatial weights for both periods. This is necessary because the spatial weights need to have a <strong>fixed length</strong>, meaning the number of geographical units (provinces) must remain consistent across both time periods for valid comparisons. Creating separate spatial weights ensures that the neighborhood relationships are properly defined for each dataset.</p>
 <section id="computing-contiguity-spatial-weights" class="level2">
@@ -592,8 +594,8 @@ W 76 5776 76 36.26113 315.652</code></pre>
 </section>
 </section>
 <section id="global-measures-of-spatial-autocorrelation-morans-i" class="level1">
-<h1>4. <strong>GLOBAL MEASURES OF SPATIAL AUTOCORRELATION: MORAN’S I</strong></h1>
-<p>Moran’s I helps measure spatial autocorrelation in Thailand’s tourism data, showing whether provinces with similar tourism performance are clustered or dispersed. This reveals if there is a spatial pattern in tourism activities across the country, helping identify regions with similar or contrasting tourism dynamics.</p>
+<h1>4. GLOBAL MEASURES OF SPATIAL AUTOCORRELATION: MORAN’S I</h1>
+<p>Moran’s I helps measure spatial autocorrelation in Thailand’s tourism data, showing whether provinces with similar tourism performance are clustered or dispersed. This reveals if there is a spatial pattern in tourism activities across the country, which may help determine those with similar or contrasting tourism dynamics.</p>
 <section id="marons-i-test" class="level2">
 <h2 class="anchored" data-anchor-id="marons-i-test"><strong>4.1 Maron’s I Test</strong></h2>
 <p>In the code chunk below, we perform Moran’s I statistical testing using the <code>moran.test()</code> function from the <strong><em>spde</em>p</strong> package.</p>
@@ -602,7 +604,7 @@ W 76 5776 76 36.26113 315.652</code></pre>
 <h3 class="anchored" data-anchor-id="revenue">REVENUE</h3>
 <p><strong>2019</strong></p>
 <p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2019 yields a Moran’s I statistic very close to zero, with a p-value of <strong>0.4055</strong>. This suggests no significant spatial autocorrelation, meaning the distribution of tourism revenue across Thailand’s regions in 2019 is random. There is no evidence of clustering or spatial dependence based on the standard Moran’s I test.</p>
-<p>The <strong>Monte Carlo simulation</strong> provides a slightly more refined result, with a p-value of <strong>0.084</strong>. Although closer to the significance threshold of 0.05, it is still not low enough to indicate meaningful spatial autocorrelation. Both tests ultimately suggest that there is no strong spatial clustering of tourism revenue per area in 2019, although the Monte Carlo result hints at a possible weak spatial pattern that may warrant further exploration.</p>
+<p>The <strong>Monte Carlo simulation</strong> provides a slightly more refined result, with a p-value of <strong>0.084</strong>. Although closer to the significance threshold of 0.05, it is still not low enough to indicate meaningful spatial autocorrelation. Both tests suggest that there is no strong spatial clustering of tourism revenue per area in 2019.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>revenue_per_km2,</span>
 <span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -645,7 +647,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p><strong>2022-2023</strong></p>
 <p>The <strong>Moran’s I test</strong> for <strong>revenue per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.0053</strong>, which is very close to zero. The p-value is <strong>0.3557</strong>, indicating no significant spatial autocorrelation. This suggests that the distribution of tourism revenue per area across regions in Thailand during the recovery period is random, with no evidence of clustering or spatial dependence.</p>
-<p>The <strong>Monte Carlo simulation</strong> provides a slightly more nuanced result, with a p-value of <strong>0.068</strong>. Although closer to significance, it still does not meet the 0.05 threshold for statistical significance. Overall, both the standard Moran’s I test and the Monte Carlo simulation suggest that there is no strong spatial clustering of tourism revenue per area in 2022-2023, though the Monte Carlo result hints at a potential weak spatial pattern that might require further exploration.</p>
+<p>The <strong>Monte Carlo simulation</strong> provides a slightly more nuanced result, with a p-value of <strong>0.068</strong>. Although closer to significance, it still does not meet the 0.05 threshold for statistical significance. Overall, both the standard Moran’s I test and the Monte Carlo simulation suggest that there is no strong spatial clustering of tourism revenue per area in 2022-2023.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>revenue_per_km2, </span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -690,7 +692,7 @@ alternative hypothesis: greater</code></pre>
 <section id="total-number-of-tourists" class="level3">
 <h3 class="anchored" data-anchor-id="total-number-of-tourists">TOTAL NUMBER OF TOURISTS</h3>
 <p><strong>2019</strong></p>
-<p>The standard Moran’s I test shows significant spatial autocorrelation in <strong>tourists per square kilometer</strong> for 2019, suggesting tourist clusters across regions. The Monte Carlo simulation provides a similar result, though with marginal significance. Both results suggest that tourists are spatially clustered in certain areas of Thailand.</p>
+<p>The standard Moran’s I test shows significant spatial autocorrelation in <strong>tourists per square kilometer</strong> for 2019, suggesting tourist clusters across regions. The Monte Carlo simulation provides a similar result, though with marginal significance. Both results suggest that <strong>tourists are spatially clustered in certain areas of Thailand.</strong></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>tourists_per_km2, </span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -733,7 +735,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 <p><strong>2022-2023</strong></p>
 <p>The <strong>Moran’s I test</strong> for <strong>tourists per square kilometer</strong> in 2022-2023 shows a Moran’s I statistic of <strong>0.1014</strong>, with a p-value of <strong>0.01789</strong>. This indicates statistically significant <strong>positive spatial autocorrelation</strong>, suggesting that regions with higher densities of tourists tend to be spatially clustered. There is a clear pattern of tourist clustering in certain areas during the 2022-2023 recovery period.</p>
-<p>The Monte Carlo simulation yields a slightly higher p-value (0.068), indicating that while there is some evidence of spatial autocorrelation, it is not as strong as indicated by the standard Moran’s I test, although it’s close to significance.</p>
+<p>The Monte Carlo simulation yields a slightly higher p-value (0.068), indicating that while there is some evidence of spatial autocorrelation, it is not as strong as indicated by the standard Moran’s I test, although it is close to significance (0.05).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>tourists_per_km2, </span>
 <span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -780,7 +782,7 @@ alternative hypothesis: greater</code></pre>
 <section id="revenue-from-thai-tourists" class="level4">
 <h4 class="anchored" data-anchor-id="revenue-from-thai-tourists">REVENUE FROM THAI TOURISTS</h4>
 <p><strong>2019</strong></p>
-<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>Thai revenue per square kilometer</strong> in 2019. The distribution of Thai tourism revenue appears random across Thailand’s regions, with no clear clustering detected during this period.</p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>Thai revenue per square kilometer</strong> in 2019. The distribution of Thai tourism revenue appears random across Thailand’s regions.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>thai_revenue_per_km2, </span>
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -822,7 +824,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 <p><strong>2022-2023</strong></p>
-<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest that there is no significant spatial autocorrelation for <strong>Thai revenue per square kilometer</strong> in 2022-2023. The distribution of Thai tourism revenue remains largely random across Thailand’s regions during the recovery period, with no clear spatial clustering.</p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest that there is no significant spatial autocorrelation for <strong>Thai revenue per square kilometer</strong> in 2022-2023. The distribution of Thai tourism revenue remains largely random across Thailand’s regions during the recovery period with no clear spatial clustering.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>thai_revenue_per_km2, </span>
 <span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -867,7 +869,7 @@ alternative hypothesis: greater</code></pre>
 <section id="revenue-from-foreign-tourists" class="level4">
 <h4 class="anchored" data-anchor-id="revenue-from-foreign-tourists">REVENUE FROM FOREIGN TOURISTS</h4>
 <p><strong>2019</strong></p>
-<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> indicate no significant spatial autocorrelation for <strong>foreign revenue per square kilometer</strong> in 2019. Although the Monte Carlo simulation hints at a potential weak spatial pattern, the results overall suggest that foreign tourism revenue was distributed randomly across Thailand’s regions during this period, with no strong evidence of clustering.</p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> indicate no significant spatial autocorrelation for <strong>foreign revenue per square kilometer</strong> in 2019. Although the Monte Carlo simulation hints at a potential weak spatial pattern, the results overall suggest that foreign tourism revenue was distributed randomly across Thailand’s regions during this period with no strong evidence of clustering.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>foreign_revenue_per_km2, </span>
 <span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -1046,7 +1048,7 @@ alternative hypothesis: greater</code></pre>
 <section id="foreign-tourists" class="level4">
 <h4 class="anchored" data-anchor-id="foreign-tourists">FOREIGN TOURISTS</h4>
 <p><strong>2019</strong></p>
-<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>foreign tourists per square kilometer</strong> in 2019. While the Monte Carlo result indicates a possible weak spatial pattern, the overall results suggest that foreign tourists were distributed randomly across Thailand’s regions, with no clear clustering.</p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for <strong>foreign tourists per square kilometer</strong> in 2019. The overall results suggest that foreign tourists were distributed randomly across Thailand’s regions, with no clear clustering.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>foreign_tourist_per_km2, </span>
 <span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -1134,7 +1136,7 @@ alternative hypothesis: greater</code></pre>
 <section id="tourists-who-stay-overnight" class="level3">
 <h3 class="anchored" data-anchor-id="tourists-who-stay-overnight">TOURISTS WHO STAY OVERNIGHT</h3>
 <p><strong>2019</strong></p>
-<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for the <strong>ratio of tourists who stay overnight</strong> in 2019. While the Monte Carlo simulation indicates a possible weak spatial pattern, the overall findings suggest that the distribution of tourists who stay overnight was largely random across Thailand’s regions, with no clear clustering.</p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> suggest no significant spatial autocorrelation for the <strong>ratio of tourists who stay overnight</strong> in 2019. The overall findings suggest that the distribution of tourists who stay overnight was largely random across Thailand’s regions, with no clear clustering.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2019<span class="sc">$</span>tourist_stay_per_km2, </span>
 <span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -1176,7 +1178,7 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 <p><strong>2022-2023</strong></p>
-<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> for the <strong>ratio of tourists who stay overnight</strong> in 2022-2023 indicate no significant spatial autocorrelation. Although the Monte Carlo simulation suggests a possible weak spatial pattern, the overall results imply that the distribution of tourists who stay overnight across Thailand’s regions remains random, with no clear clustering during this recovery period.</p>
+<p>Both the <strong>Moran’s I test</strong> and the <strong>Monte Carlo simulation</strong> for the <strong>ratio of tourists who stay overnight</strong> in 2022-2023 indicate no significant spatial autocorrelation.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">moran.test</span>(data_in_2022_and_2023<span class="sc">$</span>tourist_stay_per_km2, </span>
 <span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">listw=</span>rswm_q, </span>
@@ -1221,9 +1223,9 @@ alternative hypothesis: greater</code></pre>
 </section>
 <section id="visualizing-monte-carlo-morans-i" class="level2">
 <h2 class="anchored" data-anchor-id="visualizing-monte-carlo-morans-i"><strong>4.2 Visualizing Monte Carlo Moran’s I</strong></h2>
-<p>In the code chunk below, <code>hist()</code> and <code>abline()</code> from R’s graphics package are used to visualize the Moran’s I test statistics that were calculated in the previous section. Since we are focusing on the results that show significant spatial autocorrelation, we will plot the significant ones, such as <strong>Thai tourists per km²</strong> for 2019 and 2022-2023. This will help highlight the regions where clustering patterns are more pronounced.</p>
+<p>In the code chunk below, <code>hist()</code> and <code>abline()</code> from R’s graphics package are used to visualize the Moran’s I test statistics that were calculated in the previous section. Since we are focusing on the results that show significant spatial autocorrelation, we will plot the significant ones, such as <strong>Thai tourists per km²</strong> for 2019 and 2022-2023.</p>
 <p>Even though <strong>tourists_per_km²</strong> shows significant spatial autocorrelation, we will focus on <strong>Thai tourists per km²</strong> for a more targeted analysis. This is because Thai tourists represent a key domestic market, and understanding their distribution is crucial for regional tourism development. Additionally, the patterns of domestic tourism may have different economic and policy implications compared to total tourist numbers, especially during periods of recovery. Focusing on Thai tourists helps us better assess localized trends in domestic travel behavior.</p>
-<p>Furthermore, we will prioritize the analysis of <strong>2022-2023</strong>, as it represents the most recent period and is crucial for understanding the post-pandemic recovery. Focusing on this period helps identify current patterns in domestic tourism, which can provide valuable insights for regional planning and policy decisions in the present and near future.</p>
+<p>Furthermore, we will prioritize the analysis of <strong>2022-2023</strong>, as it represents the most recent period and is crucial for understanding the post-pandemic recovery.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(bperm_2022_2023_thai_tourist_per_km2<span class="sc">$</span>res, </span>
 <span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">freq=</span><span class="cn">TRUE</span>, </span>
@@ -1239,9 +1241,9 @@ alternative hypothesis: greater</code></pre>
 </div>
 </div>
 </section>
-<section id="local-measures-of-spatial-autocorrelation" class="level2">
-<h2 class="anchored" data-anchor-id="local-measures-of-spatial-autocorrelation">5. LOCAL MEASURES OF SPATIAL AUTOCORRELATION</h2>
 </section>
+<section id="local-measures-of-spatial-autocorrelation" class="level1">
+<h1>5. LOCAL MEASURES OF SPATIAL AUTOCORRELATION</h1>
 <section id="computing-local-morans-i" class="level2">
 <h2 class="anchored" data-anchor-id="computing-local-morans-i">5.1 Computing Local Moran’s I</h2>
 <p>The <strong>local Moran’s I analysis</strong> computes the spatial autocorrelation for each region, identifying where <strong>Thai tourists per km²</strong> are clustered or significantly different from neighboring regions. This helps pinpoint local clusters or outliers, revealing provinces with high or low concentrations of Thai tourists that are spatially dependent.</p>
@@ -1427,7 +1429,7 @@ Yasothon                         0.4774</code></pre>
 </section>
 <section id="mapping-local-morans-i" class="level2">
 <h2 class="anchored" data-anchor-id="mapping-local-morans-i">5.2 Mapping Local Moran’s I</h2>
-<p>In the code chunk, the <strong>local Moran’s I statistics</strong> (<code>Ii</code> values) and their <strong>p-values</strong> (<code>Pr.Ii</code>) are visualized on a map using the <strong>tmap</strong> package. The first map shows the <strong>local Moran’s I statistic</strong> values for each region, with the color palette “RdBu” highlighting clusters of high and low values, where <strong>red</strong> indicates positive spatial autocorrelation (clusters of similar values) and <strong>blue</strong> indicates negative spatial autocorrelation (outliers). The second map visualizes the <strong>p-values</strong> of these statistics, using shades of blue to indicate the significance levels, with darker blue representing more statistically significant regions. Together, these maps help identify both the magnitude and significance of local spatial patterns in the distribution of <strong>Thai tourists per km²</strong> in 2019.</p>
+<p>In the code chunk, the <strong>local Moran’s I statistics</strong> (<code>Ii</code> values) and their <strong>p-values</strong> (<code>Pr.Ii</code>) are visualized on a map using the <strong>tmap</strong> package. The first map shows the <strong>local Moran’s I statistic</strong> values for each region, with the color palette “RdBu” highlighting clusters of high and low values, where <strong>red</strong> indicates positive spatial autocorrelation (clusters of similar values) and <strong>blue</strong> indicates negative spatial autocorrelation (outliers). The second map visualizes the <strong>p-values</strong> of these statistics, using shades of blue to indicate the significance levels, with darker blue representing more statistically significant regions. Together, these maps help identify both the magnitude and significance of local spatial patterns in the distribution of <strong>Thai tourists per km²</strong> in 2022-2023.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>data_in_2022_and_2023.localMI <span class="ot">&lt;-</span> <span class="fu">cbind</span>(data_in_2022_and_2023,localMI) <span class="sc">%&gt;%</span></span>
 <span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">Pr.Ii =</span> Pr.z....E.Ii..)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -1462,7 +1464,7 @@ Yasothon                         0.4774</code></pre>
 </div>
 </div>
 </div>
-<p>This code creates two maps side by side using <strong>tmap</strong> to visualize the <strong>local Moran’s I statistics</strong> and their <strong>p-values</strong> for Thai tourists per km² in 2019. The first map shows the distribution of local Moran’s I values (indicating spatial clustering), while the second map highlights the statistical significance of these clusters using shades of blue for different p-value ranges, with darker blue representing more significant results.</p>
+<p>This code creates two maps side by side using <strong>tmap</strong> to visualize the <strong>local Moran’s I statistics</strong> and their <strong>p-values</strong> for Thai tourists per km² in 2022-2023. The first map shows the distribution of local Moran’s I values (indicating spatial clustering), while the second map highlights the statistical significance of these clusters using shades of blue for different p-value ranges, with darker blue representing more significant results.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>localMI.map <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(data_in_2022_and_2023.localMI) <span class="sc">+</span></span>
 <span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="at">col =</span> <span class="st">"Ii"</span>, </span>
@@ -1486,7 +1488,7 @@ Yasothon                         0.4774</code></pre>
 </div>
 </div>
 </div>
-<p>The maps illustrate local Moran’s I statistics for Thailand, highlighting regions with significant spatial clustering of tourism-related data. The left map shows the degree of clustering, with stronger spatial autocorrelation in darker green areas, while the right map shows the statistical significance of these clusters, with dark blue areas indicating highly significant clusters (p-value &lt; 0.001). This suggests that certain regions exhibit strong and statistically significant patterns of similarity in tourism metrics compared to their neighboring areas.</p>
+<p>Certain regions exhibit strong and statistically significant patterns of similarity in tourism metrics compared to their neighboring areas.</p>
 </section>
 <section id="creating-a-lisa-cluster-map" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-lisa-cluster-map"><strong>5.3 Creating a LISA Cluster Map</strong></h2>
@@ -1599,7 +1601,7 @@ Yasothon                         0.4774</code></pre>
 </section>
 <section id="emerging-hot-spot-and-cold-spot-area-analysis" class="level1">
 <h1>6. EMERGING HOT SPOT AND COLD SPOT AREA ANALYSIS</h1>
-<p><strong>Hot Spot and Cold Spot Area Analysis</strong> identifies regions where values are significantly higher (hot spots) or lower (cold spots) than expected, revealing important spatial patterns. This method is essential for detecting areas of intense activity or underdevelopment, guiding targeted interventions and informed decision-making.</p>
+<p><strong>Hot Spot and Cold Spot Area Analysis</strong> identifies regions where values are significantly higher (hot spots) or lower (cold spots) than expected. This method is essential for detecting areas of intense activity or underdevelopment, which may help in guiding targeted interventions and informed decision-making.</p>
 <section id="creating-a-spacetime-s3-class-of-sfdep" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-spacetime-s3-class-of-sfdep">6.1 Creating a Spacetime s3 Class of <em>sfdep</em></h2>
 <p>In this section, we are going to create a <strong>spacetime s3 class</strong> to analyze the spatial and temporal patterns of our data.</p>
@@ -1678,7 +1680,7 @@ Projected CRS: WGS 84 / UTM zone 47N
 <h2 class="anchored" data-anchor-id="using-emerging_hotspot_analysis">6.2 Using <code>emerging_hotspot_analysis()</code></h2>
 <section id="in-terms-of-revenue" class="level3">
 <h3 class="anchored" data-anchor-id="in-terms-of-revenue">IN TERMS OF REVENUE</h3>
-<p>We will be using the <strong><code>emerging_hotspot_analysis()</code></strong> function for two key reasons. First, while manual calculations focus on spatial neighbors, this function allows us to incorporate the <strong>time-lag</strong> of our spatial neighbors, providing a more dynamic view of how patterns evolve. Second, it follows <strong>ESRI’s classifications</strong> to help us understand the changes in each location over time, such as whether a hotspot is emerging, intensifying, or persisting.</p>
+<p>We will be using the <strong><code>emerging_hotspot_analysis()</code></strong> function for two key reasons. First, while manual calculations focus on spatial neighbors, this function allows us to incorporate the <strong>time-lag</strong> of our spatial neighbors, which provides a more dynamic view of how patterns evolve. Second, it follows <strong>ESRI’s classifications</strong> to help us understand the changes in each location over time, such as whether a hotspot is emerging, intensifying, or persisting.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>hotspot_coldspot_revenue <span class="ot">&lt;-</span> <span class="fu">emerging_hotspot_analysis</span>(spt, <span class="st">"revenue_all"</span>, <span class="at">threshold =</span> <span class="fl">0.05</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
