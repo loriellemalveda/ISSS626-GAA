@@ -323,10 +323,99 @@ The code below can be used to display the model output.
 gwr_adaptive
 ```
 
+The report shows that the AICc the adaptive distance gwr is 41982.22 which is even smaller than the AICc of the fixed distance gwr of 42263.61.
+
 ## 6.3 Visualizing the GWR Output
+
+The output feature class table includes fields for observed and predicted y values, condition number (cond), Local R2, residuals, and explanatory variable coefficients with their standard errors. The **Condition Number** evaluates local collinearity, where values above 30 may indicate unreliable results. **Local R2** values range from 0.0 to 1.0, reflecting the local regression model's fit, with low values suggesting poor model performance. The **Predicted** values are the fitted y values computed by GWR, and **Residuals** are the differences between observed and predicted values, with standardized residuals having a mean of zero. A map of standardized residuals can highlight areas where the model fits poorly. The **Coefficient Standard Error** measures the reliability of each coefficient, with smaller errors indicating more reliable estimates. These metrics are stored in a **SpatialPointsDataFrame** or **SpatialPolygonsDataFrame** object within the "data" slot of the output list's **SDF** object.
 
 ## 6.4 Converting SDF into an ***sf*** data.frame
 
+Before visualizing, we first need to convert it into an ***sf*** data frame.
+
+```{r}
+gwr_adaptive_output <- as.data.frame(
+  gwr_adaptive$SDF) %>%
+  select(-c(2:15))
+```
+
+```{r}
+gwr_sf_adaptive <- cbind(condo_resale_sf,
+                         gwr_adaptive_output)
+```
+
+Next, `glimpse()` is used to display the content of `condo_resale_sf.adaptive`, which is now an ***sf*** data frame.
+
+```{r}
+glimpse(gwr_sf_adaptive)
+```
+
+```{r}
+summary(gwr_adaptive$SDF$yhat)
+```
+
 ## 6.5 Visualizing the local R2
 
+The code chunks below is used to create an interactive point symbol map.
+
+```{r}
+tmap_mode("view")
+tmap_options(check.and.fix = TRUE)
+tm_shape(mpsz)+
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr_sf_adaptive) +  
+  tm_dots(col = "Local_R2",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(11,14))
+```
+
+Do not forget to put it back to plot mode!
+
+```{r}
+tmap_mode("plot")
+```
+
 ## 6.6 Visualizing the Coefficient Estimates
+
+Let's now create an interactive point symbol map.
+
+```{r}
+tmap_options(check.and.fix = TRUE)
+tmap_mode("view")
+AREA_SQM_SE <- tm_shape(mpsz)+
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr_sf_adaptive) +  
+  tm_dots(col = "AREA_SQM_SE",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(11,14))
+
+AREA_SQM_TV <- tm_shape(mpsz)+
+  tm_polygons(alpha = 0.1) +
+tm_shape(gwr_sf_adaptive) +  
+  tm_dots(col = "AREA_SQM_TV",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(11,14))
+
+tmap_arrange(AREA_SQM_SE, AREA_SQM_TV, 
+             asp=1, ncol=2,
+             sync = TRUE)
+```
+
+```{r}
+tmap_mode("plot")
+```
+
+#### BY URA PLANNING REGION
+
+```{r}
+tm_shape(mpsz[mpsz$REGION_N=="CENTRAL REGION", ])+
+  tm_polygons()+
+tm_shape(gwr_sf_adaptive) + 
+  tm_bubbles(col = "Local_R2",
+           size = 0.15,
+           border.col = "gray60",
+           border.lwd = 1)
+```
