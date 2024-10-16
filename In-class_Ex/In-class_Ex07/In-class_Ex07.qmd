@@ -1,0 +1,255 @@
+---
+title: "In-class Exercise 7: Calibrating Hedonic Pricing Model for Private Highrise Property with GWR Method"
+author: "Lorielle Malveda"
+date: "October 14, 2024"
+date-modified: "last-modified"
+execute: 
+  eval: true
+  echo: true
+  freeze: true
+  warning: false
+---
+
+# 1. GETTING STARTED
+
+The code chunks below installs and launches these R packages into R environment.
+
+```{r}
+pacman::p_load(olsrr, ggstatsplot, ggpubr, 
+               sf, spdep, GWmodel, tmap,
+               tidyverse, gtsummary, performance,
+               see, sfdep)
+```
+
+# 2. IMPORTING THE DATA
+
+## 2.1  **URA Master Plan 2014 Planning Subzone Boundary**
+
+```{r}
+condo_resale <- read_csv("data/aspatial/Condo_resale_2015.csv")
+```
+
+```{r}
+mpsz = st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+```
+
+```{r}
+condo_resale_sf <- st_as_sf(condo_resale,
+                            coords = c("LONGITUDE", "LATITUDE"),
+                            crs=4326) %>%
+  st_transform(crs=3414)
+```
+
+# 3. CORRELATION ANALYSIS - ***ggstatsplot*** METHODS
+
+Instead of using the ***corrplot*** package,we use `ggcorrmat()` of ***ggstatsplot*** in the code chunk below, .
+
+```{r}
+ggcorrmat(condo_resale[, 5:23])
+```
+
+# 4. BUILDING A HEDONIC PRICING MODEL BY USING THE MULTIPLE LINEAR REGRESSION METHOD
+
+The code chunk below using `lm()` to calibrate the multiple linear regression model.
+
+```{r}
+condo_mlr <- lm(formula = SELLING_PRICE ~ AREA_SQM + 
+                  AGE   + PROX_CBD + PROX_CHILDCARE + 
+                  PROX_ELDERLYCARE + PROX_URA_GROWTH_AREA + 
+                  PROX_HAWKER_MARKET    + PROX_KINDERGARTEN + 
+                  PROX_MRT  + PROX_PARK + PROX_PRIMARY_SCH + 
+                  PROX_TOP_PRIMARY_SCH + PROX_SHOPPING_MALL + 
+                  PROX_SUPERMARKET + PROX_BUS_STOP + 
+                  NO_Of_UNITS + FAMILY_FRIENDLY + 
+                  FREEHOLD + LEASEHOLD_99YR, 
+                data=condo_resale_sf)
+summary(condo_mlr)
+```
+
+## 4.1 Model Assessment: ***olsrr*** Method
+
+In this section, we are going to use a fantastic R package especially programmed for performing **OLS regression**, called [***olsrr***](https://olsrr.rsquaredacademy.com/). This package is a collection of very useful methods for building better multiple linear regression models:
+
+-   comprehensive regression output
+
+-   residual diagnostics
+
+-   measures of influence
+
+-   heteroskedasticity tests
+
+-   model fit assessment
+
+-   variable contribution assessment
+
+-   variable selection procedures
+
+## 4.2 Generating a tidy Linear Regression Report
+
+```{r}
+ols_regress(condo_mlr)
+```
+
+### MULTICOLLINEARITY
+
+```{r}
+ols_vif_tol(condo_mlr)
+```
+
+### VARIABLE SELECTION
+
+```{r}
+condo_fw_mlr <- ols_step_forward_p(
+  condo_mlr,
+  p_val = 0.05,
+  details = FALSE)
+```
+
+```{r}
+plot(condo_fw_mlr)
+```
+
+### VISUALIZING MODEL PARAMETERS
+
+```{r}
+ggcoefstats(condo_mlr,
+            sort = "ascending")
+```
+
+### TEST FOR NON-LINEARITY
+
+In multiple linear regression, it is crucial to verify the assumption of linearity and additivity in the relationship between the dependent and independent variables.
+
+In the code chunk below, the `ols_plot_resid_fit()` function from the **olsrr** package is used to test the linearity assumption.
+
+```{r}
+ols_plot_resid_fit(condo_fw_mlr$model)
+```
+
+The figure above reveals that most of the data poitns are scattered around the 0 line, hence we can safely conclude that the relationships between the dependent variable and independent variables are linear.
+
+### TEST FOR NORMALITY ASSUMPTION
+
+Lastly, the code chunk below uses `ols_plot_resid_hist()` of ***olsrr*** package to perform normality assumption test.
+
+```{r}
+ols_plot_resid_hist(condo_fw_mlr$model)
+```
+
+The figure shows that the residuals of the multiple linear regression model (i.e., **condo.mlr1**) appear to follow a normal distribution.
+
+For a more formal statistical approach,we will use the `ols_test_normality()` function from the ***olsrr*** package, as demonstrated in the code chunk below.
+
+```{r}
+ols_test_normality(condo_fw_mlr$model)
+```
+
+The summary table above reveals that the p-values of the four tests are way smaller than the alpha value of 0.05. Hence we will reject the null hypothesis and infer that there is statistical evidence that the residuals are not normally distributed.
+
+# 5. TEST FOR SPATIAL AUTOCORRELATION
+
+The hedonic model we try to build are using geographically referenced attributes. Hence, it is also important to visualize the residuals of the hedonic pricing model.
+
+First, we will export the residual of the hedonic pricing model and save it as a data frame.
+
+```{r}
+mlr_output <- as.data.frame(condo_fw_mlr$model$residuals) %>%
+  rename(`FW_MLR_RES` = `condo_fw_mlr$model$residuals`)
+```
+
+Next, let's join the newly created dataframe with the `condo_resale_sf` object.
+
+```{r}
+condo_resale_sf <- cbind(condo_resale_sf, 
+                        mlr_output$FW_MLR_RES) %>%
+  rename(`MLR_RES` = `mlr_output.FW_MLR_RES`)
+```
+
+Next, we will use the ***tmap*** package to visualize the distribution of the residuals on an interactive map.
+
+The code chunk below activates the interactive mode in ***tmap***.
+
+```{r}
+tmap_mode("view")
+tm_shape(mpsz)+
+  tmap_options(check.and.fix = TRUE) +
+  tm_polygons(alpha = 0.4) +
+tm_shape(condo_resale_sf) +  
+  tm_dots(col = "MLR_RES",
+          alpha = 0.6,
+          style="quantile")
+```
+
+Checking the plot above, seems like there is sign of spatial autocorrelation.
+
+```{r}
+tmap_mode("plot")
+```
+
+## 5.1 Spatial Stationary Test
+
+To confirm our observation, we will perform Moran's I test.
+
+-   **H₀**: The residuals are randomly distributed (spatially stationary).
+-   **H₁**: The residuals are spatially non-stationary.
+
+First, we will compute the distance-based weight matrix using the `dnearneigh()` function from the **spdep** package.
+
+```{r}
+condo_resale_sf <- condo_resale_sf %>%
+  mutate(nb = st_knn(geometry, k=6,
+                     longlat = FALSE),
+         wt = st_weights(nb,
+                         style = "W"),
+         .before = 1)
+```
+
+Next, `global_moran_perm()` of sfdep is used to perform global Moran permutation test.
+
+```{r}
+global_moran_perm(condo_resale_sf$MLR_RES, 
+                  condo_resale_sf$nb, 
+                  condo_resale_sf$wt, 
+                  alternative = "two.sided", 
+                  nsim = 99)
+```
+
+The Global Moran’s I test for residual spatial autocorrelation shows that it’s p-value is less than 0.00000000000000022 which is less than the alpha value of 0.05. Hence, we will reject the null hypothesis that the residuals are randomly distributed.
+
+Since the Observed Global Moran I = 0.25586 which is greater than 0, we can infer than the residuals resemble cluster distribution.
+
+# 6. BUILDING HEDONIC PRICING MODELS USING GWmodel
+
+In this section, we are going to learn how to model hedonic pricing by using geographically weighted regression model. Two spatial weights will be used. They are: fixed and adaptive bandwidth schemes.
+
+## 6.1 Building Fixed Bandwidth GWR Model
+
+#### **Computing fixed bandwith**
+
+In the code chunk below `bw.gwr()` of THE GWModel package is used to determine the optimal fixed bandwidth to use in the model. The argument ***adaptive*** is set to **FALSE, which** indicates that we are interested in computing the fixed bandwidth.
+
+There are two possible approaches which we can use to determine the stopping rule, they are: CV cross-validation approach and AIC corrected (AICc) approach. We define the stopping rule using ***approach*** agreement.
+
+```{r}
+bw_fixed <- bw.gwr(formula = SELLING_PRICE ~ AREA_SQM + AGE + 
+                     PROX_CBD + PROX_CHILDCARE + 
+                     PROX_ELDERLYCARE   + PROX_URA_GROWTH_AREA + 
+                     PROX_MRT   + PROX_PARK + PROX_PRIMARY_SCH + 
+                     PROX_SHOPPING_MALL + PROX_BUS_STOP + 
+                     NO_Of_UNITS + FAMILY_FRIENDLY + FREEHOLD, 
+                   data=condo_resale_sf, 
+                   approach="CV", 
+                   kernel="gaussian", 
+                   adaptive=FALSE, 
+                   longlat=FALSE)
+```
+
+## 6.2 Building Adaptive Bandwidth GWR Model
+
+## 6.3 Visualizing the GWR Output
+
+## 6.4 Converting SDF into an ***sf*** data.frame
+
+## 6.5 Visualizing the local R2
+
+## 6.6 Visualizing the Coefficient Estimates
