@@ -1,6 +1,8 @@
 ---
 title: "In-class Exercise 2: Spatial Point Patterns Analysis: spatstat Methods"
 author: "Lorielle Malveda"
+date: "September 2, 2024"
+date-modified: "last-modified"
 execute: 
   eval: true
   echo: true
@@ -35,9 +37,9 @@ This section will tackle the 2 functions under the ***sf*** package: st_combine(
 Let's derived the coastal outline, which is an sf tibble data.frame.
 
 ```{r}
-mpsz_sf <- st_read(dsn = "C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex03/data/data", 
+mpsz_sf <- st_read(dsn = "data/geospatial", 
                 layer = "MP14_SUBZONE_WEB_PL")
-childcare_sf <- st_read("C:/loriellemalveda/ISSS626-GAA/Hands-on_Ex/Hands-on_Ex03/data/data/child-care-services-geojson.geojson") %>%
+childcare_sf <- st_read("data/geospatial/child-care-services-geojson.geojson") %>%
   st_transform(crs = 3414)
 childcare <- as_Spatial(childcare_sf)
 sg_sf <- mpsz_sf %>%
@@ -219,17 +221,9 @@ rdacc_sf <- read_csv("data/thai_road_accident_2019_2022.csv") %>%
   st_transform(crs=32647)
 ```
 
+#\| eval: false mutate(Month_num = month(incident_datetime) %\>% mutate(Month_fac = month(incident_datetime, label=TRUE, abbr=TRUE)) %\>% mutate(dayofweek = day(incident_datetime))
 
-
-#| eval: false
-mutate(Month_num = month(incident_datetime) %>%
-mutate(Month_fac = month(incident_datetime,
-                     label=TRUE,
-                     abbr=TRUE)) %>%
-mutate(dayofweek = day(incident_datetime))
-  
-  
-```
+```         
 
 can delete using the painter tool
 
@@ -238,8 +232,6 @@ write_rds(acc,"data/rds/acc.rds")
 
 this function takes care of objects internally
 
-
-acc <- read_rds("")
-```
+acc \<- read_rds("") \`\`\`
 
 this is basically calling it back
