@@ -228,6 +228,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex09/In-class_Ex09.html">
  <span class="dropdown-text">In-class Exercise 9</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex10/In-class_Ex10.html">
+ <span class="dropdown-text">In-class Exercise 10</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -2493,7 +2497,7 @@ Adaptive bandwidth: 39 CV score: 4.075386e+12 </code></pre>
 <pre><code>   ***********************************************************************
    *                       Package   GWmodel                             *
    ***********************************************************************
-   Program starts at: 2024-11-10 00:37:41.23501 
+   Program starts at: 2024-11-10 22:57:05.019791 
    Call:
    gwr.basic(formula = resale_price ~ log_distance_to_eldercare + 
     log_distance_to_cbd + log_distance_to_hawker + log_distance_to_mall + 
@@ -2592,7 +2596,7 @@ Adaptive bandwidth: 39 CV score: 4.075386e+12 </code></pre>
    Adjusted R-square value:  0.8818348 
 
    ***********************************************************************
-   Program stops at: 2024-11-10 00:37:42.456894 </code></pre>
+   Program stops at: 2024-11-10 22:57:06.118331 </code></pre>
 </div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
@@ -2773,6 +2777,7 @@ Note
 <p>The scatter plot shows a generally positive correlation between actual and predicted resale prices, meaning the model captures the trend in resale prices to some extent. However, there is noticeable dispersion from the 45-degree line, especially at higher price ranges, where the model tends to underpredict or overpredict actual values. This suggests that while the GWR model performs reasonably well for mid-range prices, it struggles with accuracy at the extremes of the price distribution.</p>
 </div>
 </div>
+<p>After 1.5 days, the GWRF model is still running and has not completed. Consequently, this analysis relies solely on the Geographically Weighted Regression (GWR) model and a non-spatial linear regression model, as the extended processing time for GWRF has made it impractical to include in the current analysis.</p>
 
 
 </section>
